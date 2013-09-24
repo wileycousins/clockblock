@@ -1,5 +1,5 @@
-update=9/24/2013 12:44:10 AM
-last_client=kicad
+update=9/24/2013 11:34:16 AM
+last_client=cvpcb
 [eeschema]
 version=1
 LibDir=Z:/Projects/kicad-lib/components
@@ -21,6 +21,8 @@ LibName9=standard
 LibName10=stmicro-mcu
 LibName11=ti-ic
 LibName12=power
+[general]
+version=1
 [pcbnew]
 version=1
 LastNetListRead=
@@ -41,7 +43,6 @@ DrawSegmentWidth=0.200000000000
 BoardOutlineThickness=0.100000000000
 ModuleOutlineThickness=0.150000000000
 [pcbnew/libraries]
-LibDir=Z:/Projects/kicad-lib/footprints
 LibName1=analog-devices
 LibName2=asm
 LibName3=bluegiga
@@ -62,5 +63,7 @@ LibName17=switch
 LibName18=texas
 LibName19=to
 LibName20=xtal
-[general]
+LibDir=Z:/Projects/kicad-lib/footprints
+[cvpcb]
 version=1
+NetIExt=net
