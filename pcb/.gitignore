@@ -1,2 +1,6 @@
 # Files to be generated from CAD
 *.net
+*.csv
+
+# Backup files
+*-bak

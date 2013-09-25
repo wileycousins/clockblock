@@ -1,5 +1,5 @@
-update=9/24/2013 11:34:16 AM
-last_client=cvpcb
+update=9/24/2013 10:12:52 PM
+last_client=kicad
 [eeschema]
 version=1
 LibDir=Z:/Projects/kicad-lib/components
@@ -21,8 +21,6 @@ LibName9=standard
 LibName10=stmicro-mcu
 LibName11=ti-ic
 LibName12=power
-[general]
-version=1
 [pcbnew]
 version=1
 LastNetListRead=
@@ -67,3 +65,5 @@ LibDir=Z:/Projects/kicad-lib/footprints
 [cvpcb]
 version=1
 NetIExt=net
+[general]
+version=1

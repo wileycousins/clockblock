@@ -486,7 +486,7 @@
   )
 
   (module SOT223 (layer F.Cu) (tedit 524203A0) (tstamp 52422285)
-    (at 236.855 121.285)
+    (at 236.982 120.904)
     (path /5241173D)
     (attr smd)
     (fp_text reference IC3 (at 0 -4) (layer F.SilkS)
@@ -2511,7 +2511,7 @@
   )
 
   (module "0603(1608m)_led" (layer F.Cu) (tedit 51B11AEB) (tstamp 52422688)
-    (at 229.108 123.19 180)
+    (at 228.854 123.444 180)
     (path /52411F6D)
     (solder_paste_margin -0.025)
     (attr smd)
@@ -2706,14 +2706,14 @@
   )
 
   (module "0603(1608m)" (layer F.Cu) (tedit 519CEABD) (tstamp 524226DC)
-    (at 246.126 194.056)
+    (at 227.838 118.872 270)
     (path /52411884)
     (solder_paste_margin -0.025)
     (attr smd)
-    (fp_text reference R3 (at 0 2.1) (layer F.SilkS) hide
+    (fp_text reference R3 (at 0 2.1 270) (layer F.SilkS) hide
       (effects (font (size 1.524 1.524) (thickness 0.3048)))
     )
-    (fp_text value 560Ω (at 0 -1.9) (layer F.SilkS) hide
+    (fp_text value 560Ω (at 0 -1.9 270) (layer F.SilkS) hide
       (effects (font (size 1.524 1.524) (thickness 0.3048)))
     )
     (fp_line (start -1.3 0.6) (end -1.3 -0.6) (layer F.SilkS) (width 0.2))
@@ -2722,11 +2722,11 @@
     (fp_line (start 1.3 -0.6) (end 1.3 0.6) (layer F.SilkS) (width 0.2))
     (fp_line (start 1.3 0.6) (end 0.8 0.6) (layer F.SilkS) (width 0.2))
     (fp_line (start 1.3 -0.6) (end 0.8 -0.6) (layer F.SilkS) (width 0.2))
-    (pad 1 smd rect (at -0.7 0) (size 0.7 0.7)
+    (pad 1 smd rect (at -0.7 0 270) (size 0.7 0.7)
       (layers F.Cu F.Paste F.SilkS F.Mask)
       (net 51 N-0000046)
     )
-    (pad 2 smd rect (at 0.7 0) (size 0.7 0.7)
+    (pad 2 smd rect (at 0.7 0 270) (size 0.7 0.7)
       (layers F.Cu F.Paste F.SilkS F.Mask)
       (net 11 GND)
     )
@@ -2814,7 +2814,7 @@
   )
 
   (module "0603(1608m)" (layer F.Cu) (tedit 519CEABD) (tstamp 5242270C)
-    (at 229.108 121.412 180)
+    (at 228.854 121.412 180)
     (path /52411F31)
     (solder_paste_margin -0.025)
     (attr smd)
@@ -2922,14 +2922,14 @@
   )
 
   (module "0603(1608m)" (layer F.Cu) (tedit 519CEABD) (tstamp 5242273C)
-    (at 231.521 194.056)
+    (at 229.87 118.872 90)
     (path /52411861)
     (solder_paste_margin -0.025)
     (attr smd)
-    (fp_text reference R4 (at 0 2.1) (layer F.SilkS) hide
+    (fp_text reference R4 (at 0 2.1 90) (layer F.SilkS) hide
       (effects (font (size 1.524 1.524) (thickness 0.3048)))
     )
-    (fp_text value 1kΩ (at 0 -1.9) (layer F.SilkS) hide
+    (fp_text value 1kΩ (at 0 -1.9 90) (layer F.SilkS) hide
       (effects (font (size 1.524 1.524) (thickness 0.3048)))
     )
     (fp_line (start -1.3 0.6) (end -1.3 -0.6) (layer F.SilkS) (width 0.2))
@@ -2938,11 +2938,11 @@
     (fp_line (start 1.3 -0.6) (end 1.3 0.6) (layer F.SilkS) (width 0.2))
     (fp_line (start 1.3 0.6) (end 0.8 0.6) (layer F.SilkS) (width 0.2))
     (fp_line (start 1.3 -0.6) (end 0.8 -0.6) (layer F.SilkS) (width 0.2))
-    (pad 1 smd rect (at -0.7 0) (size 0.7 0.7)
+    (pad 1 smd rect (at -0.7 0 90) (size 0.7 0.7)
       (layers F.Cu F.Paste F.SilkS F.Mask)
       (net 106 VCC)
     )
-    (pad 2 smd rect (at 0.7 0) (size 0.7 0.7)
+    (pad 2 smd rect (at 0.7 0 90) (size 0.7 0.7)
       (layers F.Cu F.Paste F.SilkS F.Mask)
       (net 51 N-0000046)
     )
