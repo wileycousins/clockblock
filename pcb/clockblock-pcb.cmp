@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 9/24/2013 6:02:19 PM
+Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 9/25/2013 1:10:36 PM
 
 BeginCmp
 TimeStamp = /52420082;
@@ -52,7 +52,7 @@ EndCmp
 BeginCmp
 TimeStamp = /5240F21F;
 Reference = C7;
-ValeurCmp = 0.1uF;
+ValeurCmp = 1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
@@ -554,6 +554,13 @@ IdModule  = SIP4;
 EndCmp
 
 BeginCmp
+TimeStamp = /52430520;
+Reference = P14;
+ValeurCmp = SERIAL;
+IdModule  = SIP4;
+EndCmp
+
+BeginCmp
 TimeStamp = /52411F31;
 Reference = R1;
 ValeurCmp = 1kΩ;
@@ -570,14 +577,14 @@ EndCmp
 BeginCmp
 TimeStamp = /52411884;
 Reference = R3;
-ValeurCmp = 560Ω;
+ValeurCmp = 1kΩ;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /52411861;
 Reference = R4;
-ValeurCmp = 1kΩ;
+ValeurCmp = 560Ω;
 IdModule  = 0603(1608m);
 EndCmp
 
@@ -610,9 +617,37 @@ IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
+TimeStamp = /52430CCA;
+Reference = R9;
+ValeurCmp = 10kΩ;
+IdModule  = 0603(1608m);
+EndCmp
+
+BeginCmp
+TimeStamp = /52430C2F;
+Reference = R10;
+ValeurCmp = 10kΩ;
+IdModule  = 0603(1608m);
+EndCmp
+
+BeginCmp
 TimeStamp = /52411E7C;
 Reference = S1;
 ValeurCmp = RST;
+IdModule  = SPST_4-pin-thru;
+EndCmp
+
+BeginCmp
+TimeStamp = /52430BBC;
+Reference = S2;
+ValeurCmp = SET;
+IdModule  = SPST_4-pin-thru;
+EndCmp
+
+BeginCmp
+TimeStamp = /52430BEE;
+Reference = S3;
+ValeurCmp = SET;
 IdModule  = SPST_4-pin-thru;
 EndCmp
 
