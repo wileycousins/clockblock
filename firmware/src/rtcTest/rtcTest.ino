@@ -1,17 +1,19 @@
 // Testing sketch for DS3234 class
 // using SFE Arduino Pro Micro 3.3V
 
-#include "SPI.h"
-#include "DS3234.h"
+#include "StuPId.h"
+//#include "DS3234.h"
 
 // pin defines
+//rtc
 #define RTC_CS  9
-#define RTC_RST 8
 #define RTC_INT 0
-
 // led
 #define LED_PIN 2
 int ledState = 0;
+
+// create our SPI object
+StuPId spi(&DDRB, 2, &DDRB, 1);
 
 // create the RTC object
 // cs  - PB5
@@ -38,24 +40,23 @@ void setup() {
   
   // initialize SPI
   // DS3234 is MSB first
-  SPI.setBitOrder(MSBFIRST);
+  spi.setDataOrder(SPI_MSB_FIRST);
   // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
-  SPI.setClockDivider(SPI_CLOCK_DIV4);
+  spi.setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
   // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
-  SPI.setDataMode(SPI_MODE1);
-  SPI.begin();
+  spi.setDataMode(1);
+  spi.enable();
   Serial.println("SPI initialized");
+  
   //rtc.init();
   //Serial.println("RTC initialized");
   
-
-  
-  // let's try to read the control register
+  // let's try to read the registers
   PORTB &= ~(1<<5);
-  unsigned char c = DS3234_SEC;
-  SPI.transfer(c);
+  unsigned char c = 0x00;
+  spi.transfer(c);
   for (int i=0; i<0x14; i++) {
-    c = SPI.transfer(0);
+    c = spi.transfer(0);
     Serial.print("reg "); Serial.print(i, HEX); Serial.print(": ");
     Serial.println(c, BIN);
     delay(10);

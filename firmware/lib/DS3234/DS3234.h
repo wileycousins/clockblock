@@ -5,11 +5,13 @@
 // file: clockblock.cpp
 // description: header for DS3234 real-time clock class
 
-#ifndef DS3234_H
-#define DS3234_H
+#ifndef LIB_DS3234_H
+#define LIB_DS3234_H
 
 // woo! typedefs!
 #include <stdint.h>
+// woo! SPI!
+#include "StuPId.h"
 
 // let's define some register addresses
 #define DS3234_SEC               0x00
