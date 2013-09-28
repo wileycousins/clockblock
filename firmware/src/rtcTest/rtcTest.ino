@@ -14,28 +14,43 @@
 int ledState = 0;
 
 // create the RTC object
-//DS3234 rtc;
+// cs  - PB5
+// rst - PB4
+// int - PD0
+DS3234 rtc(PORTB, 5, PORTB, 4, PORTD, 0);
 
 void setup() {
-  // setup pins
-  pinMode(RTC_CS, OUTPUT);
-  digitalWrite(RTC_CS, HIGH);
-  pinMode(RTC_RST, OUTPUT);
-  digitalWrite(RTC_RST, HIGH);
-  
-  pinMode(RTC_INT, INPUT);
-  attachInterrupt(0, toggle, FALLING);
-  
+  // LED
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, ledState);
   
-  // initialize SPI:
-  //SPI.begin(); 
+  // debugging
+  Serial.begin(9600);
+  
+  // initialize RTC
+  rtc.init();
+  SPI.begin();
+  
+  // tell the RTC that it is 4 o'clock
+  unsigned char tm[3] = {0, 0, 16};
+  rtc.setTime(tm);
+  
+  // setup interrupt
+  //pinMode(RTC_INT, INPUT);
+  //attachInterrupt(0, toggle, FALLING);
 }
 
 void loop() {
-  //toggle();
-  //delay(100);
+  toggle();
+  unsigned char theTime[3];
+  rtc.getTime(theTime);
+  Serial.print("it is ");
+  Serial.print(theTime[2], DEC);
+  Serial.print(":");
+  Serial.print(theTime[1], DEC);
+  Serial.print(":");
+  Serial.println(theTime[0], DEC);
+  delay(2000);
 }
 
 void toggle() {

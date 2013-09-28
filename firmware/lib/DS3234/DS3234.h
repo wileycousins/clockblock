@@ -59,16 +59,16 @@ public:
   // time getter and setter
   // setter returns true if given a proper time
   // overloaded for AM/PM mode or 24 hour mode
-  bool DS3234::setTime(uint8_t *time);
-  bool DS3234::setTime(uint8_t ampm, uint8_t *time);
-  uint8_t DS3234::getTime(uint8_t *time);
+  bool setTime(uint8_t *time);
+  bool setTime(uint8_t ampm, uint8_t *time);
+  uint8_t getTime(uint8_t *time);
 
 private:
   // SPI helpers
   void spiStart();
   void spiEnd();
-  void readReg(uint8_t reg, uint8_t *data);
-  void writeReg(uint8_t reg, uint8_t data);
+  void readReg(uint8_t reg, uint8_t n, uint8_t *data);
+  void writeReg(uint8_t reg, uint8_t n, uint8_t *data);
 
   // pin assignments
   // chip select

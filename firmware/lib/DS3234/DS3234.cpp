@@ -14,7 +14,7 @@
 //   chip select port, chip select pin
 //   reset port, reset pin
 //   interrupt port, interrupt pin
-DS3234::DS3234( /* StuPId *spi, */ uint8_t csPo, uint8_t csPi, uint8_t rstPo, uint8_t rstPi, uint8_t intPo, uint8_t intPi) {
+DS3234::DS3234( /* StuPId *spi, */ volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *rstPo, uint8_t rstPi, volatile uint8_t *intPo, uint8_t intPi) {
   // save this shit
   // SPI channel
   // deal with this later
@@ -47,7 +47,7 @@ bool DS3234::init() {
   uint8_t stat;
   readReg(DS3234_CTRL_STAT, 1, &stat);
   // return false if bit is set (osc has stopped), true otherwise
-  return !(stat & (1<<7))
+  return !(stat & (1<<7));
 }
 
 // set and get time
@@ -95,7 +95,7 @@ bool DS3234::setTime(uint8_t *tm) {
 }
 
 // 12-hour mode
-bool DS3234::setTime(uint8_t ampm, uint8_t *time) {
+bool DS3234::setTime(uint8_t ampm, uint8_t *tm) {
   // check our inputs
   bool badInput = false;
   if (tm[2] < 1 || tm[2] > 12) {
