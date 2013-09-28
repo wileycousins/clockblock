@@ -29,6 +29,36 @@ DS3234::DS3234( /* StuPId *spi, */ uint8_t csPo, uint8_t csPi, uint8_t rstPo, ui
   intPin = intPi;
 }
 
+// initialization - sets pin modes and whatnot
+// returns false if osc has stopped, true otherwise (true means the RTC has a good time)
+bool DS3234::init() {
+  // sets chip select pin to output and pulls it high
+  // DDR is PORT + 1
+  *(csPort+1) |= (1 << csPin);
+  *csPort |= (1 << csPin);
+  // do the same for the reset pin
+  *(rstPort+1) |= (1 << rstPin);
+  *rstPort |= (1 << rstPin);
+  // ensure interrupt pin is set to an input
+  *(intPort+1) &= ~(1 << rstPin);
+
+  // check the status register for an oscilator stop
+  // oscstopflag is bit 7 in the crtl_stat register
+  uint8_t stat;
+  readReg(DS3234_CTRL_STAT, 1, &stat);
+  // return false if bit is set (osc has stopped), true otherwise
+  return !(stat & (1<<7))
+}
+
+// set and get time
+void DS3234::setTime(uint8_t *time) {
+
+}
+
+void DS3234::getTime(uint8_t *time) {
+  
+}
+
 // SPI helpers
 // start / end
 // ensures SPI options are set correctly and pulls the chip select line low / high to start / end a transfer

@@ -42,8 +42,11 @@ class DS3234 {
 public:
   // constructor
   DS3234( /* StuPId *spi, */ volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *rstPo, uint8_t rstPi, volatile uint8_t *intPo, uint8_t intPi);
-  // initialize (sets pins up and stuff)
-  void init();
+  // initialize (sets pins up and stuff), returns false if the osc has stopped and the time is therefore suspect, true otherwise
+  bool init();
+  // time getter and setter
+  void DS3234::setTime(uint8_t *time);
+  void DS3234::getTime(uint8_t *time);
 
 private:
   // SPI helpers
