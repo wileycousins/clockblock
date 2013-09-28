@@ -63,7 +63,7 @@ public:
   bool setTime(uint8_t ampm, uint8_t *time);
   uint8_t getTime(uint8_t *time);
 
-private:
+//private:
   // SPI helpers
   void spiStart();
   void spiEnd();

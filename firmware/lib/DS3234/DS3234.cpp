@@ -168,11 +168,11 @@ uint8_t DS3234::getTime(uint8_t *tm) {
 // ensures SPI options are set correctly and pulls the chip select line low / high to start / end a transfer
 void DS3234::spiStart() {
   // DS3234 is MSB first
-  SPI.setBitOrder(MSBFIRST);
+  //SPI.setBitOrder(MSBFIRST);
   // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
-  SPI.setClockDivider(SPI_CLOCK_DIV4);
+  //SPI.setClockDivider(SPI_CLOCK_DIV4);
   // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
-  SPI.setDataMode(SPI_MODE1);
+  //SPI.setDataMode(SPI_MODE1);
   // finally pull the chip select line low to begin the transfer
   *csPort &= ~(1 << csPin);
 }
