@@ -38,6 +38,18 @@
 // write command
 #define DS3234_SPI_WRITE         0x80
 
+// AM / PM and 12 / 24 hour modes
+// bits 5 and 6 respectively in the hour registers
+#define DS3234_AM       0
+#define DS3234_PM       (1<<5)
+#define DS3234_24_HOUR  0
+#define DS3234_12_HOUR  (1<<6)
+
+// day / date modes
+// bit 6 in the day / date registers
+#define DS3234_DAY_MODE   (1<<6)
+#define DS3234_DATE_MODE  0
+
 class DS3234 {
 public:
   // constructor
@@ -45,8 +57,11 @@ public:
   // initialize (sets pins up and stuff), returns false if the osc has stopped and the time is therefore suspect, true otherwise
   bool init();
   // time getter and setter
-  void DS3234::setTime(uint8_t *time);
-  void DS3234::getTime(uint8_t *time);
+  // setter returns true if given a proper time
+  // overloaded for AM/PM mode or 24 hour mode
+  bool DS3234::setTime(uint8_t *time);
+  bool DS3234::setTime(uint8_t ampm, uint8_t *time);
+  uint8_t DS3234::getTime(uint8_t *time);
 
 private:
   // SPI helpers
