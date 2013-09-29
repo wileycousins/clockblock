@@ -2,7 +2,7 @@
 // using SFE Arduino Pro Micro 3.3V
 
 #include "StuPId.h"
-//#include "DS3234.h"
+#include "DS3234.h"
 
 // pin defines
 //rtc
@@ -14,12 +14,13 @@ int ledState = 0;
 
 // create our SPI object
 StuPId spi(&DDRB, 2, &DDRB, 1);
+StuPId *s = &spi;
 
 // create the RTC object
 // cs  - PB5
 // rst - PB4
 // int - PD0
-//DS3234 rtc(&PORTB, 5, &PORTB, 4, &PORTD, 0);
+DS3234 rtc(&spi, &PORTB, 5, &PORTB, 4, &PORTD, 0);
 
 void setup() {
   // LED
@@ -34,10 +35,6 @@ void setup() {
   Serial.read();
   Serial.println("Beginning program");
   
-  // chip select
-  DDRB |= (1<<5);
-  PORTB |= (1<<5);
-  
   // initialize SPI
   // DS3234 is MSB first
   spi.setDataOrder(SPI_MSB_FIRST);
@@ -45,23 +42,49 @@ void setup() {
   spi.setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
   // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
   spi.setDataMode(1);
+  
   spi.enable();
   Serial.println("SPI initialized");
-  
   //rtc.init();
-  //Serial.println("RTC initialized");
+  DDRB |= (1<<5);
+  Serial.println("RTC initialized");
   
+  /*
   // let's try to read the registers
+  unsigned char c;
+  // cs low
   PORTB &= ~(1<<5);
-  unsigned char c = 0x00;
-  spi.transfer(c);
-  for (int i=0; i<0x14; i++) {
+  // transfer reg and recieve data
+  spi.transfer(0x00);
+  for (uint8_t i=0; i<0x14; i++) {
     c = spi.transfer(0);
+    //rtc.readReg(i, 1, &c);
     Serial.print("reg "); Serial.print(i, HEX); Serial.print(": ");
     Serial.println(c, BIN);
     delay(10);
   }
-  PORTB |= (1<<5);
+  // cs high
+  PORTB &= ~(1<<5);
+  */
+  
+  for (uint8_t i=0; i<0x14; i++) {
+    uint8_t c;
+    // DS3234 is MSB first
+    //s->setDataOrder(SPI_MSB_FIRST);
+    // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
+    //s->setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
+    // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
+    //s->setDataMode(1);
+    // finally pull the chip select line low to begin the transfer
+    PORTB &= ~(1 << 5);
+    // transfer register
+    spi.transfer(i);
+    // get data
+    c = spi.transfer(0);
+    PORTB |= (1<<5);
+    Serial.print("reg "); Serial.print(i, HEX); Serial.print(": ");
+    Serial.println(c, BIN);
+  }
   
   // tell the RTC that it is 4 o'clock
   //unsigned char tm[3] = {0, 0, 16};
