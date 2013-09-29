@@ -41,16 +41,25 @@ bool DS3234::init() {
   // ensure interrupt pin is set to an input
   *(intPort-1) &= ~(1 << rstPin);
 
-  // enable the SPI channel
-  // i'd prefer to leave this to the applicaiton I think
-  //spi->enable();
+  // diable spi for settings changes
+  spi->disable();
+  // DS3234 is MSB first
+  spi->setDataOrder(SPI_MSB_FIRST);
+  // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
+  spi->setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
+  // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
+  spi->setDataMode(1);
+  // enable spi
+  spi->enable();
 
   // check the status register for an oscilator stop
   // oscstopflag is bit 7 in the crtl_stat register
-  uint8_t stat;
-  readReg(DS3234_CTRL_STAT, 1, &stat);
+  //uint8_t stat;
+  //readReg(DS3234_CTRL_STAT, 1, &stat);
   // return false if bit is set (osc has stopped), true otherwise
-  return !(stat & (1<<7));
+  //return !(stat & (1<<7));
+
+  return true;
 }
 
 // set and get time
@@ -79,11 +88,11 @@ bool DS3234::setTime(uint8_t *tm) {
 
   // encode the time properly
   // hours
-  tm[2] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
+  tm[2] = ( ((tm[2]/10) << 4) | (tm[2]%10) );
   // minutes
   tm[1] = ( ((tm[1]/10) << 4) | (tm[1]%10) );
   // seconds
-  tm[0] = ( ((tm[2]/10) << 4) | (tm[2]%10) );
+  tm[0] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
 
   // transfer the time in
   writeReg(DS3234_SEC, 3, tm);
@@ -122,11 +131,11 @@ bool DS3234::setTime(uint8_t ampm, uint8_t *tm) {
 
   // encode the time properly
   // hours
-  tm[2] = ( DS3234_12_HOUR | ampm | ((tm[0]/10) << 4) | (tm[0]%10) );
+  tm[2] = ( DS3234_12_HOUR | ampm | ((tm[2]/10) << 4) | (tm[2]%10) );
   // minutes
   tm[1] = ( ((tm[1]/10) << 4) | (tm[1]%10) );
   // seconds
-  tm[0] = ( ((tm[2]/10) << 4) | (tm[2]%10) );
+  tm[0] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
 
   // transfer the time in
   writeReg(DS3234_SEC, 3, tm);
@@ -149,14 +158,14 @@ uint8_t DS3234::getTime(uint8_t *tm) {
   // decode the data
   // hours
   // 12-hour mode
-  if ( tm[3] & DS3234_12_HOUR ) {
-    ret = tm[3] & DS3234_PM;
-    tm[3] = (((tm[3]>>4) & 1) * 10) + (tm[3] & 0x0F);
+  if ( tm[2] & DS3234_12_HOUR ) {
+    ret = tm[2] & DS3234_PM;
+    tm[3] = (((tm[2]>>4) & 1) * 10) + (tm[2] & 0x0F);
   }
   // else, 24-hour mode
   else {
     ret = 0;
-    tm[3] = ((tm[3]>>4) * 10) + (tm[3] & 0x0F);
+    tm[3] = ((tm[2]>>4) * 10) + (tm[2] & 0x0F);
   }
   // minutes
   tm[1] = ((tm[1] >> 4) * 10) + (tm[1] & 0x0F);
@@ -170,13 +179,7 @@ uint8_t DS3234::getTime(uint8_t *tm) {
 // start / end
 // ensures SPI options are set correctly and pulls the chip select line low / high to start / end a transfer
 void DS3234::spiStart() {
-  // DS3234 is MSB first
-  spi->setDataOrder(SPI_MSB_FIRST);
-  // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
-  spi->setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
-  // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
-  spi->setDataMode(1);
-  // finally pull the chip select line low to begin the transfer
+  // pull the chip select line low to begin the transfer
   *csPort &= ~(1 << csPin);
 }
 
@@ -194,7 +197,7 @@ void DS3234::readReg(uint8_t reg, uint8_t n, uint8_t *data) {
   spiStart();
   spi->transfer(reg);
   for (uint8_t i=0; i<n; i++) {
-    data[i] = spi->transfer(0x00);
+    data[i] = spi->transfer(0);
   }
   spiEnd();
 }

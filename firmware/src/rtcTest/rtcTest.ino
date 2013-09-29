@@ -35,56 +35,50 @@ void setup() {
   Serial.read();
   Serial.println("Beginning program");
   
-  // initialize SPI
-  // DS3234 is MSB first
-  spi.setDataOrder(SPI_MSB_FIRST);
-  // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
-  spi.setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
-  // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
-  spi.setDataMode(1);
+  // initialize the RTC
+  rtc.init();
+  Serial.println("RTC enabled");
   
-  spi.enable();
-  Serial.println("SPI initialized");
-  //rtc.init();
-  DDRB |= (1<<5);
-  Serial.println("RTC initialized");
-  
-  /*
-  // let's try to read the registers
-  unsigned char c;
-  // cs low
-  PORTB &= ~(1<<5);
-  // transfer reg and recieve data
-  spi.transfer(0x00);
+  // byte buffer
+  uint8_t c[0x14];
+  rtc.readReg(DS3234_SEC, 0x14, c);
+
+/*
+  rtc.spiStart();
+  //PORTB &= ~(1<<5);
+  s->transfer(DS3234_SEC);
+  //spi.transfer(DS3234_SEC);
   for (uint8_t i=0; i<0x14; i++) {
-    c = spi.transfer(0);
-    //rtc.readReg(i, 1, &c);
-    Serial.print("reg "); Serial.print(i, HEX); Serial.print(": ");
-    Serial.println(c, BIN);
-    delay(10);
+    //delay(100);
+    c[i] = s->transfer(0);
+    //c[i] = spi.transfer(0);
   }
-  // cs high
-  PORTB &= ~(1<<5);
-  */
-  
+  rtc.spiEnd();
+  //PORTB |= (1<<5);
+*/
+
+
+  // finally pull the chip select line low to begin the transfer
+  //PORTB &= ~(1 << 5);
+  // transfer start register
+  //spi.transfer(DS3234_SEC);
   for (uint8_t i=0; i<0x14; i++) {
-    uint8_t c;
+    //uint8_t c;
+    
     // DS3234 is MSB first
     //s->setDataOrder(SPI_MSB_FIRST);
     // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
     //s->setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
     // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
     //s->setDataMode(1);
-    // finally pull the chip select line low to begin the transfer
-    PORTB &= ~(1 << 5);
-    // transfer register
-    spi.transfer(i);
+    
     // get data
-    c = spi.transfer(0);
-    PORTB |= (1<<5);
+    //c = spi.transfer(0);
     Serial.print("reg "); Serial.print(i, HEX); Serial.print(": ");
-    Serial.println(c, BIN);
+    Serial.println(c[i], BIN);
   }
+  // pull cs high
+  //PORTB |= (1<<5);
   
   // tell the RTC that it is 4 o'clock
   //unsigned char tm[3] = {0, 0, 16};
@@ -96,15 +90,38 @@ void setup() {
 }
 
 void loop() {
+  uint8_t tm[3];
+
+  // wait for input
+  while(!Serial.available());
+  Serial.read();
+
   toggle();
-  //unsigned char theTime[3] = {0, 0, 0};
-  //Serial.print("it is ");
-  //Serial.print(theTime[2], DEC);
-  //Serial.print(":");
-  //Serial.print(theTime[1], DEC);
-  //Serial.print(":");
-  //Serial.println(theTime[0], DEC);
-  delay(2000);
+  rtc.readReg(DS3234_SEC, 3, tm);
+  /*
+  // finally pull the chip select line low to begin the transfer
+  PORTB &= ~(1 << 5);
+  // transfer start register
+  spi.transfer(DS3234_SEC);
+  tm[0] = spi.transfer(0);
+  tm[1] = spi.transfer(0);
+  tm[2] = spi.transfer(0);
+  // pull cs high
+  PORTB |= (1<<5);
+  */
+  // decode the time
+  tm[2] = ((tm[2] >> 4) * 10) + (tm[2] & 0x0F);
+  // minutes
+  tm[1] = ((tm[1] >> 4) * 10) + (tm[1] & 0x0F);
+  // seconds
+  tm[0] = ((tm[0] >> 4) * 10) + (tm[0] & 0x0F);
+
+  Serial.print("it is ");
+  Serial.print(tm[2], DEC);
+  Serial.print(":");
+  Serial.print(tm[1], DEC);
+  Serial.print(":");
+  Serial.println(tm[0], DEC);
 }
 
 void toggle() {
