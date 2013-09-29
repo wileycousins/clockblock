@@ -34,6 +34,16 @@ void StuPId::disable() {
   enabled = false;
 }
 
+// returns if enabled
+bool StuPId::isEnabled() {
+  if (SPCR & (1<<SPE)) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 // set data mode, overloaded to either take modes 0-3 or the polarity phase pair
 void StuPId::setDataMode(uint8_t mode) {
   if (mode < 4) {

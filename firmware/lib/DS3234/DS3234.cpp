@@ -5,6 +5,7 @@
 // file: clockblock.cpp
 // description: class for DS3234 real-time clock
 
+#include "avr/delay.h"
 #include "DS3234.h"
 
 // can we build it? yes we can!
@@ -30,7 +31,7 @@ DS3234::DS3234(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t
 
 // initialization - sets pin modes and whatnot
 // returns false if osc has stopped, true otherwise (true means the RTC has a good time)
-bool DS3234::init() {
+void DS3234::init() {
   // sets chip select pin to output and pulls it high
   // DDR is PORT + 1
   *(csPort-1) |= (1 << csPin);
@@ -41,7 +42,7 @@ bool DS3234::init() {
   // ensure interrupt pin is set to an input
   *(intPort-1) &= ~(1 << rstPin);
 
-  // diable spi for settings changes
+  // set up SPI
   spi->disable();
   // DS3234 is MSB first
   spi->setDataOrder(SPI_MSB_FIRST);
@@ -49,17 +50,14 @@ bool DS3234::init() {
   spi->setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
   // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
   spi->setDataMode(1);
-  // enable spi
+  // enable
   spi->enable();
+}
 
-  // check the status register for an oscilator stop
-  // oscstopflag is bit 7 in the crtl_stat register
-  //uint8_t stat;
-  //readReg(DS3234_CTRL_STAT, 1, &stat);
-  // return false if bit is set (osc has stopped), true otherwise
-  //return !(stat & (1<<7));
-
-  return true;
+uint8_t DS3234::hasLostTime() {
+  uint8_t stat;
+  readReg(DS3234_CTRL_STAT, 1, &stat);
+  return stat;
 }
 
 // set and get time
@@ -186,6 +184,7 @@ void DS3234::spiStart() {
 void DS3234::spiEnd() {
   // pull the chip select line high to end the transfer
   *csPort |= (1 << csPin);
+  _delay_ms(1);
 }
 
 // read / write
@@ -193,6 +192,15 @@ void DS3234::spiEnd() {
 //   register address to start at
 //   number of bytes to transfer
 //   buffer to read to / write from
+uint8_t DS3234::readSingleReg(uint8_t reg) {
+  uint8_t data;
+  spiStart();
+  spi->transfer(reg);
+  data = spi->transfer(0);
+  spiEnd();
+  return data;
+}
+
 void DS3234::readReg(uint8_t reg, uint8_t n, uint8_t *data) {
   spiStart();
   spi->transfer(reg);

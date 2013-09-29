@@ -57,7 +57,9 @@ public:
   // constructor
   DS3234(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *rstPo, uint8_t rstPi, volatile uint8_t *intPo, uint8_t intPi);
   // initialize (sets pins up and stuff), returns false if the osc has stopped and the time is therefore suspect, true otherwise
-  bool init();
+  void init();
+  // check to see if the osc has stopped
+  uint8_t hasLostTime();
   // time getter and setter
   // setter returns true if given a proper time
   // overloaded for AM/PM mode or 24 hour mode
@@ -71,6 +73,7 @@ public:
   // SPI helpers
   void spiStart();
   void spiEnd();
+  uint8_t readSingleReg(uint8_t reg);
   void readReg(uint8_t reg, uint8_t n, uint8_t *data);
   void writeReg(uint8_t reg, uint8_t n, uint8_t *data);
 

@@ -32,6 +32,8 @@ public:
   void enable();
   // diable SPI
   void disable();
+  // is enabled bool
+  bool isEnabled();
   // set data mode, overloaded to either take modes 0-3 or the polaity phase pair
   void setDataMode(uint8_t mode);
   void setDataMode(uint8_t pol, uint8_t pha);

@@ -10,7 +10,7 @@
 #define RTC_INT 0
 // led
 #define LED_PIN 2
-int ledState = 0;
+int ledState = 1;
 
 // create our SPI object
 StuPId spi(&DDRB, 2, &DDRB, 1);
@@ -38,11 +38,26 @@ void setup() {
   // initialize the RTC
   rtc.init();
   Serial.println("RTC enabled");
-  
+
+
+  // check the time
+  if(rtc.readSingleReg(DS3234_CTRL_STAT) & (1<<7)) {
+    Serial.println("RTC has lost the time");
+  }
+
+  // check the time again
+  if(rtc.readSingleReg(DS3234_CTRL_STAT) & (1<<7)) {
+    Serial.println("RTC has lost the time x2");
+  }
+
   // byte buffer
   uint8_t c[0x14];
   rtc.readReg(DS3234_SEC, 0x14, c);
 
+  // check the time again
+  if(c[DS3234_CTRL_STAT] & (1<<7)) {
+    Serial.println("RTC has still lost the time");
+  }
 /*
   rtc.spiStart();
   //PORTB &= ~(1<<5);
@@ -74,7 +89,7 @@ void setup() {
     
     // get data
     //c = spi.transfer(0);
-    Serial.print("reg "); Serial.print(i, HEX); Serial.print(": ");
+    Serial.print("reg 0x"); Serial.print(i, HEX); Serial.print(": ");
     Serial.println(c[i], BIN);
   }
   // pull cs high
