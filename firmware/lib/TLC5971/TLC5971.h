@@ -26,15 +26,15 @@ public:
   TLC5971(uint8_t n, volatile uint8_t *sckPo, uint8_t sckPi, volatile uint8_t *mosiPo, uint8_t mosiPi);
   // initialization routine
   void init();
-  // control the chip
-  void setLeds(uint8_t *)
+  // control the chip(s)
+  // parameters
+  //   - *fc: array of n uint8_t for function control
+  //   - *bc: array of n*3 uint8_t for brightness correction
+  //   - *gs: array of n*12 uint16_t for greyscale data (PWM)  
+  void setLeds(uint8_t *fc, uint8_t *bc, uint8_t *gs);
 
 private:
   // serial helpers
-  // pulse the serial clock
-  void pulseSck();
-  // set mosi and pulse the clock
-  void sendBit();
   // send the write command to the device (6-bits = 0x25 = 0b100101)
   void sendWriteCommand();
   // send the function control packet
@@ -52,7 +52,7 @@ private:
   // brightness control
   uint8_t *bc;
   // greyscale control
-  uint8_t *gs;
+  uint16_t *gs;
 
   // number of drivers
   uint8_t num;
