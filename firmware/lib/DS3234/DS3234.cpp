@@ -48,8 +48,8 @@ void DS3234::init() {
   spi->setDataOrder(SPI_MSB_FIRST);
   // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
   spi->setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
-  // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
-  spi->setDataMode(1);
+  // supports SPI modes 1 and 3 (autodetects). let's use 3 (CPOL = 1, CPHA = 0)
+  spi->setDataMode(3);
   // enable
   spi->enable();
 }

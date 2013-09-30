@@ -39,7 +39,7 @@ void setup() {
   rtc.init();
   Serial.println("RTC enabled");
 
-
+/*
   // check the time
   if(rtc.readSingleReg(DS3234_CTRL_STAT) & (1<<7)) {
     Serial.println("RTC has lost the time");
@@ -49,52 +49,39 @@ void setup() {
   if(rtc.readSingleReg(DS3234_CTRL_STAT) & (1<<7)) {
     Serial.println("RTC has lost the time x2");
   }
-
+*/
   // byte buffer
   uint8_t c[0x14];
+  
+  /*
   rtc.readReg(DS3234_SEC, 0x14, c);
 
   // check the time again
   if(c[DS3234_CTRL_STAT] & (1<<7)) {
     Serial.println("RTC has still lost the time");
   }
-/*
-  rtc.spiStart();
-  //PORTB &= ~(1<<5);
-  s->transfer(DS3234_SEC);
-  //spi.transfer(DS3234_SEC);
-  for (uint8_t i=0; i<0x14; i++) {
-    //delay(100);
-    c[i] = s->transfer(0);
-    //c[i] = spi.transfer(0);
-  }
-  rtc.spiEnd();
-  //PORTB |= (1<<5);
-*/
 
-
-  // finally pull the chip select line low to begin the transfer
-  //PORTB &= ~(1 << 5);
-  // transfer start register
-  //spi.transfer(DS3234_SEC);
   for (uint8_t i=0; i<0x14; i++) {
-    //uint8_t c;
-    
-    // DS3234 is MSB first
-    //s->setDataOrder(SPI_MSB_FIRST);
-    // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
-    //s->setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
-    // supports SPI modes 1 and 3 (autodetects). let's use 1 (CPOL = 0, CPHA = 1)
-    //s->setDataMode(1);
-    
-    // get data
-    //c = spi.transfer(0);
     Serial.print("reg 0x"); Serial.print(i, HEX); Serial.print(": ");
     Serial.println(c[i], BIN);
   }
-  // pull cs high
-  //PORTB |= (1<<5);
-  
+  */
+
+  rtc.readReg(DS3234_CTRL_STAT, 1, c);
+  Serial.print("DS3234_CTRL_STAT: ");
+  Serial.println(c[0], BIN);
+
+  for (int i=1; i<=0x14; i++) {
+    Serial.print("Registers: "); Serial.println(i, DEC);
+    rtc.readReg(DS3234_SEC, i, c);
+
+    for (uint8_t j=0; j<i; j++) {
+      Serial.print("reg 0x"); Serial.print(j, HEX); Serial.print(": ");
+      Serial.println(c[j], BIN);
+    }
+    Serial.println();
+  }
+
   // tell the RTC that it is 4 o'clock
   //unsigned char tm[3] = {0, 0, 16};
   //rtc.setTime(tm);
