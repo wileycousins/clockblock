@@ -2,7 +2,7 @@
 // Copyright 2013 by Wiley Cousins, LLC.
 // shared under the terms of the MIT License
 //
-// file: clockblock.cpp
+// file: DS3234.h
 // description: header for DS3234 real-time clock class
 
 #ifndef LIB_DS3234_H
