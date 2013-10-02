@@ -40,34 +40,37 @@ void setup() {
   Serial.println("Beginning program");
   
   // initialize the RTC
-  //rtc.init();
-  //Serial.println("RTC enabled");
+  rtc.init();
+  Serial.println("RTC enabled");
 
   // check if it's got a good time
-  // if(rtc.hasLostTime()) {
-  //   // if it's lost the time, tell it that it's 21:42:42
-  //   Serial.println("RTC has lost the time");
-  //   Serial.println("Setting time to 21:42:42");
-  //   // { s, m, h }
-  //   uint8_t tm[3] = {42, 42, 21};
-  //   rtc.setTime(tm);
-  // }
-
-  brite = 0;
-  dir = 1;
-  // set the DC to to full to start off
-  for (uint8_t i=0; i<16; i++) {
-    tlc.setDC(i, 63);
+  if(rtc.hasLostTime()) {
+    uint8_t tm[3] = {0, 0, 0};
+    // if it's lost the time, tell it that it's 21:42:42
+    Serial.println("RTC has lost the time");
+    Serial.print("Please enter hours: ");
+    while(!Serial.available());
+    tm[2] = Serial.parseInt();
+    Serial.println(tm[2]);
+    Serial.print("Please enter minutes: ");
+    while(!Serial.available());
+    tm[1] = Serial.parseInt();
+    Serial.println(tm[1]);
+    Serial.print("Setting time to "); Serial.print(tm[2]); Serial.print(":"); Serial.println(tm[1]);
+    // { s, m, h }
+    rtc.setTime(tm);
   }
-  // set GS to full to start off, too
+
+  // set the DC to to half to start off
   for (uint8_t i=0; i<16; i++) {
-    tlc.setGS(i, brite);
+    tlc.setDC(i, 32);
+  }
+  // set GS to off
+  for (uint8_t i=0; i<16; i++) {
+    tlc.setGS(i, 0);
   }
   // initialize the TLC
   tlc.init();
-
-  
-
 
 /*
   // read all the registers for testing
@@ -81,10 +84,6 @@ void setup() {
     Serial.println(c[i], BIN);
   }
 */
-
-  // tell the RTC that it is 4 o'clock
-  //unsigned char tm[3] = {0, 0, 16};
-  //rtc.setTime(tm);
   
   // setup interrupt
   //pinMode(RTC_INT, INPUT);
@@ -92,8 +91,9 @@ void setup() {
 }
 
 void loop() {
-  //uint8_t tm[3];
+  uint8_t tm[3];
   count++;
+
 
   brite += 500 * dir;
   if ( ((dir == 1) && (brite >= 15000)) || ((dir == -1) && (brite <= 500)) ) {
@@ -102,12 +102,17 @@ void loop() {
   for (uint8_t i=0; i<16; i++) {
     tlc.setGS(i, brite);
   }
+  
   //Serial.print("Refresh at: "); Serial.println(brite);
   tlc.refreshGS();
   //delay(1);
   if (++count >= 1000) {
     count = 0;
-    Serial.println("Time: ");
+    rtc.getTime(tm);
+    Serial.print("Time: ");
+    Serial.print(tm[2]); Serial.print(":");
+    Serial.print(tm[1]); Serial.print(":");
+    Serial.println(tm[0]);
   }
 
 /*

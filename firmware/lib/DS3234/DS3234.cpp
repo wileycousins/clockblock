@@ -158,12 +158,12 @@ uint8_t DS3234::getTime(uint8_t *tm) {
   // 12-hour mode
   if ( tm[2] & DS3234_12_HOUR ) {
     ret = tm[2] & DS3234_PM;
-    tm[3] = (((tm[2]>>4) & 1) * 10) + (tm[2] & 0x0F);
+    tm[2] = (((tm[2]>>4) & 1) * 10) + (tm[2] & 0x0F);
   }
   // else, 24-hour mode
   else {
     ret = 0;
-    tm[3] = ((tm[2]>>4) * 10) + (tm[2] & 0x0F);
+    tm[2] = ((tm[2]>>4) * 10) + (tm[2] & 0x0F);
   }
   // minutes
   tm[1] = ((tm[1] >> 4) * 10) + (tm[1] & 0x0F);
