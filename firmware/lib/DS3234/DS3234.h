@@ -52,6 +52,9 @@
 #define DS3234_DAY_MODE   (1<<6)
 #define DS3234_DATE_MODE  0
 
+// oscillator stop bit in ctrl_stat register
+#define DS3234_OSC_STOP (1<<7)
+
 class DS3234 {
 public:
   // constructor
@@ -59,7 +62,7 @@ public:
   // initialize (sets pins up and stuff), returns false if the osc has stopped and the time is therefore suspect, true otherwise
   void init();
   // check to see if the osc has stopped
-  uint8_t hasLostTime();
+  bool hasLostTime();
   // time getter and setter
   // setter returns true if given a proper time
   // overloaded for AM/PM mode or 24 hour mode
