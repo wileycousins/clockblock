@@ -57,7 +57,30 @@ void DS3234::init() {
 bool DS3234::hasLostTime() {
   uint8_t stat;
   readReg(DS3234_CTRL_STAT, 1, &stat);
-  return (stat & DS3234_OSC_STOP);
+  return (stat & DS3234_OSF);
+}
+
+// enable the square wave output on the INT/SQW pin at given mode
+//  - 0 : 1 Hz
+//  - 1 : 1.024 kHz
+//  - 2 : 4.096 kHz
+//  - 3 : 8.192 kHz
+void DS3234::enableSquareWave(uint8_t mode) {
+  uint8_t c;
+  readReg(DS3234_CTRL, 1, &c);
+  // clear the rate select bits and the int enable bit (enabling squarewave)
+  c &= ~( DS3234_INTCN | DS3234_RS2 | DS3234_RS1 );
+  // set the new rate bits (bits 3 and 4)
+  c |= ( (mode & 3) << 3 );
+  writeReg(DS3234_CTRL, 1, &c);
+}
+
+void DS3234::enableAlarm(uint8_t alarms) {
+  // set the int enable bit
+  uint8_t c;
+  readReg(DS3234_CTRL, 1, &c);
+  c |= DS3234_INTCN;
+  writeReg(DS3234_CTRL, 1, &c);
 }
 
 // set and get time
@@ -98,7 +121,7 @@ bool DS3234::setTime(uint8_t *tm) {
   // clear the osc stop flag
   uint8_t c;
   readReg(DS3234_CTRL_STAT, 1, &c);
-  c &= ~DS3234_OSC_STOP;
+  c &= ~DS3234_OSF;
   writeReg(DS3234_CTRL_STAT, 1, &c);
 
   return true;

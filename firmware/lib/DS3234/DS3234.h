@@ -52,8 +52,25 @@
 #define DS3234_DAY_MODE   (1<<6)
 #define DS3234_DATE_MODE  0
 
-// oscillator stop bit in ctrl_stat register
-#define DS3234_OSC_STOP (1<<7)
+// control register (DS3234_CTRL) bits
+#define DS3234_EOSC   (1<<7)
+#define DS3234_BBSQW  (1<<6)
+#define DS3234_CONV   (1<<5)
+#define DS3234_RS2    (1<<4)
+#define DS3234_RS1    (1<<3)
+#define DS3234_INTCN  (1<<2)
+#define DS3234_A2IE   (1<<1)
+#define DS3234_A1IE   (1<<0)
+
+// control / status register (DS3234_CTRL_STAT) bits
+#define DS3234_OSF      (1<<7)
+#define DS3234_BB32kHz  (1<<6)
+#define DS3234_CRATE1   (1<<5)
+#define DS3234_CRATE0   (1<<4)
+#define DS3234_EN32kHz  (1<<3)
+#define DS3234_BSY      (1<<2)
+#define DS3234_A2F      (1<<1)
+#define DS3234_A1F      (1<<0)
 
 class DS3234 {
 public:
@@ -61,8 +78,14 @@ public:
   DS3234(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *rstPo, uint8_t rstPi, volatile uint8_t *intPo, uint8_t intPi);
   // initialize (sets pins up and stuff), returns false if the osc has stopped and the time is therefore suspect, true otherwise
   void init();
+
   // check to see if the osc has stopped
   bool hasLostTime();
+
+  // interrupt / square wave control
+  void enableSquareWave(uint8_t mode);
+  void enableAlarm(uint8_t alarms);
+
   // time getter and setter
   // setter returns true if given a proper time
   // overloaded for AM/PM mode or 24 hour mode
