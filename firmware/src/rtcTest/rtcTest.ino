@@ -1,8 +1,8 @@
 // Testing sketch for DS3234 class
 // using SFE Arduino Pro Micro 3.3V
 
-//#include "StuPId.h"
-//#include "DS3234.h"
+#include "StuPId.h"
+#include "DS3234.h"
 #include "TLC5940.h"
 
 // pin defines
@@ -14,14 +14,15 @@
 //int ledState = 1;
 
 // create our SPI object
-//StuPId spi(&DDRB, 2, &DDRB, 1);
-//StuPId *s = &spi;
+//   
+StuPId spi(&DDRB, 2, &DDRB, 1);
+StuPId *s = &spi;
 
 // create the RTC object
-// cs  - PB5
-// rst - PB4
-// int - PD0
-//DS3234 rtc(&spi, &PORTB, 5, &PORTB, 4, &PORTD, 0);
+//   cs  - PB5
+//   rst - PB4
+//   int - PD0
+DS3234 rtc(&spi, &PORTB, 5, &PORTB, 4, &PORTD, 0);
 
 // create an TLC5940 LED driver object
 TLC5940 tlc;
@@ -30,35 +31,17 @@ int8_t dir;
 uint16_t count;
 
 void setup() {
-  // LED
-  //pinMode(LED_PIN, OUTPUT);
-  //digitalWrite(LED_PIN, ledState);
-  
   // debugging
   Serial.begin(9600);
   
   // wait for input
-  //while(!Serial.available());
-  //Serial.read();
-  //Serial.println("Beginning program");
+  while(!Serial.available());
+  Serial.read();
+  Serial.println("Beginning program");
   
   // initialize the RTC
-//  rtc.init();
-//  Serial.println("RTC enabled");
-
-  brite = 0;
-  dir = 1;
-
-  // set the DC to to full to start off
-  for (uint8_t i=0; i<16; i++) {
-    tlc.setDC(i, 63);
-  }
-  // set GS to full to start off, too
-  for (uint8_t i=0; i<16; i++) {
-    tlc.setGS(i, brite);
-  }
-    // initialize the TLC
-  tlc.init();
+  //rtc.init();
+  //Serial.println("RTC enabled");
 
   // check if it's got a good time
   // if(rtc.hasLostTime()) {
@@ -69,6 +52,21 @@ void setup() {
   //   uint8_t tm[3] = {42, 42, 21};
   //   rtc.setTime(tm);
   // }
+
+  brite = 0;
+  dir = 1;
+  // set the DC to to full to start off
+  for (uint8_t i=0; i<16; i++) {
+    tlc.setDC(i, 63);
+  }
+  // set GS to full to start off, too
+  for (uint8_t i=0; i<16; i++) {
+    tlc.setGS(i, brite);
+  }
+  // initialize the TLC
+  tlc.init();
+
+  
 
 
 /*

@@ -33,14 +33,14 @@ DS3234::DS3234(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t
 // returns false if osc has stopped, true otherwise (true means the RTC has a good time)
 void DS3234::init() {
   // sets chip select pin to output and pulls it high
-  // DDR is PORT + 1
+  // DDR is PORT - 1
   *(csPort-1) |= (1 << csPin);
   *csPort |= (1 << csPin);
   // do the same for the reset pin
   *(rstPort-1) |= (1 << rstPin);
   *rstPort |= (1 << rstPin);
   // ensure interrupt pin is set to an input
-  *(intPort-1) &= ~(1 << rstPin);
+  *(intPort-1) &= ~(1 << intPin);
 
   // set up SPI
   spi->disable();
