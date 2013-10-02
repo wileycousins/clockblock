@@ -54,10 +54,10 @@ void DS3234::init() {
   spi->enable();
 }
 
-uint8_t DS3234::hasLostTime() {
+bool DS3234::hasLostTime() {
   uint8_t stat;
   readReg(DS3234_CTRL_STAT, 1, &stat);
-  return stat;
+  return (stat & DS3234_OSC_STOP);
 }
 
 // set and get time
@@ -98,7 +98,7 @@ bool DS3234::setTime(uint8_t *tm) {
   // clear the osc stop flag
   uint8_t c;
   readReg(DS3234_CTRL_STAT, 1, &c);
-  c &= ~(1<<7);
+  c &= ~DS3234_OSC_STOP;
   writeReg(DS3234_CTRL_STAT, 1, &c);
 
   return true;

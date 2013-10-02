@@ -43,8 +43,6 @@ private:
   void sendBC();
   // send the greyscale
   void sendGS();
-  // send a full 224 bit package
-  void sendDataPackage();
 
   // buffer pointers
   // function control
