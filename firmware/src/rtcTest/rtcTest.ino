@@ -1,17 +1,17 @@
 // Testing sketch for DS3234 class
 // using SFE Arduino Pro Micro 3.3V
 
-#include "StuPId.h"
-#include "DS3234.h"
+//#include "StuPId.h"
+//#include "DS3234.h"
 #include "TLC5940.h"
 
 // pin defines
 //rtc
-#define RTC_CS  9
-#define RTC_INT 0
+//#define RTC_CS  9
+//#define RTC_INT 0
 // led
-#define LED_PIN 2
-int ledState = 1;
+//#define LED_PIN 2
+//int ledState = 1;
 
 // create our SPI object
 //StuPId spi(&DDRB, 2, &DDRB, 1);
@@ -25,34 +25,40 @@ int ledState = 1;
 
 // create an TLC5940 LED driver object
 TLC5940 tlc;
+uint16_t brite;
+int8_t dir;
+uint16_t count;
 
 void setup() {
   // LED
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, ledState);
+  //pinMode(LED_PIN, OUTPUT);
+  //digitalWrite(LED_PIN, ledState);
   
   // debugging
   Serial.begin(9600);
   
   // wait for input
-  while(!Serial.available());
-  Serial.read();
-  Serial.println("Beginning program");
+  //while(!Serial.available());
+  //Serial.read();
+  //Serial.println("Beginning program");
   
   // initialize the RTC
 //  rtc.init();
 //  Serial.println("RTC enabled");
 
-  // initialize the TLC
-  tlc.init();
+  brite = 0;
+  dir = 1;
+
   // set the DC to to full to start off
-  for (uint8_t i=0; i<15; i++) {
+  for (uint8_t i=0; i<16; i++) {
     tlc.setDC(i, 63);
   }
   // set GS to full to start off, too
-  for (uint8_t i=0; i<15; i++) {
-    tlc.setGS(i, 65536);
+  for (uint8_t i=0; i<16; i++) {
+    tlc.setGS(i, brite);
   }
+    // initialize the TLC
+  tlc.init();
 
   // check if it's got a good time
   // if(rtc.hasLostTime()) {
@@ -88,9 +94,23 @@ void setup() {
 }
 
 void loop() {
-  uint8_t tm[3];
+  //uint8_t tm[3];
+  count++;
 
+  brite += 500 * dir;
+  if ( ((dir == 1) && (brite >= 15000)) || ((dir == -1) && (brite <= 500)) ) {
+    dir *= -1;
+  }
+  for (uint8_t i=0; i<16; i++) {
+    tlc.setGS(i, brite);
+  }
+  //Serial.print("Refresh at: "); Serial.println(brite);
   tlc.refreshGS();
+  //delay(1);
+  if (++count >= 1000) {
+    count = 0;
+    Serial.println("Time: ");
+  }
 
 /*
   // wait for input
@@ -116,8 +136,9 @@ void loop() {
   }
   */
 }
-
+/*
 void toggle() {
   ledState = !ledState;
   digitalWrite(LED_PIN, ledState);
 }
+*/
