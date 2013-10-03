@@ -72,11 +72,11 @@ void setup() {
   rtc.enableSquareWave(0);
 
   // set the DC to to half to start off
-  for (uint8_t i=0; i<NUM_LEDS; i++) {
+  for (uint8_t i=0; i<NUM_DOTS; i++) {
     tlc.setDC(i, 32);
   }
   // set GS to off
-  for (uint8_t i=0; i<NUM_LEDS; i++) {
+  for (uint8_t i=0; i<NUM_DOTS; i++) {
     tlc.setGS(i, 0);
   }
   // initialize the TLC
@@ -190,7 +190,7 @@ void updateArms() {
   // send the data to the drivers
   //Serial.println("gs = { hr0\tmn0\tsc0\thr1\tmn1\tsc1\thr2\tmn2\tsc2\thr3\tmn3\tsc3\thr4\tmn4\tsc4\t}");
   //Serial.print("gs = { ");
-  for (uint8_t i=0; i<NUM_LEDS; i++) {
+  for (uint8_t i=0; i<NUM_DOTS; i++) {
   //  Serial.print(dots[i]); Serial.print("\t");
     tlc.setGS(i, dots[i]);
   }
