@@ -11,7 +11,7 @@
 
 // led defines
 // TLC5940 can only handle up to 16 leds
-#define NUM_LEDS 15
+#define NUM_LEDS LED_N
 // clock stuff
 #define NUM_DOTS (3*12)
 #define LVL 100
@@ -65,18 +65,18 @@ void setup() {
     Serial.println(tm[1]);
     Serial.print("Setting time to "); Serial.print(tm[2]); Serial.print(":"); Serial.println(tm[1]);
     // { s, m, h }
-    rtc.setTime(tm);
+    rtc.setTime(0, tm);
   }
 
   // enable a 1 Hz squarewave output on interrupt pin
   rtc.enableSquareWave(0);
 
   // set the DC to to half to start off
-  for (uint8_t i=0; i<16; i++) {
+  for (uint8_t i=0; i<NUM_LEDS; i++) {
     tlc.setDC(i, 32);
   }
   // set GS to off
-  for (uint8_t i=0; i<16; i++) {
+  for (uint8_t i=0; i<NUM_LEDS; i++) {
     tlc.setGS(i, 0);
   }
   // initialize the TLC
