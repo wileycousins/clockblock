@@ -71,29 +71,8 @@ void setup() {
   // enable a 1 Hz squarewave output on interrupt pin
   rtc.enableSquareWave(0);
 
-  // set the DC to to half to start off
-  for (uint8_t i=0; i<NUM_DOTS; i++) {
-    tlc.setDC(i, 32);
-  }
-  // set GS to off
-  for (uint8_t i=0; i<NUM_DOTS; i++) {
-    tlc.setGS(i, 0);
-  }
   // initialize the TLC
   tlc.init();
-
-/*
-  // read all the registers for testing
-  // byte buffer
-  uint8_t c[0x14];
-  
-  rtc.readReg(DS3234_SEC, 0x14, c);
-
-  for (uint8_t i=0; i<0x14; i++) {
-    Serial.print("reg 0x"); Serial.print(i, HEX); Serial.print(": ");
-    Serial.println(c[i], BIN);
-  }
-*/
   
   // setup interrupt
   pinMode(RTC_INT_PIN, INPUT);
@@ -116,13 +95,6 @@ void loop() {
     //Serial.print(tm[1]); Serial.print(":");
     //Serial.println(tm[0]);
   }
-/*
-  // refresh the LEDs
-  for (uint8_t i=0; i<NUM_LEDS; i++) {
-    tlc.setGS(i, 4000);
-  }
-  */
-  tlc.refreshGS();
 }
 
 // update the clock arms
@@ -192,14 +164,24 @@ void updateArms() {
   //Serial.print("gs = { ");
   for (uint8_t i=0; i<NUM_DOTS; i++) {
   //  Serial.print(dots[i]); Serial.print("\t");
-    tlc.setGS(i, dots[i]);
+    tlc.setLed(i, dots[i]);
   }
   //Serial.println("}");
   //Serial.println();
 }
 
 // ISRs
-
 void intFlag() {
   secFlag = true;
+}
+
+// ISR for serial data input into TLC5940
+// run in non-blocking mode so that the greyscale cycle continues regardless of serial data being clocked in
+ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
+  tlc.serialCycle();
+}
+
+// ISR for greyscale clock on TLC5940
+ISR(TIMER1_COMPA_vect) {
+  tlc.gsCycle();
 }
