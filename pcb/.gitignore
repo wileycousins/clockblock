@@ -3,4 +3,5 @@
 *.csv
 
 # Backup files
+_autosave*
 *-bak
