@@ -1,6 +1,31 @@
 // Testing sketch for clockblock
 // using SFE Arduino Pro Micro 3.3V
 
+// TLC5940 pin definitions
+// communication pins - define in makefile or set appropriately
+// greyscale clock
+
+// greyscale clock - D2
+#define TLC5940_GS_PORT PORTD
+#define TLC5940_GS_PIN 2
+// serial clock - D4
+#define TLC5940_SCK_PORT PORTD
+#define TLC5940_SCK_PIN 4
+// latch - D3
+#define TLC5940_XLAT_PORT PORTD
+#define TLC5940_XLAT_PIN 3
+// programming select - D1
+#define TLC5940_VPRG_PORT PORTD
+#define TLC5940_VPRG_PIN  1
+// blank outputs - C6
+#define TLC5940_BLANK_PORT PORTC
+#define TLC5940_BLANK_PIN 6
+// serial data master out slave in - D7
+#define TLC5940_MOSI_PORT PORTD
+#define TLC5940_MOSI_PIN 7
+// number of drivers
+#define TLC5940_N 3
+
 #include "StuPId.h"
 #include "DS3234.h"
 #include "TLC5940.h"
@@ -70,9 +95,11 @@ void setup() {
 
   // enable a 1 Hz squarewave output on interrupt pin
   rtc.enableSquareWave(0);
+  Serial.println("1 Hz square wave enabled");
 
   // initialize the TLC
   tlc.init();
+  Serial.println("LED driver enabled");
   
   // setup interrupt
   pinMode(RTC_INT_PIN, INPUT);
@@ -106,7 +133,7 @@ void updateArms() {
   uint8_t hour = tm[2];
   uint8_t min = tm[1];
   uint8_t sec = tm[0];
-  //Serial.print(hour); Serial.print(":"); Serial.print(min); Serial.print(":"); Serial.println(sec);
+  Serial.print(hour); Serial.print(":"); Serial.print(min); Serial.print(":"); Serial.println(sec);
   // hands
   uint8_t minHand = min/5;
   uint8_t secHand = sec/5;
@@ -166,6 +193,7 @@ void updateArms() {
   //  Serial.print(dots[i]); Serial.print("\t");
     tlc.setLed(i, dots[i]);
   }
+  tlc.update();
   //Serial.println("}");
   //Serial.println();
 }
@@ -177,7 +205,7 @@ void intFlag() {
 
 // ISR for serial data input into TLC5940
 // run in non-blocking mode so that the greyscale cycle continues regardless of serial data being clocked in
-ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
+ISR(TIMER0_COMPA_vect) {
   tlc.serialCycle();
 }
 
