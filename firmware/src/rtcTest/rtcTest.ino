@@ -76,7 +76,11 @@ void setup() {
   
   // setup interrupt
   pinMode(RTC_INT_PIN, INPUT);
-  attachInterrupt(0, intFlag, FALLING);
+  //attachInterrupt(0, intFlag, FALLING);
+  cli();
+  EICRA = (1 << 1);
+  EIMSK = (1 << 0);
+  sei();
 }
 
 void loop() {  
@@ -174,7 +178,6 @@ void updateArms() {
 // intialize timers for TLC5940 control
 void initTLCTimers() {
   cli();
-
   // user timer 1 to toggle the gs clock pin
   TCCR1A = 0;
   TCCR1B = 0;
@@ -203,13 +206,17 @@ void initTLCTimers() {
   TCCR0B |= ( (1 << CS02) | (1 << CS00) );
   // enable the interrupt of output compare A match
   TIMSK0 |= (1 << OCIE0A);
-
   sei();
 }
 
 
 // ISRs
+/*
 void intFlag() {
+  secFlag = true;
+}
+*/
+ISR(INT0_vect) {
   secFlag = true;
 }
 

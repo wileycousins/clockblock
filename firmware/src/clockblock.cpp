@@ -8,7 +8,7 @@
 // ************************************
 // AVR includes necessary for this file
 // ************************************
-
+#include <util/delay.h>
 
 // ********************
 // application includes
@@ -19,9 +19,10 @@
 // **************************
 // INTERRUPT SERVICE ROUTINES
 // **************************
-ISR(RTC_INT_vect) {
+ISR(INT0_vect) {
   tick = true;
 }
+
 
 #ifdef BREADBOARD
 // ISR for serial data input into TLC5940
@@ -40,7 +41,7 @@ int main() {
   tick = false;
 
   // application variables
-  uint8_t tm[3] = {0, 0, 0};
+  uint8_t tm[3] = {0, 0, 12};
 
   // initialize the RTC
   rtc.init();
@@ -64,9 +65,32 @@ int main() {
   EIMSK = (1 << RTC_INT);
   sei();
 
+  //uint16_t count = 0;
+  //int8_t dir = 1;
   // get lost
   for (;;) {
-    
+    /*
+    // give it some new data
+    for (uint8_t i=0; i<TLC5940_LED_N; i++) {
+      tlc.setGS(i, count);
+    }
+    // tell the driver to update
+    tlc.update();
+
+    // set loop direction
+    if (dir==1 && count>=4000) {
+      dir = -1;
+    }
+    else if (dir==-1 && count<=300) {
+      dir = 1;
+    }
+    // increment counter
+    count += dir*100;
+
+    // delay
+    _delay_ms(50);
+    */
+
     // check the set time flag
     if (timeSet) {
       
@@ -90,7 +114,7 @@ int main() {
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec) {
-  static uint16_t dots[NUM_DOTS];
+  uint16_t dots[NUM_DOTS];
 
   // hands
   uint8_t minHand = min/5;
