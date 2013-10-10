@@ -1,42 +1,14 @@
-// Testing sketch for clockblock
-// using SFE Arduino Pro Micro 3.3V
-
-// TLC5940 pin definitions
-// communication pins - define in makefile or set appropriately
-// greyscale clock
-
-// greyscale clock - D2
-#define TLC5940_GS_PORT PORTD
-#define TLC5940_GS_PIN 2
-// serial clock - D4
-#define TLC5940_SCK_PORT PORTD
-#define TLC5940_SCK_PIN 4
-// latch - D3
-#define TLC5940_XLAT_PORT PORTD
-#define TLC5940_XLAT_PIN 3
-// programming select - D1
-#define TLC5940_VPRG_PORT PORTD
-#define TLC5940_VPRG_PIN  1
-// blank outputs - C6
-#define TLC5940_BLANK_PORT PORTC
-#define TLC5940_BLANK_PIN 6
-// serial data master out slave in - D7
-#define TLC5940_MOSI_PORT PORTD
-#define TLC5940_MOSI_PIN 7
-// number of drivers
-#define TLC5940_N 3
+// testing sketch for clockblock
+// uses an Arduino Uno
 
 #include "StuPId.h"
 #include "DS3234.h"
 #include "TLC5940.h"
 
 // pin defines
-#define RTC_INT_PIN 3
+#define RTC_INT_PIN 2
 #define RTC_INT 0
 
-// led defines
-// TLC5940 can only handle up to 16 leds
-#define NUM_LEDS LED_N
 // clock stuff
 #define NUM_DOTS (3*12)
 #define LVL 100
@@ -45,15 +17,15 @@
 volatile bool secFlag;
 
 // create an SPI object
-//   mosi - PB2
-//   sck  - PB1  
-StuPId spi(&DDRB, 2, &DDRB, 1);
+//   mosi - PB3 - pin 11
+//   sck  - PB5 - pin 13
+StuPId spi(&DDRB, 3, &DDRB, 5);
 
 // create an RTC object
-//   cs  - PB5
-//   rst - PB4
-//   int - PD0
-DS3234 rtc(&spi, &PORTB, 5, &PORTB, 4, &PORTD, 0);
+//   cs  - PB2 - pin 10
+//   rst - PB0 - pin 8
+//   int - PD2 - pin 2
+DS3234 rtc(&spi, &PORTB, 2, &PORTB, 0, &PORTD, 2);
 uint8_t tm[3];
 
 // create an TLC5940 LED driver object
@@ -99,6 +71,7 @@ void setup() {
 
   // initialize the TLC
   tlc.init();
+  initTLCTimers();
   Serial.println("LED driver enabled");
   
   // setup interrupt
@@ -191,12 +164,49 @@ void updateArms() {
   //Serial.print("gs = { ");
   for (uint8_t i=0; i<NUM_DOTS; i++) {
   //  Serial.print(dots[i]); Serial.print("\t");
-    tlc.setLed(i, dots[i]);
+    tlc.setGS(i, dots[i]);
   }
   tlc.update();
   //Serial.println("}");
   //Serial.println();
 }
+
+// intialize timers for TLC5940 control
+void initTLCTimers() {
+  cli();
+
+  // user timer 1 to toggle the gs clock pin
+  TCCR1A = 0;
+  TCCR1B = 0;
+  TCCR1C = 0;
+  TIMSK1 = 0;
+  // toggle OC1A (pin B1) on compare match event
+  TCCR1A |= (1 << COM1A0);
+  // set the top of the timer
+  // PS = 1, F_CPU = 16 MHz, F_OC = F_CPU/(2 * PS * (OCR1A+1)
+  // gs edge gets sent every 32*2=64 clock ticks
+  OCR1A = 31;
+  // put the timer in CTC mode and start timer with no prescaler
+  TCCR1B |= ( (1 << WGM12) | (1 << CS10) );
+
+  // set up an isr for the serial cycle to live in
+  // let it live in timer 0
+  TCCR0A = 0;
+  TCCR0B = 0;
+  TIMSK0 = 0;
+  // set waveform generation bit to put the timer into CTC mode
+  TCCR0A |= (1 << WGM01);
+  // set the top of the timer - want this to happen every 4096 * gs clocks = every 8192 clock ticks
+  // set top to 255 for an interrupt every 256 * 1024 = 64 * 4096 clock ticks
+  OCR0A = 255;
+  // start the timer with a 1024 prescaler
+  TCCR0B |= ( (1 << CS02) | (1 << CS00) );
+  // enable the interrupt of output compare A match
+  TIMSK0 |= (1 << OCIE0A);
+
+  sei();
+}
+
 
 // ISRs
 void intFlag() {
@@ -204,12 +214,7 @@ void intFlag() {
 }
 
 // ISR for serial data input into TLC5940
-// run in non-blocking mode so that the greyscale cycle continues regardless of serial data being clocked in
 ISR(TIMER0_COMPA_vect) {
-  tlc.serialCycle();
+  tlc.refreshGS();
 }
 
-// ISR for greyscale clock on TLC5940
-ISR(TIMER1_COMPA_vect) {
-  tlc.gsCycle();
-}
