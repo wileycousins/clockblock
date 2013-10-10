@@ -5,55 +5,40 @@
 // file: clockblock.cpp
 // description: application file for the clockblock
 
-// defines
-#define TIME_OVF (3600*12)
-#define NUM_DOTS (3*12)
-#define CHECK_TIME 1000;
+// ************************************
+// AVR includes necessary for this file
+// ************************************
 
-// LED brightness levels
-#define LVL 13000 
-
-// AVR includes
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-
+// ********************
 // application includes
+// ********************
 #include "clockblock.h"
-//#include "Cereal.h"
-//#include "StuPId.h"
-
-// global variables
-// 12-hour time in seconds
-volatile uint16_t time12 = 0;
-// time has been updated by the RTC
-volatile bool timeUpdate = false;
-// time has been updated by the user
-volatile bool timeSet = false;
-// counter to periodically check that AVR time and RTC time match
-uint16_t checkCounter = 0;
-// array for LED brightness
-uint16_t dots[NUM_DOTS];
-
-// global objects
-// USART interface at specified baudrate
-//Cereal debug;
-// SPI interface at specified frequency (MHz)
-//StuPId spi;
-// DS3234 Real-time clock module (spi channel, chip select on pin C2, reset on pin C3)
-//DS3234 rtc(&spi, PORTC, 2, PORTC, 3);
-// TLC5971 LED driver (3 drivers, serial clock on pin C5, serial data on pin C4)
-//TLC5971 leds(3, PORTC, 5, PORTC, 4);
 
 // main
 int main() {
-  // probably run some initializations
-  // initialize the USART for debugging at 9600 bps
-  //debug.init(9600);
-  // initialize the SPI to operate at 100 MHz
-  //spi.init(100);
-  // initialize the led driver at 100% current
-  //leds.init(255);
+  // global vairables
+  secFlag = false;
+
+  // application variables
+  uint8_t tm[3] = {0, 0, 0};
+
+  // initialize the RTC
+  rtc.init();
+  // check if the RTC has a good time
+  if(rtc.hasLostTime()) {
+    // if it has, assume it's midnight, because that's when people set up their clocks
+    rtc.setTime(DS3234_AM, tm);
+  }
+  // enable a 1 Hz squarewave output on interrupt pin
+  rtc.enableSquareWave(0);
+
+  // initialize the LED drivers
+  tlc.init();
+  #ifdef BREADBOARD
+  initTLCTimers();
+  #endif
+
+  // enable a falling edge interrupt on the square wave pin
 
 /*
   // initialize the clock

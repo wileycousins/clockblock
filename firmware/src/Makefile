@@ -34,7 +34,8 @@ SRC = $(PRJ).cpp
 # where to look for external libraries (consisting of .c/.cpp files and .h files)
 # e.g. EXT = ../../EyeToSee ../../YouSART
 EXT = ./include/DS3234 ./include/StuPId ../../../TLC5940
-
+# any defines to send the compiler
+DEF = BREADBOARD
 
 #################################################################################################
 # \/ stuff nobody needs to worry about until such time that worrying about it is appropriate \/ #
@@ -42,8 +43,10 @@ EXT = ./include/DS3234 ./include/StuPId ../../../TLC5940
 
 # include path
 INCLUDE := $(foreach dir, $(EXT), -I$(dir))
+# defines
+DEFINES := $(foreach def, $(DEF), -D$(def))
 # c flags
-CFLAGS    = -Wall -Os -DF_CPU=$(CLK) -mmcu=$(MCU) $(INCLUDE)
+CFLAGS    = -Wall -Os -DF_CPU=$(CLK) $(DEFINES) -mmcu=$(MCU) $(INCLUDE)
 # any aditional flags for c++
 CPPFLAGS =
 
