@@ -41,13 +41,14 @@ int main() {
   tick = false;
 
   // application variables
-  uint8_t tm[3] = {0, 0, 12};
+  // time vector - { seconds, minutes, hours}
+  uint8_t tm[3] = {0, 42, 1};
 
   // initialize the RTC
   rtc.init();
   // check if the RTC has a good time
   if(rtc.hasLostTime()) {
-    // if it has, assume it's midnight, because that's when people set up their clocks
+    // if it has, assume it's 1:42 AM, because that's when people set up their clocks
     rtc.setTime(DS3234_AM, tm);
   }
   // enable a 1 Hz squarewave output on interrupt pin

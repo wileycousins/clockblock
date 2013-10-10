@@ -24,7 +24,7 @@
 // application defines
 // *******************
 // LED brightness levels
-#define LVL 800
+#define LVL 100
 // clock stuff
 #define NUM_DOTS 36
 // interrupt pin for RTC
