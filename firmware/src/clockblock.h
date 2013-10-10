@@ -11,12 +11,14 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+
 // ********************
 // application includes
 // ********************
 #include "StuPId.h"
 #include "DS3234.h"
 //#include "TLC5971.h"
+
 
 // *******************
 // application defines
@@ -25,12 +27,22 @@
 #define LVL 800
 // clock stuff
 #define NUM_DOTS 36
+// interrupt pin for RTC
+#define RTC_INT_PORT PORTD
+#define RTC_INT_PIN  2
+// avr external interrupt (0 or 1, INT0_vect or INT1_vect)
+#define RTC_INT      0
+#define RTC_INT_vect INTO_vect
+
 
 // *************
 // ISR variables
 // *************
 // flag set by the 1 Hz square wave interrupt from the RTC
-volatile bool secFlag;
+volatile bool tick;
+// flag set by user input to change the time
+volatile bool timeSet;
+
 
 // ***********
 // peripherals
@@ -49,7 +61,7 @@ StuPId spi(&DDRB, 3, &DDRB, 5);
 //   chip select PORT, pin - PB2
 //   reset PORT, pin       - PB0
 //   interrupt PORT, pin   - PD2
-DS3234 rtc(&spi, &PORTB, 2, &PORTB, 0, &PORTD, 2);
+DS3234 rtc(&spi, &PORTB, 2, &PORTB, 0, &RTC_INT_PORT, RTC_INT_PIN);
 
 // TLC5971 LED driver - TO BE IMPLEMENTED
 // parameters:
@@ -57,6 +69,7 @@ DS3234 rtc(&spi, &PORTB, 2, &PORTB, 0, &PORTD, 2);
 //   serial clock PORT, pin - PC5
 //   serial data PORT, pin  - PC4
 //TLC5971 leds(3, &PORTC, 5, &PORTC, 4);
+
 
 // ****************************
 // BREADBOARD EDITION EXCLUSIVE
@@ -100,7 +113,10 @@ void initTLCTimers(void) {
 // BREADBOARD YOU'RE MY HERO
 // ****************************
 
-
+// *******************
 // function prototypes
+// *******************
+// main application
 int main();
+// update clock arms
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec);

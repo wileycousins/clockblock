@@ -9,15 +9,35 @@
 // AVR includes necessary for this file
 // ************************************
 
+
 // ********************
 // application includes
 // ********************
 #include "clockblock.h"
 
+
+// **************************
+// INTERRUPT SERVICE ROUTINES
+// **************************
+ISR(RTC_INT_vect) {
+  tick = true;
+}
+
+#ifdef BREADBOARD
+// ISR for serial data input into TLC5940
+ISR(TIMER0_COMPA_vect) {
+  tlc.refreshGS();
+}
+#endif
+
+
+// ***********
+// application
+// ***********
 // main
 int main() {
-  // global vairables
-  secFlag = false;
+  // give those global vairables some values
+  tick = false;
 
   // application variables
   uint8_t tm[3] = {0, 0, 0};
@@ -39,48 +59,28 @@ int main() {
   #endif
 
   // enable a falling edge interrupt on the square wave pin
-
-/*
-  // initialize the clock
-  // check the TXCO stop bit to see if the RTC has a good time stored
-  if (!rtc.gotTime()) {
-    // make a brash assumtion about what time it is
-    time12 = 42;
-    timeSet = true;
-  }
-  // otherwise, get the time from the RTC
-  else {
-    time12 = rtc.getTime12();
-    timeUpdate = true;
-  }
-  // set the rtc to trigger an interrupt every second using alarm 1
-  rtc.setSecondTrigger(1);
-*/
+  cli();
+  EICRA = (0x2 << (2*RTC_INT));
+  EIMSK = (1 << RTC_INT);
+  sei();
 
   // get lost
   for (;;) {
-    /*
-    if (setTime) {
-      rtc.setTime(time12);
-      setTime = false;
-      timeUpdate = true;
+    
+    // check the set time flag
+    if (timeSet) {
+      
     }
-    // if time has updated, update the LEDs
-    if (timeUpdate) {
-      // update the LEDs
-      updateArms();
-      // clear the flag
-      timeUpdate = false;
-      // periodic time check
-      if (++checkCounter >= CHECK_TIME) {
-        uint16 check = rtc.getTime12();
-        if (check != time12) {
-          time12 = check;
-          timeUpdate = true;
-        }
-      }
+
+    // check the time update
+    if (tick) {
+      // clear the flag and get the time
+      secFlag = false;
+      rtc.getTime(tm);
+    
+      // update the clock arms
+      updateArms(tm[2], tm[1], tm[0]);
     }
-    */
   }
 
   // one day we might get the answer
@@ -88,85 +88,56 @@ int main() {
 }
 
 // update the clock arms
-void updateArms() {
-  // break down the time
-  uint8_t hourMod = time12%3600;
-  uint8_t hour = time12/3600;
-  uint8_t min = hourMod/60;
-  uint8_t sec = hourMod%60;
+// dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
+void updateArms(uint8_t hour, uint8_t min, uint8_t sec) {
+  // hands
+  uint8_t minHand = min/5;
+  uint8_t secHand = sec/5;
+  // fractions
+  uint8_t minFrac = min/12;
+  // mods
+  uint8_t minMod = min%5;
+  uint8_t secMod = sec%5;
   
   // fill the hour dots
-  // all hours previous get set to full
+  // all hours previous are full
   for (uint8_t i=0; i<hour; i++) {
-    dots[((NUM_DOTS-1) - (i*3))] = 5*LVL;
+    dots[i*3] = 5*LVL;
   }
   // current hour to fraction
-  dots[(NUM_DOTS-1) - (hour*3)] = LVL*(min/12+1);
-  // all other hour dots off
-  for (uint8_t i=0; i<(11-hour); i++) {
-    dots[(i*3)+2] = 0;
+  dots[hour*3] = LVL*(minFrac+1);
+  // all other hours off
+  for (uint8_t i=hour+1; i<12; i++) {
+    dots[i*3] = 0;
   }
 
   // do the same with the minute dots
   // all minute dots previous get set to full
-  for (uint8_t i=0; i<min/5; i++) {
-    dots[((NUM_DOTS-2) - (i*3))] = 5*LVL;
+  for (uint8_t i=0; i<minHand; i++) {
+    dots[(i*3)+1] = 5*LVL;
   }
   // current minute dot to fraction
-  dots[(NUM_DOTS-2) - ((min/5)*3)] = LVL*(sec/12+1);
+  dots[(minHand*3)+1] = LVL*(minMod+1);
   // all other minute dots off
-  for (uint8_t i=0; i<(11-(min/5)); i++) {
+  for (uint8_t i=minHand+1; i<12; i++) {
     dots[(i*3)+1] = 0;
   }
 
   // finally, seconds
   // all second dots previous get set to full
-  for (uint8_t i=0; i<sec/5; i++) {
-    dots[((NUM_DOTS-3) - (i*3))] = 5*LVL;
+  for (uint8_t i=0; i<secHand; i++) {
+    dots[(i*3)+2] = 5*LVL;
   }
   // current second dot to fraction
-  dots[(NUM_DOTS-3) - ((sec/5)*3)] = LVL*(sec%5+1);
+  dots[(secHand*3)+2] = LVL*(secMod+1);
   // all other second dots off
-  for (uint8_t i=0; i<(11-(sec/5)); i++) {
-    dots[(i*3)] = 0;
+  for (uint8_t i=secHand+1; i<12; i++) {
+    dots[(i*3)+2] = 0;
   }
 
-  // send the data to the drivers
-  //leds.setGS(dots);
-}
-
-// --------------------------------------------- //
-// ISRs
-// --------------------------------------------- //
-
-// RTC interrupt on pin D2 - external interrupt 0
-ISR(INT0_vect) {
-  // increment and check for overflow
-  if(++time12 >= TIME_OVF) {
-    time12 = 0;
+  // update the LEDs
+  for (uint8_t i=0; i<NUM_DOTS; i++) {
+    tlc.setGS(i, dots[i]);
   }
-}
-
-// hour set interrupt on pin D7 - pin change interrupt 23
-// minute set interrupt on pin D6 - pin change interrupt 22
-ISR(PCINT2_vect) {
-  // debounce the switch(es)
-  _delay_ms(20);
-
-  // check if hour pin is low
-  if ( !(PIND & (1<<7)) ) {
-    time += 3600;
-    timeSet = true;
-  }
-
-  // check if minute pin is low
-  if ( !(PIND & (1<<7)) ) {
-    time += 60;
-    timeSet = true;
-  }
-
-  // check for overflow
-  if (time12 >= TIME_OVF) {
-    time12 = time12 - TIME_OVF;
-  }
+  tlc.update();
 }
