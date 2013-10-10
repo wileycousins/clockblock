@@ -75,7 +75,7 @@ int main() {
     // check the time update
     if (tick) {
       // clear the flag and get the time
-      secFlag = false;
+      tick = false;
       rtc.getTime(tm);
     
       // update the clock arms
@@ -90,6 +90,8 @@ int main() {
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec) {
+  static uint16_t dots[NUM_DOTS];
+
   // hands
   uint8_t minHand = min/5;
   uint8_t secHand = sec/5;

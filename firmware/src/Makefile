@@ -36,9 +36,6 @@ SRC = $(PRJ).cpp
 EXT = ./include/DS3234 ./include/StuPId ../../../TLC5940
 # any defines to send the compiler
 DEF = BREADBOARD
-# directory structure for output
-EXE_OUT = ./bin/exe
-OBJ_OUT = ./bin/obj
 
 #################################################################################################
 # \/ stuff nobody needs to worry about until such time that worrying about it is appropriate \/ #
@@ -69,7 +66,7 @@ OBJ       = $(CFILES:.c=.o) $(EXTC:.c=.o) $(CPPFILES:.cpp=.o) $(EXTCPP:.cpp=.o)
 
 # user targets
 # compile all files
-all: $(EXE_OUT)/$(PRJ).hex
+all: $(PRJ).hex
 
 # test programmer connectivity
 test:
@@ -89,24 +86,24 @@ disasm: $(PRJ).elf
 
 # remove compiled files
 clean:
-	rm -f $(EXE_OUT)/*.elf $(OBJ_OUT)/*.o
-	#$(foreach dir, $(EXT), rm -f $(dir)/*.o;)
+	rm -f *.hex *.elf *.o
+	$(foreach dir, $(EXT), rm -f $(dir)/*.o;)
 
 # other targets
 # objects from c files
-$(OBJ_OUT)/%.c.o:
+.c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # objects from c++ files
-$(OBJ_OUT)/%.cpp.o:
+.cpp.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # elf file
-$(EXE_OUT)/$(PRJ).elf: $(OBJ)
+$(PRJ).elf: $(OBJ)
 	$(CC) $(CFLAGS) -o $(PRJ).elf $(OBJ)
 
 # hex file
-$(EXE_OUT)/$(PRJ).hex: $(EXE_OUT)/$(PRJ).elf
+$(PRJ).hex: $(PRJ).elf
 	rm -f $(PRJ).hex
 	$(OBJCOPY) -j .text -j .data -O ihex $(PRJ).elf $(PRJ).hex
 	$(SIZE) $(PRJ).elf
