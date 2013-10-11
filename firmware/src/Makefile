@@ -11,7 +11,7 @@
 #   flash:  writes compiled hex file to the mcu's flash memory
 #   fuse:   writes the fuse bytes to the MCU
 #   disasm: disassembles the code for debugging
-#   clean:  removes all .hex, .elf, and .o files in the source code and library directories
+#   clean:  removes all .elf, and .o files in the obj and exe directories
 
 # parameters (change this stuff accordingly)
 # project name
@@ -29,7 +29,7 @@ PRG = arduino -P /dev/tty.usbmodem411
 LFU = 0xFF
 HFU = 0xDE
 EFU = 0x05
-# program source files (not including external libraries)
+# program source files
 SRC = $(PRJ).cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)
 # e.g. INC = ../../EyeToSee ../../YouSART
@@ -45,11 +45,11 @@ EXEDIR = bin/exe
 #################################################################################################
 
 # include path
-INCLUDE := $(foreach dir, $(INC), -I$(dir))
+INCLUDES := $(addprefix -I,$(INC))
 # defines
-DEFINES := $(foreach def, $(DEF), -D$(def))
+DEFINES := $(addprefix -D,$(DEF))
 # c flags
-CFLAGS    = -Wall -Os -DF_CPU=$(CLK) $(DEFINES) -mmcu=$(MCU) $(INCLUDE)
+CFLAGS    = -Wall -Os -DF_CPU=$(CLK) $(DEFINES) -mmcu=$(MCU) $(INCLUDES)
 # any aditional flags for c++
 CPPFLAGS =
 
