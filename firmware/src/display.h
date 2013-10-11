@@ -18,10 +18,11 @@
 #define DISPLAY_NUM_DOTS 36
 
 // effect modes
-#define DISPLAY_NUM_MODES  3
+#define DISPLAY_NUM_MODES  4
 #define DISPLAY_MODE_FILL  0
 #define DISPLAY_MODE_BLEND 1
 #define DISPLAY_MODE_PIE   2
+#define DISPLAY_MODE_ARMS  3
 
 class Display {
 public:
@@ -61,6 +62,7 @@ private:
   void displayFill(DisplayParams p);
   void displayBlend(DisplayParams p);
   void displayPie(DisplayParams p);
+  void displayArms(DisplayParams p);
 };
 
 #endif

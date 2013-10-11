@@ -36,6 +36,9 @@ void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots)
       displayPie(p);
       break;
 
+    case DISPLAY_MODE_ARMS:
+      displayArms(p);
+
     default:
       break;
   }
@@ -182,4 +185,6 @@ void Display::displayPie(DisplayParams p) {
   }
 }
 
-
+void Display::displayArms(DisplayParams p) {
+  
+}
