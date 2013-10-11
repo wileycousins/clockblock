@@ -66,32 +66,8 @@ int main() {
   EIMSK = (1 << RTC_INT);
   sei();
 
-  //uint16_t count = 0;
-  //int8_t dir = 1;
   // get lost
   for (;;) {
-    /*
-    // give it some new data
-    for (uint8_t i=0; i<TLC5940_LED_N; i++) {
-      tlc.setGS(i, count);
-    }
-    // tell the driver to update
-    tlc.update();
-
-    // set loop direction
-    if (dir==1 && count>=4000) {
-      dir = -1;
-    }
-    else if (dir==-1 && count<=300) {
-      dir = 1;
-    }
-    // increment counter
-    count += dir*100;
-
-    // delay
-    _delay_ms(50);
-    */
-
     // check the set time flag
     if (timeSet) {
       
