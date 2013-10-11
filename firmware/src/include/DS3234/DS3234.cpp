@@ -5,7 +5,7 @@
 // file: DS3234.cpp
 // description: class for DS3234 real-time clock
 
-#include "avr/delay.h"
+#include <util/delay.h>
 #include "DS3234.h"
 
 // can we build it? yes we can!
