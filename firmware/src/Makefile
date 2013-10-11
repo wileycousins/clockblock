@@ -31,18 +31,21 @@ HFU = 0xDE
 EFU = 0x05
 # program source files (not including external libraries)
 SRC = $(PRJ).cpp
-# where to look for external libraries (consisting of .c/.cpp files and .h files)
-# e.g. EXT = ../../EyeToSee ../../YouSART
-EXT = ./include/DS3234 ./include/StuPId ../../../TLC5940
+# where to look for included libraries (consisting of .c/.cpp files and .h files)
+# e.g. INC = ../../EyeToSee ../../YouSART
+INC = include/DS3234 include/StuPId ../../../TLC5940
 # any defines to send the compiler
 DEF = BREADBOARD
+# directories
+OBJDIR = bin/obj
+EXEDIR = bin/exe
 
 #################################################################################################
 # \/ stuff nobody needs to worry about until such time that worrying about it is appropriate \/ #
 #################################################################################################
 
 # include path
-INCLUDE := $(foreach dir, $(EXT), -I$(dir))
+INCLUDE := $(foreach dir, $(INC), -I$(dir))
 # defines
 DEFINES := $(foreach def, $(DEF), -D$(def))
 # c flags
@@ -59,14 +62,14 @@ CC      = avr-gcc
 
 # generate list of objects
 CFILES    = $(filter %.c, $(SRC))
-EXTC     := $(foreach dir, $(EXT), $(wildcard $(dir)/*.c))
+INCC     := $(foreach dir, $(INC), $(wildcard $(dir)/*.c))
 CPPFILES  = $(filter %.cpp, $(SRC))
-EXTCPP   := $(foreach dir, $(EXT), $(wildcard $(dir)/*.cpp))
-OBJ       = $(CFILES:.c=.o) $(EXTC:.c=.o) $(CPPFILES:.cpp=.o) $(EXTCPP:.cpp=.o)
+INCCPP   := $(foreach dir, $(INC), $(wildcard $(dir)/*.cpp))
+OBJ       = $(CFILES:.c=.o) $(INCC:.c=.o) $(CPPFILES:.cpp=.o) $(INCCPP:.cpp=.o)
 
 # user targets
 # compile all files
-all: $(PRJ).hex
+all: $(EXEDIR)/$(PRJ).hex
 
 # test programmer connectivity
 test:
@@ -74,36 +77,41 @@ test:
 
 # flash program to mcu
 flash: all
-	$(AVRDUDE) -U flash:w:$(PRJ).hex:i
+	$(AVRDUDE) -U flash:w:$(EXEDIR)/$(PRJ).hex:i
 
 # write fuses to mcu
 fuse:
 	$(AVRDUDE) -U lfuse:w:$(LFU):m -U hfuse:w:$(HFU):m -U efuse:w:$(EFU):m
 
 # generate disassembly files for debugging
-disasm: $(PRJ).elf
-	$(OBJDUMP) -d $(PRJ).elf
+disasm: $(EXEDIR)/$(PRJ).elf
+	$(OBJDUMP) -d $(EXEDIR)/$(PRJ).elf
 
 # remove compiled files
 clean:
-	rm -f *.hex *.elf *.o
-	$(foreach dir, $(EXT), rm -f $(dir)/*.o;)
+	rm -f $(EXEDIR)/*.elf $(OBJDIR)/*.o
 
 # other targets
 # objects from c files
 .c.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $(OBJDIR)/$(notdir $@)
 
 # objects from c++ files
 .cpp.o:
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $(OBJDIR)/$(notdir $@)
 
 # elf file
-$(PRJ).elf: $(OBJ)
-	$(CC) $(CFLAGS) -o $(PRJ).elf $(OBJ)
+$(EXEDIR)/$(PRJ).elf: $(OBJ) | $(OBJDIR)
+	$(CC) $(CFLAGS) -o $(EXEDIR)/$(PRJ).elf $(addprefix $(OBJDIR)/,$(notdir $(OBJ)))
 
 # hex file
-$(PRJ).hex: $(PRJ).elf
-	rm -f $(PRJ).hex
-	$(OBJCOPY) -j .text -j .data -O ihex $(PRJ).elf $(PRJ).hex
-	$(SIZE) $(PRJ).elf
+$(EXEDIR)/$(PRJ).hex: $(EXEDIR)/$(PRJ).elf | $(EXEDIR)
+	rm -f $(EXEDIR)/$(PRJ).hex
+	$(OBJCOPY) -j .text -j .data -O ihex $(EXEDIR)/$(PRJ).elf $(EXEDIR)/$(PRJ).hex
+	$(SIZE) $(EXEDIR)/$(PRJ).elf
+
+$(EXEDIR):
+	mkdir -p $(EXEDIR)
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
