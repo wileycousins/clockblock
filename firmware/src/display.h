@@ -13,30 +13,21 @@
 
 // display parameters
 // LED brightness levels
-#define DISPLAY_DISCRETE_LVL 100
+#define DISPLAY_LVL_MAX 1000
 // clock stuff
 #define DISPLAY_NUM_DOTS 36
 
 // effect modes
-#define DISPLAY_NUM_MODES  2
+#define DISPLAY_NUM_MODES  3
 #define DISPLAY_MODE_FILL  0
 #define DISPLAY_MODE_BLEND 1
-
-
-// display parameters (gets passed from getDisplay to the specific private mode method)
-// contains the current time to display as well as a pointer to the dots array the app will give the LED drivers
-typedef struct {
-  uint8_t hour;
-  uint8_t min;
-  uint8_t sec;
-  uint16_t *dots;
-} DisplayParams;
+#define DISPLAY_MODE_PIE   2
 
 class Display {
 public:
   // constructor initializes the mode to something
   Display();
-  
+
   // get the dot display
   // parameters:
   //   hour, min, sec - time
@@ -49,12 +40,22 @@ public:
   void setMode(uint8_t m);
 
 private:
+  // display parameters (gets passed from getDisplay to the specific private mode method)
+  // contains the current time to display as well as a pointer to the dots array the app will give the LED drivers
+  typedef struct {
+    uint8_t hour;
+    uint8_t min;
+    uint8_t sec;
+    uint16_t *dots;
+  } DisplayParams;
+
   // display mode
   uint8_t mode;
 
   // different effects
   void displayFill(DisplayParams p);
   void displayBlend(DisplayParams p);
+  void displayPie(DisplayParams p);
 };
 
 #endif

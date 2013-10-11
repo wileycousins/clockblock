@@ -42,7 +42,7 @@ int main() {
 
   // application variables
   // time vector - { seconds, minutes, hours}
-  uint8_t tm[3] = {0, 42, 1};
+  uint8_t tm[3] = {0, 58, 9};
 
   // initialize the RTC
   rtc.init();
@@ -65,6 +65,9 @@ int main() {
   EICRA = (0x2 << (2*RTC_INT));
   EIMSK = (1 << RTC_INT);
   sei();
+
+  // set the display mode
+  leds.setMode(DISPLAY_MODE_BLEND);
 
   // get lost
   for (;;) {
