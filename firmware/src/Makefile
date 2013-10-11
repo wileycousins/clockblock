@@ -47,11 +47,11 @@ EXEDIR = bin/exe
 # include path
 INCLUDES := $(addprefix -I,$(INC))
 # defines
-DEFINES := $(addprefix -D,$(DEF))
+DEFINES  := $(addprefix -D,$(DEF))
 # c flags
 CFLAGS    = -Wall -Os -DF_CPU=$(CLK) $(DEFINES) -mmcu=$(MCU) $(INCLUDES)
 # any aditional flags for c++
-CPPFLAGS =
+CPPFLAGS  =
 
 # executables
 AVRDUDE = avrdude -c $(PRG) -p $(MCU)
@@ -61,11 +61,10 @@ SIZE    = avr-size --format=avr --mcu=$(MCU)
 CC      = avr-gcc
 
 # generate list of objects
-CFILES    = $(filter %.c, $(SRC))
-INCC     := $(foreach dir, $(INC), $(wildcard $(dir)/*.c))
-CPPFILES  = $(filter %.cpp, $(SRC))
-INCCPP   := $(foreach dir, $(INC), $(wildcard $(dir)/*.cpp))
-OBJ       = $(CFILES:.c=.o) $(INCC:.c=.o) $(CPPFILES:.cpp=.o) $(INCCPP:.cpp=.o)
+CFILES   := $(filter %.c, $(SRC)) $(foreach dir, $(INC), $(wildcard $(dir)/*.c))
+CPPFILES := $(filter %.cpp, $(SRC)) $(foreach dir, $(INC), $(wildcard $(dir)/*.cpp))
+OBJDEPS  := $(CFILES:.c=.o) $(CPPFILES:.cpp=.o)
+OBJ      := $(addprefix $(OBJDIR)/,$(notdir $(OBJDEPS)))
 
 # user targets
 # compile all files
@@ -89,23 +88,14 @@ disasm: $(EXEDIR)/$(PRJ).elf
 
 # remove compiled files
 clean:
-	rm -f $(EXEDIR)/*.elf $(OBJDIR)/*.o
-
-# other targets
-# objects from c files
-.c.o:
-	$(CC) $(CFLAGS) -c $< -o $(OBJDIR)/$(notdir $@)
-
-# objects from c++ files
-.cpp.o:
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $(OBJDIR)/$(notdir $@)
+	rm -f $(EXEDIR)/$(PRJ).elf $(OBJ)
 
 # elf file
-$(EXEDIR)/$(PRJ).elf: $(OBJ) | $(OBJDIR)
-	$(CC) $(CFLAGS) -o $(EXEDIR)/$(PRJ).elf $(addprefix $(OBJDIR)/,$(notdir $(OBJ)))
+$(EXEDIR)/$(PRJ).elf: $(OBJDEPS) | $(EXEDIR)
+	$(CC) $(CFLAGS) -o $(EXEDIR)/$(PRJ).elf $(OBJ)
 
 # hex file
-$(EXEDIR)/$(PRJ).hex: $(EXEDIR)/$(PRJ).elf | $(EXEDIR)
+$(EXEDIR)/$(PRJ).hex: $(EXEDIR)/$(PRJ).elf
 	rm -f $(EXEDIR)/$(PRJ).hex
 	$(OBJCOPY) -j .text -j .data -O ihex $(EXEDIR)/$(PRJ).elf $(EXEDIR)/$(PRJ).hex
 	$(SIZE) $(EXEDIR)/$(PRJ).elf
@@ -115,3 +105,12 @@ $(EXEDIR):
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
+
+# pattern matching for object files
+# objects from c files
+%.o : %.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $(OBJDIR)/$(notdir $@)
+
+# objects from c++ files
+%.o : %.cpp | $(OBJDIR)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $(OBJDIR)/$(notdir $@)
