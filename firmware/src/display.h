@@ -32,7 +32,7 @@ public:
   // parameters:
   //   hour, min, sec - time
   //   dots - dot array output
-  void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots);
+  void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t ms, uint16_t *dots);
 
   // set the display mode
   // parameters:
@@ -46,6 +46,7 @@ private:
     uint8_t hour;
     uint8_t min;
     uint8_t sec;
+    uint16_t ms;
     uint16_t *dots;
   } DisplayParams;
 

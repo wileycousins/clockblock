@@ -35,8 +35,12 @@
 // *************
 // ISR variables
 // *************
-// flag set by the 1 Hz square wave interrupt from the RTC
+// millisecond counter incremented by the ~1 kHz squarewave from the RTC
+volatile uint16_t ms;
+// flag set by the ISR when it's time to update the clock arms
 volatile bool tick;
+// flag set when it's time to sync with the RTC
+volatile bool tock;
 // flag set by user input to change the time
 volatile bool timeSet;
 

@@ -12,11 +12,12 @@ Display::Display() {
   mode = DISPLAY_MODE_FILL;
 }
 
-void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots) {
+void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t ms, uint16_t *dots) {
   DisplayParams p = {
     hour,
     min,
     sec,
+    ms,
     dots
   };
 
@@ -98,19 +99,21 @@ void Display::displayFill(DisplayParams p) {
 void Display::displayBlend(DisplayParams p) {
   // hour correction
   p.hour %= 12;
-  // percentage of hour passed
-  float hourFrac = (p.sec + (60*p.min))/3600.0;
-  // percentage of minute passed
-  float minFrac = p.sec/60.0;
 
   // hands (take care of the wrap around)
   uint8_t minHand = p.min/5;
   uint8_t secHand = p.sec/5;
   uint8_t nextMinHand = (minHand == 11) ? 0 : minHand+1;
   uint8_t nextSecHand = (secHand == 11) ? 0 : secHand+1;
-  uint8_t nextHour = (p.hour == 11) ? 0 : p.hour+1;
-  // mods
-  uint8_t secMod = p.sec%5;
+  uint8_t nextHour     = (p.hour == 11) ? 0 : p.hour+1;
+
+  // percentage of the second hand passed
+  float secFrac = ((p.sec%5) + (p.ms/1024.0))/5;
+  // percentage of minute hand passed
+  float minFrac = ((p.min%5) + ((p.sec+(p.ms/1024.0))/60))/5;
+  // percentage of hour passed
+  float hourFrac = ((p.ms/1024.0) + p.sec + (60*p.min))/3600.0;
+
 
   // fill the hour dots
   // all hours previous are off
@@ -144,8 +147,8 @@ void Display::displayBlend(DisplayParams p) {
     p.dots[(i*3)+2] = 0;
   }
   // current and next second dot to fraction (don't have milliseconds yet, so use modulus)
-  p.dots[(secHand*3)+2]     = DISPLAY_LVL_MAX - secMod*(DISPLAY_LVL_MAX/5);
-  p.dots[(nextSecHand*3)+2] = secMod*(DISPLAY_LVL_MAX/5);
+  p.dots[(secHand*3)+2]     = (uint16_t)(DISPLAY_LVL_MAX * (1.0-secFrac));
+  p.dots[(nextSecHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
   // all other second dots off
   for (uint8_t i=secHand+2; i<12; i++) {
     p.dots[(i*3)+2] = 0;
