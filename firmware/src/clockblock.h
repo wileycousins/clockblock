@@ -15,6 +15,7 @@
 // ********************
 // application includes
 // ********************
+#include "display.h"
 #include "StuPId.h"
 #include "DS3234.h"
 //#include "TLC5971.h"
@@ -23,10 +24,6 @@
 // *******************
 // application defines
 // *******************
-// LED brightness levels
-#define LVL 100
-// clock stuff
-#define NUM_DOTS 36
 // interrupt pin for RTC
 #define RTC_INT_PORT PORTD
 #define RTC_INT_PIN  2
@@ -70,6 +67,8 @@ DS3234 rtc(&spi, &PORTB, 2, &PORTB, 0, &RTC_INT_PORT, RTC_INT_PIN);
 //   serial data PORT, pin  - PC4
 //TLC5971 leds(3, &PORTC, 5, &PORTC, 4);
 
+// Display class - contains all the different display modes of the clockblock
+Display leds;
 
 // ****************************
 // BREADBOARD EDITION EXCLUSIVE

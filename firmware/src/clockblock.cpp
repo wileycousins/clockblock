@@ -91,8 +91,10 @@ int main() {
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec) {
-  uint16_t dots[NUM_DOTS];
+  uint16_t dots[DISPLAY_NUM_DOTS];
 
+  leds.getDisplay(hour, min, sec, dots);
+  /*
   // hands
   uint8_t minHand = min/5;
   uint8_t secHand = sec/5;
@@ -137,9 +139,9 @@ void updateArms(uint8_t hour, uint8_t min, uint8_t sec) {
   for (uint8_t i=secHand+1; i<12; i++) {
     dots[(i*3)+2] = 0;
   }
-
+  */
   // update the LEDs
-  for (uint8_t i=0; i<NUM_DOTS; i++) {
+  for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
     tlc.setGS(i, dots[i]);
   }
   tlc.update();

@@ -30,7 +30,7 @@ LFU = 0xFF
 HFU = 0xDE
 EFU = 0x05
 # program source files
-SRC = $(PRJ).cpp
+SRC = $(PRJ).cpp display.cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)
 # e.g. INC = ../../EyeToSee ../../YouSART
 INC = include/DS3234 include/StuPId ../../../TLC5940
