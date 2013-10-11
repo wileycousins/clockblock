@@ -7,17 +7,18 @@
 
 #include "display.h"
 
-Display::Display() {
+Display::Display(volatile uint16_t *millis) {
+  // save the millisecond timer location
+  ms = millis;
   // set default mode to fill
   mode = DISPLAY_MODE_FILL;
 }
 
-void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t ms, uint16_t *dots) {
+void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots) {
   DisplayParams p = {
     hour,
     min,
     sec,
-    ms,
     dots
   };
 
@@ -108,11 +109,11 @@ void Display::displayBlend(DisplayParams p) {
   uint8_t nextHour     = (p.hour == 11) ? 0 : p.hour+1;
 
   // percentage of the second hand passed
-  float secFrac = ((p.sec%5) + (p.ms/1024.0))/5;
+  float secFrac = ((p.sec%5) + (*ms/1024.0))/5;
   // percentage of minute hand passed
-  float minFrac = ((p.min%5) + ((p.sec+(p.ms/1024.0))/60))/5;
+  float minFrac = ((p.min%5) + ((p.sec+(*ms/1024.0))/60))/5;
   // percentage of hour passed
-  float hourFrac = ((p.ms/1024.0) + p.sec + (60*p.min))/3600.0;
+  float hourFrac = ((*ms/1024.0) + p.sec + (60*p.min))/3600.0;
 
 
   // fill the hour dots

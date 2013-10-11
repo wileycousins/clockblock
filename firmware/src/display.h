@@ -25,14 +25,16 @@
 
 class Display {
 public:
-  // constructor initializes the mode to something
-  Display();
+  // constructor initializes the mode
+  // parameters:
+  //   ms - pointer to the application's millisecond timer for good smoothing
+  Display(volatile uint16_t *millis);
 
   // get the dot display
   // parameters:
   //   hour, min, sec - time
   //   dots - dot array output
-  void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t ms, uint16_t *dots);
+  void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots);
 
   // set the display mode
   // parameters:
@@ -46,9 +48,11 @@ private:
     uint8_t hour;
     uint8_t min;
     uint8_t sec;
-    uint16_t ms;
     uint16_t *dots;
   } DisplayParams;
+
+  // location of millisecond counter
+  volatile uint16_t *ms;
 
   // display mode
   uint8_t mode;

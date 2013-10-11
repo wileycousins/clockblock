@@ -72,7 +72,7 @@ DS3234 rtc(&spi, &PORTB, 2, &PORTB, 0, &RTC_INT_PORT, RTC_INT_PIN);
 //TLC5971 leds(3, &PORTC, 5, &PORTC, 4);
 
 // Display class - contains all the different display modes of the clockblock
-Display leds;
+Display leds(&ms);
 
 // ****************************
 // BREADBOARD EDITION EXCLUSIVE

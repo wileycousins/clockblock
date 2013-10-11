@@ -21,19 +21,11 @@
 // **************************
 // this ISR driver by a 1024 Hz squarewave from the RTC
 ISR(INT0_vect) {
-
-  
   ms++;
   // tick the display 32 times a second
   if ( !(ms%32) ) {
     tick = true;
   }
-  // tock the time once a second
-  if (ms > 1023) {
-    tock = true;
-    ms = 0;
-  }
-  
 }
 
 
@@ -91,16 +83,16 @@ int main() {
     if (timeSet) {
       
     }
-
-    // update the time on a tock
-    if (tock) {
-      tock = false;
-      // get the time
-      rtc.getTime(tm);
-    }
     // update the arms on a tick
     if (tick) {
       tick = false;
+      // get the time
+      rtc.getTime(tm);
+      // reset milliseconds if new second
+      if (tm[0] != lastSec) {
+        lastSec = tm[0];
+        ms = 0;
+      }
       // update the clock arms
       updateArms(tm[2], tm[1], tm[0]);
     }
@@ -115,7 +107,7 @@ int main() {
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec) {
   uint16_t dots[DISPLAY_NUM_DOTS];
 
-  leds.getDisplay(hour, min, sec, ms, dots);
+  leds.getDisplay(hour, min, sec, dots);
 
   // update the LEDs
   for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
