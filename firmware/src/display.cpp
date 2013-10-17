@@ -7,18 +7,20 @@
 
 #include "display.h"
 
-Display::Display(volatile uint16_t *millis) {
-  // save the millisecond timer location
-  ms = millis;
+Display::Display(void) {
   // set default mode to fill
   mode = DISPLAY_MODE_FILL;
 }
 
-void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots) {
+void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
+  // pass in milliseconds (16 bit volatile ISR int needs an atomic block to ensure proper copying)
+  //ATOMIC_BLOCK
+
   DisplayParams p = {
     hour,
     min,
     sec,
+    frame,
     dots
   };
 
@@ -194,6 +196,49 @@ void Display::displayArms(DisplayParams p) {
   uint8_t hourHand = p.hour % 12;
   uint8_t minHand  = p.min / 5;
   uint8_t secHand  = p.sec / 5;
+}
 
-  
+// animation to display when setting the time
+void Display::displaySet(DisplayParams p) {
+  // hands (take care of the wrap around)
+  p.hour %= 12;
+  uint8_t minHand = p.min/5;
+  uint8_t nextMinHand = (minHand == 11) ? 0 : minHand+1;
+  // percentage of minute hand passed
+  uint8_t minMod = p.min%5;
+
+  // pulse the second lights, blend the minute hand, and have a discrete hour dot
+  // second lights
+  float frac;
+  if (p.frame > 15) {
+    frac = (32-p.frame)/16.0;
+  }
+  else {
+    frac = (1+p.frame)/16.0;
+  }
+  for (uint8_t i=0; i<12; i++) {
+    p.dots[(i*3)+2] = 200 + (uint16_t)((DISPLAY_LVL_MAX-200) * frac);
+  }
+ 
+  // all minute dots previous get set to off
+  for (uint8_t i=0; i<minHand; i++) {
+    p.dots[(i*3)+1] = 0;
+  }
+  // current and next minute dot to fractions
+  p.dots[(minHand*3)+1]     = (uint16_t)(DISPLAY_LVL_MAX * ((5-minMod)/5.0));
+  p.dots[(nextMinHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * (minMod/5.0));
+  // all other minute dots off
+  for (uint8_t i=minHand+2; i<12; i++) {
+    p.dots[(i*3)+1] = 0;
+  }
+
+  // all hours previous are off
+  for (uint8_t i=0; i<p.hour; i++) {
+    p.dots[i*3] = 0;
+  }
+  p.dots[p.hour*3] = DISPLAY_LVL_MAX;
+  // all other hours off
+  for (uint8_t i=p.hour+1; i<12; i++) {
+    p.dots[i*3] = 0;
+  }
 }

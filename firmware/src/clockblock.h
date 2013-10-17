@@ -82,7 +82,7 @@ DS3234 rtc(&spi, &PORTB, 2, &PORTB, 0, &RTC_INT_PORT, RTC_INT_PIN);
 //TLC5971 leds(3, &PORTC, 5, &PORTC, 4);
 
 // Display class - contains all the different display modes of the clockblock
-Display leds(&ms);
+Display leds;
 
 // ****************************
 // BREADBOARD EDITION EXCLUSIVE
@@ -132,6 +132,6 @@ void initTLCTimers(void) {
 // main application
 int main(void);
 // update clock arms
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec);
+void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr);
 // initialie input / unused pins
 void initPins(void);

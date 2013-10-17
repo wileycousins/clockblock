@@ -9,6 +9,7 @@
 // AVR includes necessary for this file
 // ************************************
 #include <util/delay.h>
+#include <util/atomic.h>
 
 // ********************
 // application includes
@@ -30,8 +31,13 @@ ISR(INT0_vect) {
 
 #ifdef BREADBOARD
 // ISR for serial data input into TLC5940
-ISR(TIMER0_COMPA_vect) {
+ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
+  // disable this ISR
+  TIMSK0 &= ~(1 << OCIE0A);
+  // refresh the data
   tlc.refreshGS();
+  // re-enable this ISR
+  TIMSK0 |= (1 << OCIE0A);
 }
 #endif
 
@@ -72,6 +78,8 @@ int main(void) {
   uint8_t tm[3] = {0, 58, 11};
   set[0] = 0;
   set[1] = 1;
+  // animation frame
+  uint8_t fr = 0;
   // last second measurement - used to sync up the milliseconds
   uint8_t lastSec = 0;
 
@@ -98,7 +106,7 @@ int main(void) {
   sei();
 
   // set the display mode
-  leds.setMode(DISPLAY_MODE_BLEND);
+  leds.setMode(DISPLAY_MODE_SET);
 
   // enable inputs
   initPins();
@@ -118,15 +126,20 @@ int main(void) {
     // update the arms on a tick
     if (tick) {
       tick = false;
+      // increment the frame
+      fr++;
       // get the time
       rtc.getTime(tm);
       // reset milliseconds if new second
       if (tm[0] != lastSec) {
         lastSec = tm[0];
-        ms = 0;
+        fr = 0;
+        ATOMIC_BLOCK(ATOMIC_FORCEON) {
+          ms = 0;
+        }
       }
       // update the clock arms
-      updateArms(tm[2], tm[1], tm[0]);
+      updateArms(tm[2], tm[1], tm[0], fr);
     }
   }
 
@@ -136,10 +149,10 @@ int main(void) {
 
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec) {
+void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame) {
   uint16_t dots[DISPLAY_NUM_DOTS];
 
-  leds.getDisplay(hour, min, sec, dots);
+  leds.getDisplay(hour, min, sec, frame, dots);
 
   // update the LEDs
   for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {

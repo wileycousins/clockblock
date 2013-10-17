@@ -23,20 +23,20 @@
 #define DISPLAY_MODE_BLEND 1
 #define DISPLAY_MODE_PIE   2
 #define DISPLAY_MODE_ARMS  3
-#define DISPlAY_MODE_SET   255
+#define DISPLAY_MODE_SET   255
 
 class Display {
 public:
   // constructor initializes the mode
   // parameters:
   //   ms - pointer to the application's millisecond timer for good smoothing
-  Display(volatile uint16_t *millis);
+  Display(void);
 
   // get the dot display
   // parameters:
   //   hour, min, sec - time
   //   dots - dot array output
-  void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots);
+  void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots);
 
   // set the display mode
   // parameters:
@@ -50,6 +50,7 @@ private:
     uint8_t hour;
     uint8_t min;
     uint8_t sec;
+    uint8_t frame;
     uint16_t *dots;
   } DisplayParams;
 
@@ -64,6 +65,9 @@ private:
   void displayBlend(DisplayParams p);
   void displayPie(DisplayParams p);
   void displayArms(DisplayParams p);
+
+  // set time animation
+  void displaySet(DisplayParams p);
 };
 
 #endif
