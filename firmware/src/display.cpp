@@ -190,4 +190,6 @@ void Display::displayArms(DisplayParams p) {
   uint8_t hourHand = p.hour % 12;
   uint8_t minHand  = p.min / 5;
   uint8_t secHand  = p.sec / 5;
+
+  
 }
