@@ -118,11 +118,11 @@ void Display::displayBlend(DisplayParams p) {
   uint8_t nextHour     = (p.hour == 11) ? 0 : p.hour+1;
 
   // percentage of the second hand passed
-  float secFrac = ((p.sec%5) + (*ms/1024.0))/5;
+  float secFrac = ((p.sec%5) + (p.frame/32.0))/5;
   // percentage of minute hand passed
-  float minFrac = ((p.min%5) + ((p.sec+(*ms/1024.0))/60))/5;
+  float minFrac = ((p.min%5) + ((p.sec+(p.frame/32.0))/60))/5;
   // percentage of hour passed
-  float hourFrac = ((*ms/1024.0) + p.sec + (60*p.min))/3600.0;
+  float hourFrac = ((p.frame/32.0) + p.sec + (60*p.min))/3600.0;
 
 
   // fill the hour dots
@@ -217,7 +217,7 @@ void Display::displaySet(DisplayParams p) {
     frac = (1+p.frame)/16.0;
   }
   for (uint8_t i=0; i<12; i++) {
-    p.dots[(i*3)+2] = 200 + (uint16_t)((DISPLAY_LVL_MAX-200) * frac);
+    p.dots[(i*3)+2] = (uint16_t)((DISPLAY_LVL_MAX) * frac);
   }
  
   // all minute dots previous get set to off

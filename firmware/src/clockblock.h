@@ -45,14 +45,14 @@
 // *************
 // millisecond counter incremented by the ~1 kHz squarewave from the RTC
 volatile uint16_t ms;
-// vector for time set increments (hours and minutes)
-volatile uint8_t set[2];
 // flag set by the ISR when it's time to update the clock arms
 volatile bool tick;
-// flag set when it's time to sync with the RTC
-volatile bool tock;
 // flag set by user input to change the time
 volatile bool timeSet;
+// switch state
+volatile uint8_t inputState;
+// switch timer counter
+volatile uint8_t timerCount;
 
 
 // ***********
@@ -133,5 +133,10 @@ void initTLCTimers(void) {
 int main(void);
 // update clock arms
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr);
-// initialie input / unused pins
+// initialize input and timer
 void initPins(void);
+void initSwitchTimer(void);
+// switch state and timer state
+uint8_t getSwitchState(void);
+void enableSwitchTimer(void);
+void disableSwitchTimer(void);

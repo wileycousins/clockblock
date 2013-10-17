@@ -54,9 +54,6 @@ private:
     uint16_t *dots;
   } DisplayParams;
 
-  // location of millisecond counter
-  volatile uint16_t *ms;
-
   // display mode
   uint8_t mode;
 

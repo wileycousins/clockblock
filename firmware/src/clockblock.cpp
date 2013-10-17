@@ -45,22 +45,42 @@ ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
 ISR(PCINT1_vect, ISR_NOBLOCK) {
   // disable the pin change interrupt
   INPUT_PCICR &= ~INPUT_PCIE;
-  // save the switch levels
-  uint8_t hourSw = INPUT_PIN & INPUT_HOUR_SET;
-  uint8_t minSw = INPUT_PIN & INPUT_MIN_MODE;
-  // debounce
-  _delay_ms(20);
-  // compare levels and act appropriately
-  if ( !(hourSw) && (hourSw == (INPUT_PIN & INPUT_HOUR_SET)) ) {
-    set[1]++;
-    timeSet = true;
+  // save the state that triggered the interrupt
+  inputState = getSwitchState();
+  // check if isn't something we care about, and re-enable the interrupt if so
+  if ( !inputState || ((inputState & INPUT_HOUR_SET) && (inputState & INPUT_MIN_MODE)) ) {
+    // re-enable pin change interrupt
+    INPUT_PCICR |= INPUT_PCIE;
   }
-  if ( !(minSw) && (minSw == (INPUT_PIN & INPUT_MIN_MODE)) ) {
-    set[0]++;
-    timeSet = true;
+  // else, start the timer
+  else {
+    enableSwitchTimer();
   }
-  // re-enable pin change interrupt
-  INPUT_PCICR |= INPUT_PCIE;
+}
+
+// switch debouncer / timer
+ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
+  // disable this interrupt
+  disableSwitchTimer();
+  // check that the state still matches
+  if (getSwitchState() == inputState) {
+    // increment the timer
+    timerCount++;
+    // check for timer end
+    if (timerCount >= 60) {
+      // set the flag
+      timeSet = true;
+      timerCount = 0;
+    }
+    // else, re-enable the timer interrupt
+    else {
+      enableSwitchTimer();
+    }
+  }
+  else {
+    // if the state doesn't match, give up and re-enable pcint
+    INPUT_PCICR |= INPUT_PCIE;
+  }
 }
 
 
@@ -76,12 +96,14 @@ int main(void) {
   // application variables
   // time vector - { seconds, minutes, hours}
   uint8_t tm[3] = {0, 58, 11};
-  set[0] = 0;
-  set[1] = 1;
+  // set time vector - { minutes, hours }
+  uint8_t set[2];
   // animation frame
   uint8_t fr = 0;
   // last second measurement - used to sync up the milliseconds
   uint8_t lastSec = 0;
+  // if we're in a set-time routine
+  bool settingTime = false;
 
   // initialize the RTC
   rtc.init();
@@ -106,23 +128,40 @@ int main(void) {
   sei();
 
   // set the display mode
-  leds.setMode(DISPLAY_MODE_SET);
+  leds.setMode(DISPLAY_MODE_BLEND);
 
   // enable inputs
+  timerCount = 0;
   initPins();
+  initSwitchTimer();
 
   // get lost
   for (;;) {
+
     // check the set time flag
     if (timeSet) {
+      // clear the ISR flag
       timeSet = false;
-      tm[2] = (tm[2] + set[1]) % 12;
-      tm[2] = (tm[2] == 0) ? 12 : tm[2];
-      tm[1] = (tm[1] + set[0]) % 60;
-      rtc.setTime(DS3234_AM, tm);
-      set[0] = 0;
-      set[1] = 0;
+      // set the application flag
+      if (!settingTime) {
+        settingTime = true;
+        // get the current set time
+        set[0] = tm[1];
+        set[1] = tm[2];
+        // set the display mode
+        leds.setMode(DISPLAY_MODE_SET);
+      }
+      else {
+        settingTime = false;
+        tm[2] = set[1];
+        tm[1] = set[0];
+        rtc.setTime(tm);
+        leds.setMode(DISPLAY_MODE_BLEND);
+      }
+      // re-enable pin change interrupt
+      INPUT_PCICR |= INPUT_PCIE;
     }
+
     // update the arms on a tick
     if (tick) {
       tick = false;
@@ -138,8 +177,15 @@ int main(void) {
           ms = 0;
         }
       }
+
       // update the clock arms
-      updateArms(tm[2], tm[1], tm[0], fr);
+      if (!settingTime) {
+        updateArms(tm[2], tm[1], tm[0], fr);
+      }
+      else {
+        updateArms(set[1], set[0], tm[0], fr);
+      }
+      
     }
   }
 
@@ -171,4 +217,23 @@ void initPins(void) {
   // enable pin change interrupt on these pins
   INPUT_PCMSK |= ( INPUT_HOUR_SET | INPUT_MIN_MODE );
   INPUT_PCICR |= INPUT_PCIE;
+}
+
+uint8_t getSwitchState(void) {
+  return INPUT_PIN & ( INPUT_HOUR_SET | INPUT_MIN_MODE );
+}
+
+void initSwitchTimer(void) {
+  // ensure timer2 settings are cleared out
+  TCCR2A = 0;
+  // set prescaler to 1024
+  TCCR2B = ( (1 << CS22) | (1 << CS21) | (1 << CS20) );
+}
+
+void enableSwitchTimer(void) {
+  TIMSK2 = (1 << TOIE2);
+}
+
+void disableSwitchTimer(void) {
+  TIMSK2 = 0;
 }
