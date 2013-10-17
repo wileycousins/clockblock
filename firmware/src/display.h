@@ -23,6 +23,7 @@
 #define DISPLAY_MODE_BLEND 1
 #define DISPLAY_MODE_PIE   2
 #define DISPLAY_MODE_ARMS  3
+#define DISPlAY_MODE_SET   255
 
 class Display {
 public:

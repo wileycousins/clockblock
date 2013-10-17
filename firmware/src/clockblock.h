@@ -29,7 +29,15 @@
 #define RTC_INT_PIN  2
 // avr external interrupt (0 or 1, INT0_vect or INT1_vect)
 #define RTC_INT      0
-#define RTC_INT_vect INTO_vect
+// input pins
+#define INPUT_PORT      PORTC
+#define INPUT_PIN       PINC
+#define INPUT_DDR       DDRC
+#define INPUT_HOUR_SET  (1<<0)
+#define INPUT_MIN_MODE  (1<<1)
+#define INPUT_PCMSK     PCMSK1
+#define INPUT_PCICR     PCICR
+#define INPUT_PCIE      (1<<PCIE1)
 
 
 // *************
@@ -37,6 +45,8 @@
 // *************
 // millisecond counter incremented by the ~1 kHz squarewave from the RTC
 volatile uint16_t ms;
+// vector for time set increments (hours and minutes)
+volatile uint8_t set[2];
 // flag set by the ISR when it's time to update the clock arms
 volatile bool tick;
 // flag set when it's time to sync with the RTC
@@ -120,6 +130,8 @@ void initTLCTimers(void) {
 // function prototypes
 // *******************
 // main application
-int main();
+int main(void);
 // update clock arms
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec);
+// initialie input / unused pins
+void initPins(void);

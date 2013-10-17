@@ -19,7 +19,7 @@
 // **************************
 // INTERRUPT SERVICE ROUTINES
 // **************************
-// this ISR driver by a 1024 Hz squarewave from the RTC
+// this ISR driven by a 1024 Hz squarewave from the RTC
 ISR(INT0_vect) {
   ms++;
   // tick the display 32 times a second
@@ -28,7 +28,6 @@ ISR(INT0_vect) {
   }
 }
 
-
 #ifdef BREADBOARD
 // ISR for serial data input into TLC5940
 ISR(TIMER0_COMPA_vect) {
@@ -36,12 +35,34 @@ ISR(TIMER0_COMPA_vect) {
 }
 #endif
 
+// ISR for switch inputs
+ISR(PCINT1_vect, ISR_NOBLOCK) {
+  // disable the pin change interrupt
+  INPUT_PCICR &= ~INPUT_PCIE;
+  // save the switch levels
+  uint8_t hourSw = INPUT_PIN & INPUT_HOUR_SET;
+  uint8_t minSw = INPUT_PIN & INPUT_MIN_MODE;
+  // debounce
+  _delay_ms(20);
+  // compare levels and act appropriately
+  if ( !(hourSw) && (hourSw == (INPUT_PIN & INPUT_HOUR_SET)) ) {
+    set[1]++;
+    timeSet = true;
+  }
+  if ( !(minSw) && (minSw == (INPUT_PIN & INPUT_MIN_MODE)) ) {
+    set[0]++;
+    timeSet = true;
+  }
+  // re-enable pin change interrupt
+  INPUT_PCICR |= INPUT_PCIE;
+}
+
 
 // ***********
 // application
 // ***********
 // main
-int main() {
+int main(void) {
   // give those global vairables some values
   tick = false;
   ms = 0;
@@ -49,6 +70,8 @@ int main() {
   // application variables
   // time vector - { seconds, minutes, hours}
   uint8_t tm[3] = {0, 58, 11};
+  set[0] = 0;
+  set[1] = 1;
   // last second measurement - used to sync up the milliseconds
   uint8_t lastSec = 0;
 
@@ -77,11 +100,20 @@ int main() {
   // set the display mode
   leds.setMode(DISPLAY_MODE_BLEND);
 
+  // enable inputs
+  initPins();
+
   // get lost
   for (;;) {
     // check the set time flag
     if (timeSet) {
-      
+      timeSet = false;
+      tm[2] = (tm[2] + set[1]) % 12;
+      tm[2] = (tm[2] == 0) ? 12 : tm[2];
+      tm[1] = (tm[1] + set[0]) % 60;
+      rtc.setTime(DS3234_AM, tm);
+      set[0] = 0;
+      set[1] = 0;
     }
     // update the arms on a tick
     if (tick) {
@@ -114,4 +146,16 @@ void updateArms(uint8_t hour, uint8_t min, uint8_t sec) {
     tlc.setGS(i, dots[i]);
   }
   tlc.update();
+}
+
+// initialize input pins as inputs with pullups enabled
+void initPins(void) {
+  // clear pins in DDR to inputs
+  INPUT_DDR &= ~( INPUT_HOUR_SET | INPUT_MIN_MODE );
+  // enable pull up resistors
+  INPUT_PORT |= ( INPUT_HOUR_SET | INPUT_MIN_MODE );
+
+  // enable pin change interrupt on these pins
+  INPUT_PCMSK |= ( INPUT_HOUR_SET | INPUT_MIN_MODE );
+  INPUT_PCICR |= INPUT_PCIE;
 }

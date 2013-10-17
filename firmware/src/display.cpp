@@ -38,6 +38,10 @@ void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots)
 
     case DISPLAY_MODE_ARMS:
       displayArms(p);
+      break;
+    
+    case DISPLAY_MODE_SET:
+      displaySet(p);
 
     default:
       break;
@@ -45,7 +49,7 @@ void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint16_t *dots)
 }
 
 void Display::setMode(uint8_t m) {
-  if (m < DISPLAY_NUM_MODES) {
+  if (m < DISPLAY_NUM_MODES || m == DISPLAY_MODE_SET) {
     mode = m;
   }
 }
