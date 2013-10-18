@@ -38,7 +38,10 @@
 #define INPUT_PCMSK     PCMSK1
 #define INPUT_PCICR     PCICR
 #define INPUT_PCIE      (1<<PCIE1)
-
+// operating modes
+#define MODE_CLOCK        0
+#define MODE_TIME_SET     1
+#define MODE_DISPLAY_SET  2
 
 // *************
 // ISR variables
@@ -50,9 +53,12 @@ volatile bool tick;
 // flag set by user input to change the time
 volatile bool timeSet;
 // switch state
-volatile uint8_t inputState;
+volatile uint8_t switchState;
 // switch timer counter
-volatile uint8_t timerCount;
+volatile uint8_t switchTimerCount;
+// switch event flags
+volatile bool switchPress;
+volatile bool switchHold;
 
 
 // ***********
@@ -140,3 +146,6 @@ void initSwitchTimer(void);
 uint8_t getSwitchState(void);
 void enableSwitchTimer(void);
 void disableSwitchTimer(void);
+void enableSwitchInt(void);
+void disableSwitchInt(void);
+bool switchStateValid(void);

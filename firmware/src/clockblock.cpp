@@ -43,43 +43,42 @@ ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
 
 // ISR for switch inputs
 ISR(PCINT1_vect, ISR_NOBLOCK) {
-  // disable the pin change interrupt
-  INPUT_PCICR &= ~INPUT_PCIE;
+  // diable the timer and switch interrupts and reset the switch timer counter
+  disableSwitchTimer();
+  disableSwitchInt();
+  switchTimerCount = 0;
   // save the state that triggered the interrupt
-  inputState = getSwitchState();
-  // check if isn't something we care about, and re-enable the interrupt if so
-  if ( !inputState || ((inputState & INPUT_HOUR_SET) && (inputState & INPUT_MIN_MODE)) ) {
-    // re-enable pin change interrupt
-    INPUT_PCICR |= INPUT_PCIE;
-  }
-  // else, start the timer
-  else {
-    enableSwitchTimer();
-  }
+  switchState = getSwitchState();
+  // start the switch timer to debounce and time if necessary
+  enableSwitchTimer();
 }
 
 // switch debouncer / timer
 ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
   // disable this interrupt
   disableSwitchTimer();
-  // check that the state still matches
-  if (getSwitchState() == inputState) {
+  // check that the state still matches and that it's some thing we care about
+  if (switchStateValid() && (getSwitchState() == switchState)) {
     // increment the timer
-    timerCount++;
-    // check for timer end
-    if (timerCount >= 60) {
-      // set the flag
-      timeSet = true;
-      timerCount = 0;
+    switchTimerCount++;
+    // check for a hold event
+    if (switchTimerCount >= 60) {
+      // set the hold flag
+      switchHold = true;
     }
     // else, re-enable the timer interrupt
     else {
       enableSwitchTimer();
+      // check for a normal press event
+      if (switchTimerCount == 2) {
+        switchPress = true;
+        enableSwitchInt();
+      }
     }
   }
   else {
-    // if the state doesn't match, give up and re-enable pcint
-    INPUT_PCICR |= INPUT_PCIE;
+    // if it was a bounce or if it was something we don't care about, re-enable pin change interrupt
+    enableSwitchInt();
   }
 }
 
@@ -131,13 +130,23 @@ int main(void) {
   leds.setMode(DISPLAY_MODE_BLEND);
 
   // enable inputs
-  timerCount = 0;
+  switchTimerCount = 0;
   initPins();
   initSwitchTimer();
+  enableSwitchInt();
+
+  // set the operating mode
+  uint8_t opMode = MODE_CLOCK;
 
   // get lost
   for (;;) {
 
+    // take care of any switch holds
+    if (switchHold) {
+
+    }
+
+    /*
     // check the set time flag
     if (timeSet) {
       // clear the ISR flag
@@ -161,6 +170,7 @@ int main(void) {
       // re-enable pin change interrupt
       INPUT_PCICR |= INPUT_PCIE;
     }
+    */
 
     // update the arms on a tick
     if (tick) {
@@ -214,9 +224,8 @@ void initPins(void) {
   // enable pull up resistors
   INPUT_PORT |= ( INPUT_HOUR_SET | INPUT_MIN_MODE );
 
-  // enable pin change interrupt on these pins
+  // set up pin change interrupt on these pins
   INPUT_PCMSK |= ( INPUT_HOUR_SET | INPUT_MIN_MODE );
-  INPUT_PCICR |= INPUT_PCIE;
 }
 
 uint8_t getSwitchState(void) {
@@ -239,4 +248,18 @@ void enableSwitchTimer(void) {
 
 void disableSwitchTimer(void) {
   TIMSK2 = 0;
+}
+
+void enableSwitchInt(void) {
+  // enable the pin change interrupt
+  INPUT_PCICR |= INPUT_PCIE;
+}
+
+void disableSwitchInt(void) {
+  // disable the pin change interrupt
+  INPUT_PCICR &= ~INPUT_PCIE;
+}
+
+bool switchStateValid(void) {
+  return (switchState != ( INPUT_HOUR_SET | INPUT_MIN_MODE ));
 }
