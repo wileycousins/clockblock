@@ -1,0 +1,87 @@
+extends layout
+
+block content
+  .navbar.nav(role="navigation")
+    .nav-link.home-link
+      a(href='/')
+        img(src='/images/logo.png')
+    .nav-link
+      a(href='#about') about
+    .nav-link
+      a(href='#buy') buy
+    .nav-link
+      a(href='#learn') learn
+    .nav-link
+      a(href='#contact') contact
+  #about.row
+    br
+    .container
+      .col-sm-12
+        .row
+          h2 clock<span class='red'>block</span>
+          br
+          .col-sm-6.col-sm-offset-3.text-justify
+            p <i>clockblock</i> is minimalistic clock for people who appreciate modern design and contemporary technology. <i>clockblock</i> is made out of LEDs and fine hand finished wood. Everything is made by hand here in New Orleans.
+        .row
+          .col-xs-12
+            br
+            br
+        .row
+          #equation.col-xs-12
+            .col-xs-3.cypress
+              h4.white cypress
+              img.img-rounded(src='/images/cypress.jpg')
+            .col-xs-1.plus
+              h4.red +
+            .col-xs-3.tech
+              h4.white technology
+              img(src='/images/tech.png')
+            .col-xs-1.plus
+              h4.red =
+            .col-xs-3
+              //-h4.white technology
+              img(src='/images/logo.png')
+  .row
+    .col-sm-12
+      br
+      br
+      hr.dotted
+      br
+  #buy.row
+    br
+    .container
+      .col-sm-12
+        .row
+          h2 you want one?
+          br
+          .col-sm-8.col-sm-offset-2.text-justify
+            p well you're easy... signup here and we'll let you know when they're available. <i>clockblock</i> will be available for this holiday season.
+            form(action="http://wileycousins.us7.list-manage1.com/subscribe/post?u=a1a988834f7bae7bc666c5757&amp;id=81a56087ef", method="post", id="mc-embedded-subscribe-form", name="mc-embedded-subscribe-form", target="_blank", novalidate)
+              .input-group
+                span.input-group-addon.gray email:
+                input.form-control(type='email', name='EMAIL', placeholder='fordperfect@earth.com')
+                span.input-group-addon
+                  button#email-signup-button.btn.btn-default submit
+            br
+            p really want one? the first 5 will be sold in person in New Orleans in early November, so <a href='http://blog.wileycousins.com' target='_blank'>track us down!</a>
+  .row
+    .col-sm-12
+      br
+      br
+      hr.dotted
+      br
+  #learn.row
+    .container
+      .col-sm-12
+        .row
+          h2.pull-right we're open  source
+        .row
+          br
+          br
+        .row
+          p.text-center check it out on github
+          .col-sm-12
+            .link
+              a(href='https://github.com/wileycousins/clockblock', target='_blank')
+                img(src='/images/oshw-logo.svg', title='open source hardware')
+                img.hover(src='/images/oshw-logo-hover.svg', title='open source hardware')

@@ -1,0 +1,215 @@
+@import url("http://fonts.googleapis.com/css?family=Ubuntu:400,500,700,500italic|Roboto:400,300,500");
+@import url("http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css");
+.red {
+  color: #cc2920;
+}
+.gray {
+  color: #b9c3cc;
+}
+.black {
+  color: #242323;
+}
+.white {
+  color: #f9ffff;
+}
+.text-justify {
+  text-align: justify;
+}
+* {
+  text-decoration: none;
+  font-family: "Helvetica Neue", "Helvetica", sans-serif;
+  color: #242323;
+  letter-spacing: 5px;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+body {
+  background: #f9ffff;
+}
+a {
+  color: #cc2920;
+  font-weight: 100;
+}
+a:hover {
+  text-decoration: none;
+  cursor: pointer;
+  color: #f9ffff;
+  font-weight: 900;
+}
+a:hover h4 {
+  color: #f9ffff;
+}
+a:hover p {
+  color: #f9ffff;
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #b9c3cc;
+  font-weight: 200;
+}
+h2 {
+  font-size: 60px;
+  font-weight: 400;
+}
+.strong {
+  font-weight: 500;
+}
+hr {
+  color: #cc2920;
+  border-color: #cc2920;
+}
+hr.dotted {
+  border-style: dashed;
+  border-spacing: 10px 50px;
+}
+hr.white {
+  color: #f9ffff;
+  border-color: #f9ffff;
+}
+.link {
+  text-align: center;
+  margin: 0px auto;
+  width: 100px;
+  height: 100px;
+  display: block;
+  float: none;
+  position: relative;
+  padding: 0;
+}
+.link img {
+  padding: 0;
+  margin: 0;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  transition: opacity 0.5s;
+  opacity: 1;
+  width: 100px;
+}
+.link img.hover {
+  opacity: 0;
+}
+.link:hover img.hover {
+  opacity: 1;
+}
+.link:hover img:not(.hover) {
+  opacity: 0;
+}
+strong {
+  font-variant: small-caps;
+  font-size: 13pt;
+  color: #d1dbbd;
+}
+i {
+  font-style: italic;
+}
+a,
+p {
+  font-weight: 400;
+}
+p {
+  font-weight: 100;
+  letter-spacing: 4px;
+}
+#home {
+  padding-bottom: 100px;
+}
+#home > div:not(.nav) {
+  margin: 50px auto;
+}
+.navbar.nav {
+  height: auto;
+  background: #b9c3cc;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  min-height: 20px;
+  border-radius: 0px;
+  margin: 0px;
+  box-shadow: 0px -10px 15px rgba(0,0,0,0.1);
+}
+.navbar.nav .nav-link {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  display: inline-block;
+  color: #b9c3cc;
+  border-right: 1px solid #f9ffff;
+  padding: 15px 50px;
+}
+.navbar.nav .nav-link a {
+  font-size: 23px;
+  font-weight: 200;
+}
+.navbar.nav .nav-link:last-child {
+  border-right: none;
+}
+.navbar.nav .nav-link.home-link {
+  border-right: 3px solid #f9ffff;
+}
+.navbar.nav .nav-link.home-link img {
+  height: 100px;
+}
+.navbar.nav.navbar-fixed-top {
+  transition: box-shadow 1s;
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
+}
+#about h2 {
+  border-bottom: 2px solid #242323;
+  border-top: 2px solid #242323;
+  margin: 10px auto;
+  width: 337px;
+  height: 75px;
+}
+#about #equation {
+  float: left;
+  display: block;
+}
+#about #equation h4 {
+  position: absolute;
+  text-align: center;
+  padding-top: 45%;
+  z-index: 2;
+  width: 90%;
+  font-weight: 900;
+}
+#about #equation img {
+  width: 100%;
+  border-radius: 15px;
+}
+#about #equation .plus h4 {
+  font-weight: 900;
+  font-size: 40px;
+  padding-top: 145%;
+}
+#about #equation .tech h4 {
+  font-weight: 900;
+  margin-left: 5px;
+}
+#buy .input-group .input-group-addon {
+  background: rgba(255,255,255,0);
+}
+#buy .input-group .input-group-addon button.btn.btn-default {
+  background: #b9c3cc;
+  color: #f9ffff;
+}
+#buy .input-group .input-group-addon button.btn.btn-default:hover {
+  background: #f9ffff;
+  color: #b9c3cc;
+}
+#buy .input-group input {
+  height: 50px;
+  background: #f9ffff;
+  color: #242323;
+  letter-spacing: 1px;
+}
+#buy .input-group input:focus {
+  border: none;
+  box-shadow: 0px 0px 2px #cc2920;
+}
