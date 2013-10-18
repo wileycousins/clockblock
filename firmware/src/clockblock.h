@@ -59,6 +59,8 @@ volatile uint8_t switchTimerCount;
 // switch event flags
 volatile bool switchPress;
 volatile bool switchHold;
+volatile uint8_t switchPressState;
+volatile uint8_t switchHoldState;
 
 
 // ***********

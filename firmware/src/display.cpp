@@ -56,6 +56,10 @@ void Display::setMode(uint8_t m) {
   }
 }
 
+uint8_t Display::getMode(void) {
+  return mode;
+}
+
 // different effects
 void Display::displayFill(DisplayParams p) {
   // hour correction

@@ -65,13 +65,15 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
     if (switchTimerCount >= 60) {
       // set the hold flag
       switchHold = true;
+      switchHoldState = switchState;
     }
     // else, re-enable the timer interrupt
     else {
       enableSwitchTimer();
       // check for a normal press event
-      if (switchTimerCount == 2) {
+      if (switchTimerCount == 3) {
         switchPress = true;
+        switchPressState = switchState;
         enableSwitchInt();
       }
     }
@@ -96,7 +98,7 @@ int main(void) {
   // time vector - { seconds, minutes, hours}
   uint8_t tm[3] = {0, 58, 11};
   // set time vector - { minutes, hours }
-  uint8_t set[2];
+  uint8_t set[2] = {0, 0};
   // animation frame
   uint8_t fr = 0;
   // last second measurement - used to sync up the milliseconds
@@ -137,13 +139,99 @@ int main(void) {
 
   // set the operating mode
   uint8_t opMode = MODE_CLOCK;
+  uint8_t dispMode = leds.getMode();
 
   // get lost
   for (;;) {
 
+    // take care of any switch presses
+    if (switchPress) {
+      // clear the flag
+      switchPress = false;
+      // switch press only matters in time and display set modes
+      switch (opMode) {
+        case MODE_TIME_SET:
+          // if the hour switch is low and the minute switch is high, increment the hours by 1
+          if ( !(switchPressState & INPUT_HOUR_SET) && (switchPressState & INPUT_MIN_MODE) ) {
+            set[1] = (set[1] + 1) % 12;
+            set[1] = (set[1] == 0) ? 12 : set[1];
+          }
+          // else if the hour switch is high and the minute switch is low, increment the minutes by 1
+          else if ( (switchPressState & INPUT_HOUR_SET) && !(switchPressState & INPUT_MIN_MODE) ) {
+            set[0] = (set[0] + 1) % 60;
+          }
+          break;
+
+        case MODE_DISPLAY_SET:
+          break;
+
+        default:
+          break;
+      }
+    }
+
     // take care of any switch holds
     if (switchHold) {
+      // clear the flag
+      switchHold = false;
+      // figure out what to do with the hold
+      switch (opMode) {
+        // we're currently operating as a clock: check for a mode command
+        case MODE_CLOCK:
+          // if the hour switch is low and the minute switch is high, go into time set mode
+          if ( !(switchHoldState & INPUT_HOUR_SET) && (switchHoldState & INPUT_MIN_MODE) ) {
+            opMode = MODE_TIME_SET;
+            set[0] = tm[1];
+            set[1] = tm[2];
+            dispMode = leds.getMode();
+            leds.setMode(DISPLAY_MODE_SET);
+          }
+          // else if the hour switch is high and the minute switch is low, go into display set mode
+          //else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
+            //opMode = MODE_DISPLAY_SET;
+            //leds.setMode(DISPLAY_MODE_SET);
+          //}
+          break;
 
+        case MODE_TIME_SET:
+          // if the hour switch is low and the minute switch is high, increment the hours by 3
+          if ( !(switchHoldState & INPUT_HOUR_SET) && (switchHoldState & INPUT_MIN_MODE) ) {
+            set[1] = (set[1] + 3) % 12;
+            set[1] = (set[1] == 0) ? 12 : set[1];
+          }
+          // else if the hour switch is high and the minute switch is low, increment the minutes by 5
+          else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
+            set[0] = (set[0] + 5) % 60;
+          }
+          // else both buttons were held down, so go back to clock mode
+          else {
+            opMode = MODE_CLOCK;
+            tm[2] = set[1];
+            tm[1] = set[0];
+            tm[0] = 0;
+            rtc.setTime(tm);
+            leds.setMode(dispMode);
+          }
+          break;
+
+        case MODE_DISPLAY_SET:
+          // if the hour switch is low and the minute switch is high, increment the hours by 3
+          if ( !(switchHoldState & INPUT_HOUR_SET) && (switchHoldState & INPUT_MIN_MODE) ) {
+             
+          }
+          // else if the hour switch is high and the minute switch is low, increment the minutes by 5
+          else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
+            
+          }
+          // else both buttons were held down, so go back to clock mode
+          else {
+            opMode = MODE_CLOCK;
+          }
+          break;
+
+        default:
+          break;
+      }
     }
 
     /*
@@ -189,13 +277,15 @@ int main(void) {
       }
 
       // update the clock arms
-      if (!settingTime) {
+      if (opMode == MODE_CLOCK) {
         updateArms(tm[2], tm[1], tm[0], fr);
       }
-      else {
+      else if (opMode == MODE_TIME_SET) {
         updateArms(set[1], set[0], tm[0], fr);
       }
-      
+      else {
+        updateArms(tm[2], tm[1], tm[0], fr);
+      } 
     }
   }
 

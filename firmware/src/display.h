@@ -38,10 +38,11 @@ public:
   //   dots - dot array output
   void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots);
 
-  // set the display mode
+  // set / get the display mode
   // parameters:
   //   m - mode as defined above
   void setMode(uint8_t m);
+  uint8_t getMode(void);
 
 private:
   // display parameters (gets passed from getDisplay to the specific private mode method)
