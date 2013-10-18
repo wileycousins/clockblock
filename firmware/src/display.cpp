@@ -42,6 +42,10 @@ void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, 
       displayArms(p);
       break;
     
+    case DISPLAY_MODE_CHANGE:
+      displayChange(p);
+      break;
+
     case DISPLAY_MODE_SET:
       displaySet(p);
 
@@ -51,7 +55,17 @@ void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, 
 }
 
 void Display::setMode(uint8_t m) {
-  if (m < DISPLAY_NUM_MODES || m == DISPLAY_MODE_SET) {
+  if (m == DISPLAY_MODE_CHANGE_EXIT) {
+    mode = newMode;
+  }
+  else if (mode == DISPLAY_MODE_CHANGE) {
+    newMode = m;
+  }
+  else if (m == DISPLAY_MODE_CHANGE) {
+    newMode = mode;
+    mode = m;
+  }
+  else if (m < DISPLAY_NUM_MODES || m == DISPLAY_MODE_SET) {
     mode = m;
   }
 }
@@ -246,3 +260,24 @@ void Display::displaySet(DisplayParams p) {
     p.dots[i*3] = 0;
   }
 }
+
+// animation to display when setting the display mode
+void Display::displayChange(DisplayParams p) {
+  mode = newMode;
+  getDisplay(p.hour, p.min, p.sec, p.frame, p.dots);
+  mode = DISPLAY_MODE_CHANGE;
+
+  // pulse the hour lights, let the rest be what their mode says
+  // second lights
+  float frac;
+  if (p.frame > 15) {
+    frac = (32-p.frame)/16.0;
+  }
+  else {
+    frac = (1+p.frame)/16.0;
+  }
+  for (uint8_t i=0; i<12; i++) {
+    p.dots[(i*3)] = (uint16_t)((DISPLAY_LVL_MAX) * frac);
+  }
+}
+

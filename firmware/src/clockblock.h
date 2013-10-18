@@ -50,18 +50,16 @@
 volatile uint16_t ms;
 // flag set by the ISR when it's time to update the clock arms
 volatile bool tick;
-// flag set by user input to change the time
-volatile bool timeSet;
-// switch state
+// switch states
 volatile uint8_t switchState;
+volatile uint8_t switchPressState;
+volatile uint8_t switchHoldState;
 // switch timer counter
 volatile uint8_t switchTimerCount;
 // switch event flags
 volatile bool switchRelease;
 volatile bool switchPress;
 volatile bool switchHold;
-volatile uint8_t switchPressState;
-volatile uint8_t switchHoldState;
 
 
 // ***********

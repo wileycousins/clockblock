@@ -102,9 +102,17 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
 // ***********
 // main
 int main(void) {
-  // give those global vairables some values
-  tick = false;
+  // give those ISR volatile vairables some values
   ms = 0;
+  tick = false;
+  switchState = 0;
+  switchPressState = 0;
+  switchHoldState = 0;
+  switchTimerCount = 0;
+  switchRelease = false;
+  switchPress = false;
+  switchHold = 0;
+
 
   // application variables
   // time vector - { seconds, minutes, hours}
@@ -115,8 +123,6 @@ int main(void) {
   uint8_t fr = 0;
   // last second measurement - used to sync up the milliseconds
   uint8_t lastSec = 0;
-  // if we're in a set-time routine
-  bool settingTime = false;
 
   // initialize the RTC
   rtc.init();
@@ -176,6 +182,16 @@ int main(void) {
           break;
 
         case MODE_DISPLAY_SET:
+          // if the hour switch is low and the minute switch is high, increment the mode
+          if ( !(switchPressState & INPUT_HOUR_SET) && (switchPressState & INPUT_MIN_MODE) ) {
+            dispMode = (dispMode >= (DISPLAY_NUM_MODES-1)) ? 0 : (dispMode+1);
+            leds.setMode(dispMode);
+          }
+          // else if the hour switch is high and the minute switch is low, decrement the mode
+          else if ( (switchPressState & INPUT_HOUR_SET) && !(switchPressState & INPUT_MIN_MODE) ) {
+            dispMode = (dispMode == 0) ? (DISPLAY_NUM_MODES-1) : (dispMode-1);
+            leds.setMode(dispMode);
+          }
           break;
 
         default:
@@ -198,15 +214,16 @@ int main(void) {
             set[1] = tm[2];
             dispMode = leds.getMode();
             leds.setMode(DISPLAY_MODE_SET);
-            // disable the timer and enable the pin change interrupt
-            disableSwitchTimer();
-            enableSwitchInt();
           }
           // else if the hour switch is high and the minute switch is low, go into display set mode
-          //else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
-            //opMode = MODE_DISPLAY_SET;
-            //leds.setMode(DISPLAY_MODE_SET);
-          //}
+          else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
+            dispMode = leds.getMode();
+            opMode = MODE_DISPLAY_SET;
+            leds.setMode(DISPLAY_MODE_CHANGE);
+          }
+          // disable the timer and enable the pin change interrupt
+          disableSwitchTimer();
+          enableSwitchInt();
           break;
 
         case MODE_TIME_SET:
@@ -231,17 +248,10 @@ int main(void) {
           break;
 
         case MODE_DISPLAY_SET:
-          // if the hour switch is low and the minute switch is high, increment the hours by 3
-          if ( !(switchHoldState & INPUT_HOUR_SET) && (switchHoldState & INPUT_MIN_MODE) ) {
-             
-          }
-          // else if the hour switch is high and the minute switch is low, increment the minutes by 5
-          else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
-            
-          }
           // else both buttons were held down, so go back to clock mode
-          else {
+          if (!switchHoldState) {
             opMode = MODE_CLOCK;
+            leds.setMode(DISPLAY_MODE_CHANGE_EXIT);
           }
           break;
 
@@ -249,32 +259,6 @@ int main(void) {
           break;
       }
     }
-
-    /*
-    // check the set time flag
-    if (timeSet) {
-      // clear the ISR flag
-      timeSet = false;
-      // set the application flag
-      if (!settingTime) {
-        settingTime = true;
-        // get the current set time
-        set[0] = tm[1];
-        set[1] = tm[2];
-        // set the display mode
-        leds.setMode(DISPLAY_MODE_SET);
-      }
-      else {
-        settingTime = false;
-        tm[2] = set[1];
-        tm[1] = set[0];
-        rtc.setTime(tm);
-        leds.setMode(DISPLAY_MODE_BLEND);
-      }
-      // re-enable pin change interrupt
-      INPUT_PCICR |= INPUT_PCIE;
-    }
-    */
 
     // update the arms on a tick
     if (tick) {
