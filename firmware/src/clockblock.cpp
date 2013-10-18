@@ -231,6 +231,9 @@ void initSwitchTimer(void) {
 }
 
 void enableSwitchTimer(void) {
+  // reload timer
+  TCNT2 = 0;
+  // enable the overflow interrupt
   TIMSK2 = (1 << TOIE2);
 }
 
