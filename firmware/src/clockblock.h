@@ -57,6 +57,7 @@ volatile uint8_t switchState;
 // switch timer counter
 volatile uint8_t switchTimerCount;
 // switch event flags
+volatile bool switchRelease;
 volatile bool switchPress;
 volatile bool switchHold;
 volatile uint8_t switchPressState;
@@ -150,4 +151,4 @@ void enableSwitchTimer(void);
 void disableSwitchTimer(void);
 void enableSwitchInt(void);
 void disableSwitchInt(void);
-bool switchStateValid(void);
+bool switchStatePushed(void);

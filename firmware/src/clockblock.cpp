@@ -57,31 +57,43 @@ ISR(PCINT1_vect, ISR_NOBLOCK) {
 ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
   // disable this interrupt
   disableSwitchTimer();
-  // check that the state still matches and that it's some thing we care about
-  if (switchStateValid() && (getSwitchState() == switchState)) {
-    // increment the timer
-    switchTimerCount++;
-    // check for a hold event
-    if (switchTimerCount >= 60) {
-      // set the hold flag
-      switchHold = true;
-      switchHoldState = switchState;
-    }
-    // else, re-enable the timer interrupt
-    else {
-      enableSwitchTimer();
-      // check for a normal press event
-      if (switchTimerCount == 3) {
+  // increment the counter
+  switchTimerCount++;
+  
+  // debounce
+  if (switchTimerCount < 3) {
+    switchRelease = false;
+    // keep the timer going
+    enableSwitchTimer();
+    return;
+  }
+  
+  // check the values still match
+  if (getSwitchState() == switchState) {
+    // if one or both switches are down
+    if (switchStatePushed()) {
+      // check for a hold
+      if (switchTimerCount >= 60) {
+        switchTimerCount = 4;
+        switchPress = false;
+        switchHold = true;
+        switchHoldState = switchState;
+      }
+      // check for a press
+      else if (switchTimerCount == 3) {
         switchPress = true;
         switchPressState = switchState;
-        enableSwitchInt();
       }
+      // re-enable the timer
+      enableSwitchTimer();
+    }
+    // else switches were released
+    else {
+      switchRelease = true;
     }
   }
-  else {
-    // if it was a bounce or if it was something we don't care about, re-enable pin change interrupt
-    enableSwitchInt();
-  }
+  // re-enable the pin change interrupt
+  enableSwitchInt();
 }
 
 
@@ -145,9 +157,10 @@ int main(void) {
   for (;;) {
 
     // take care of any switch presses
-    if (switchPress) {
-      // clear the flag
+    if (switchPress && switchRelease) {
+      // clear the flags
       switchPress = false;
+      switchRelease = false;
       // switch press only matters in time and display set modes
       switch (opMode) {
         case MODE_TIME_SET:
@@ -185,6 +198,9 @@ int main(void) {
             set[1] = tm[2];
             dispMode = leds.getMode();
             leds.setMode(DISPLAY_MODE_SET);
+            // disable the timer and enable the pin change interrupt
+            disableSwitchTimer();
+            enableSwitchInt();
           }
           // else if the hour switch is high and the minute switch is low, go into display set mode
           //else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
@@ -350,6 +366,6 @@ void disableSwitchInt(void) {
   INPUT_PCICR &= ~INPUT_PCIE;
 }
 
-bool switchStateValid(void) {
+bool switchStatePushed(void) {
   return (switchState != ( INPUT_HOUR_SET | INPUT_MIN_MODE ));
 }
