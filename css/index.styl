@@ -37,7 +37,7 @@ body
 
 a
   color $red
-  font-weight 100
+  font-weight 300
 a:hover
   text-decoration none
   cursor pointer
@@ -118,7 +118,24 @@ hr.white
   > div:not(.nav)
     margin 50px auto
 
-.navbar.nav
+@grid-float-breakpoint 
+  width 930px
+  
+div.navbar.nav
+  .navbar-toggle
+    border-color $white
+    float none
+    margin 30px auto
+    width 60px
+    height 60px
+    .icon-bar
+      background-color $red
+      width 40px
+  .navbar-toggle:hover
+    background $white
+  button.navbar-toggle:focus
+    outline-color $red
+    border 0px
   height auto
   //background linear-gradient(top, $mainColor, $gradMid, $mainColor)
   background $gray
@@ -130,6 +147,9 @@ hr.white
   border-radius 0px
   margin 0px
   box-shadow 0px -10px 15px rgba(0,0,0,0.1)
+  ul.nav
+    float none
+    margin 30px auto 0px auto
   .nav-link
     position relative
     left 0px
@@ -148,9 +168,27 @@ hr.white
     img
       height 100px
 
-.navbar.nav.navbar-fixed-top
-  transition box-shadow 1s
-  box-shadow 0px 5px 20px rgba(0,0,0,.2)
+@media screen and (max-width: 940px) and (min-width: 841px)
+  div.navbar.nav
+    .nav-link
+      padding 15px 40px
+@media screen and (max-width: 840px) and (min-width: 769px)
+  div.navbar.nav
+    .nav-link
+      padding 15px 30px
+@media screen and (max-width: 768px)
+  div.navbar.nav
+    ul.nav
+      margin 0px auto
+      .nav-link
+        clear both
+        display block
+        width 60%
+        border-right none
+        border-bottom 1px solid $white
+        margin 0 auto
+      .nav-link:last-child
+        border-bottom none
 
 #about
   h2
@@ -172,6 +210,8 @@ hr.white
         height 100%
         text-align center
         vertical-align middle
+    .cypress
+      margin-left 40px
     h4
       text-align center
       vertical-align middle
@@ -193,10 +233,19 @@ hr.white
       h4
         font-weight 900
         margin-left 5px
+@media screen and (max-width: 460px)
+  #about
+    h2
+      border-bottom 2px solid $black
+      border-top 2px solid $black
+      margin 10px auto
+      width 290px
+      height 66px
+      font-size 50px
 @media (max-width: 650px)
   #about
     #equation
-      > div
+      > div, > div.cypress
         width 250px
         float none
         margin 0 auto

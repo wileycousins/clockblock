@@ -30,7 +30,7 @@ body {
 }
 a {
   color: #cc2920;
-  font-weight: 100;
+  font-weight: 300;
 }
 a:hover {
   text-decoration: none;
@@ -123,7 +123,10 @@ hr.white {
 #home > div:not(.nav) {
   margin: 50px auto;
 }
-.navbar.nav {
+grid-float-breakpoint {
+  width: 930px;
+}
+div.navbar.nav {
   height: auto;
   background: #b9c3cc;
   text-align: center;
@@ -134,7 +137,29 @@ hr.white {
   margin: 0px;
   box-shadow: 0px -10px 15px rgba(0,0,0,0.1);
 }
-.navbar.nav .nav-link {
+div.navbar.nav .navbar-toggle {
+  border-color: #f9ffff;
+  float: none;
+  margin: 30px auto;
+  width: 60px;
+  height: 60px;
+}
+div.navbar.nav .navbar-toggle .icon-bar {
+  background-color: #cc2920;
+  width: 40px;
+}
+div.navbar.nav .navbar-toggle:hover {
+  background: #f9ffff;
+}
+div.navbar.nav button.navbar-toggle:focus {
+  outline-color: #cc2920;
+  border: 0px;
+}
+div.navbar.nav ul.nav {
+  float: none;
+  margin: 30px auto 0px auto;
+}
+div.navbar.nav .nav-link {
   position: relative;
   left: 0px;
   top: 0px;
@@ -143,22 +168,44 @@ hr.white {
   border-right: 1px solid #f9ffff;
   padding: 15px 50px;
 }
-.navbar.nav .nav-link a {
+div.navbar.nav .nav-link a {
   font-size: 23px;
   font-weight: 200;
 }
-.navbar.nav .nav-link:last-child {
+div.navbar.nav .nav-link:last-child {
   border-right: none;
 }
-.navbar.nav .nav-link.home-link {
+div.navbar.nav .nav-link.home-link {
   border-right: 3px solid #f9ffff;
 }
-.navbar.nav .nav-link.home-link img {
+div.navbar.nav .nav-link.home-link img {
   height: 100px;
 }
-.navbar.nav.navbar-fixed-top {
-  transition: box-shadow 1s;
-  box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
+@media screen and (max-width: 940px) and (min-width: 841px) {
+  div.navbar.nav .nav-link {
+    padding: 15px 40px;
+  }
+}
+@media screen and (max-width: 840px) and (min-width: 769px) {
+  div.navbar.nav .nav-link {
+    padding: 15px 30px;
+  }
+}
+@media screen and (max-width: 768px) {
+  div.navbar.nav ul.nav {
+    margin: 0px auto;
+  }
+  div.navbar.nav ul.nav .nav-link {
+    clear: both;
+    display: block;
+    width: 60%;
+    border-right: none;
+    border-bottom: 1px solid #f9ffff;
+    margin: 0 auto;
+  }
+  div.navbar.nav ul.nav .nav-link:last-child {
+    border-bottom: none;
+  }
 }
 #about h2 {
   border-bottom: 2px solid #242323;
@@ -183,6 +230,9 @@ hr.white {
   text-align: center;
   vertical-align: middle;
 }
+#about #equation .cypress {
+  margin-left: 40px;
+}
 #about #equation h4 {
   text-align: center;
   vertical-align: middle;
@@ -205,8 +255,19 @@ hr.white {
   font-weight: 900;
   margin-left: 5px;
 }
+@media screen and (max-width: 460px) {
+  #about h2 {
+    border-bottom: 2px solid #242323;
+    border-top: 2px solid #242323;
+    margin: 10px auto;
+    width: 290px;
+    height: 66px;
+    font-size: 50px;
+  }
+}
 @media (max-width: 650px) {
-  #about #equation > div {
+  #about #equation > div,
+  #about #equation > div.cypress {
     width: 250px;
     float: none;
     margin: 0 auto;
