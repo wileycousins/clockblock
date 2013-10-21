@@ -9,7 +9,7 @@ the website for clockblock
 
 ## running locally
 
-    $ ./script/watch & ./script/server
+    $ ./script/server
     $ open http://127.0.0.1:4000
 
 ## warning
