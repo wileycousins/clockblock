@@ -1,6 +1,5 @@
 @import 'node_modules/nib/lib/nib/gradients'
 
-@import url("http://fonts.googleapis.com/css?family=Ubuntu:400,500,700,500italic|Roboto:400,300,500")
 @import url("http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css")
 
 $gray = #B9C3CC
@@ -60,6 +59,22 @@ h2
 .strong
   font-weight 500
 
+strong
+  font-variant small-caps
+  font-size 13pt
+  color $black
+
+i
+  font-style italic
+
+p
+  font-weight 300
+  letter-spacing 4px
+
+@media screen and (-webkit-min-device-pixel-ratio: 2)
+  p
+    font-weight 100
+
 hr
   color $red
   border-color $red
@@ -97,21 +112,6 @@ hr.white
     opacity 1
   img:not(.hover)
     opacity 0
-
-strong
-  font-variant small-caps
-  font-size 13pt
-  color #D1DBBD
-
-i
-  font-style italic
-
-
-a, p
-  font-weight 400
-p
-  font-weight 100
-  letter-spacing 4px
 
 #home
   padding-bottom 100px
@@ -160,18 +160,29 @@ p
     width 337px
     height 75px
   #equation
-    float left
     display block
-    h4
+    > div > div
       position absolute
+      top 0px
+      left 0px
+      right 0px
+      bottom 0px
+      table
+        width 100%
+        height 100%
+        text-align center
+        vertical-align middle
+    h4
       text-align center
-      padding-top 45%
-      z-index 2
-      width 90%
+      vertical-align middle
+      width 100%
       font-weight 900
     img
+      display table-cell
       width 100%
+      height auto
       border-radius 15px
+      vertical-align middle
     .plus
       h4
         font-weight 900
@@ -182,6 +193,17 @@ p
       h4
         font-weight 900
         margin-left 5px
+@media (max-width: 650px)
+  #about
+    #equation
+      > div
+        width 250px
+        float none
+        margin 0 auto
+      .plus
+        h4
+          padding-top 0px
+  
 #buy
   .input-group
     .input-group-addon
