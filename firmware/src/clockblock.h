@@ -30,14 +30,14 @@
 // avr external interrupt (0 or 1, INT0_vect or INT1_vect)
 //#define RTC_INT      0
 // input pins
-#define INPUT_PORT      PORTC
-#define INPUT_PIN       PINC
-#define INPUT_DDR       DDRC
-#define INPUT_HOUR_SET  (1<<0)
-#define INPUT_MIN_MODE  (1<<1)
-#define INPUT_PCMSK     PCMSK1
-#define INPUT_PCICR     PCICR
-#define INPUT_PCIE      (1<<PCIE1)
+//#define INPUT_PORT      PORTC
+//#define INPUT_PIN       PINC
+//#define INPUT_DDR       DDRC
+//#define INPUT_HOUR_SET  (1<<0)
+//#define INPUT_MIN_MODE  (1<<1)
+//#define INPUT_PCMSK     PCMSK1
+//#define INPUT_PCICR     PCICR
+//#define INPUT_PCIE      (1<<PCIE1)
 // operating modes
 #define MODE_CLOCK        0
 #define MODE_TIME_SET     1
@@ -69,7 +69,7 @@ volatile bool switchHold;
 // parameters:
 //   mosi DDR, pin - PB3
 //   sck DDR, pin  - PB5
-StuPId spi(&DDRB, 3, &DDRB, 5);
+StuPId spi(&SPI_MOSI_DDR, SPI_MOSI_PIN, &SPI_SCK_DDR, SPI_SCK_PIN);
 
 // USART bus for debugging - TO BE IMPLEMENTED
 

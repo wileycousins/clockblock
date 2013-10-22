@@ -171,24 +171,24 @@ int main(void) {
       switch (opMode) {
         case MODE_TIME_SET:
           // if the hour switch is low and the minute switch is high, increment the hours by 1
-          if ( !(switchPressState & INPUT_HOUR_SET) && (switchPressState & INPUT_MIN_MODE) ) {
+          if ( !(switchPressState & INPUT_HOUR) && (switchPressState & INPUT_MIN) ) {
             set[1] = (set[1] + 1) % 12;
             set[1] = (set[1] == 0) ? 12 : set[1];
           }
           // else if the hour switch is high and the minute switch is low, increment the minutes by 1
-          else if ( (switchPressState & INPUT_HOUR_SET) && !(switchPressState & INPUT_MIN_MODE) ) {
+          else if ( (switchPressState & INPUT_HOUR) && !(switchPressState & INPUT_MIN) ) {
             set[0] = (set[0] + 1) % 60;
           }
           break;
 
         case MODE_DISPLAY_SET:
           // if the hour switch is low and the minute switch is high, increment the mode
-          if ( !(switchPressState & INPUT_HOUR_SET) && (switchPressState & INPUT_MIN_MODE) ) {
+          if ( !(switchPressState & INPUT_HOUR) && (switchPressState & INPUT_MIN) ) {
             dispMode = (dispMode >= (DISPLAY_NUM_MODES-1)) ? 0 : (dispMode+1);
             leds.setMode(dispMode);
           }
           // else if the hour switch is high and the minute switch is low, decrement the mode
-          else if ( (switchPressState & INPUT_HOUR_SET) && !(switchPressState & INPUT_MIN_MODE) ) {
+          else if ( (switchPressState & INPUT_HOUR) && !(switchPressState & INPUT_MIN) ) {
             dispMode = (dispMode == 0) ? (DISPLAY_NUM_MODES-1) : (dispMode-1);
             leds.setMode(dispMode);
           }
@@ -208,7 +208,7 @@ int main(void) {
         // we're currently operating as a clock: check for a mode command
         case MODE_CLOCK:
           // if the hour switch is low and the minute switch is high, go into time set mode
-          if ( !(switchHoldState & INPUT_HOUR_SET) && (switchHoldState & INPUT_MIN_MODE) ) {
+          if ( !(switchHoldState & INPUT_HOUR) && (switchHoldState & INPUT_MIN) ) {
             opMode = MODE_TIME_SET;
             set[0] = tm[1];
             set[1] = tm[2];
@@ -216,7 +216,7 @@ int main(void) {
             leds.setMode(DISPLAY_MODE_SET);
           }
           // else if the hour switch is high and the minute switch is low, go into display set mode
-          else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
+          else if ( (switchHoldState & INPUT_HOUR) && !(switchHoldState & INPUT_MIN) ) {
             dispMode = leds.getMode();
             opMode = MODE_DISPLAY_SET;
             leds.setMode(DISPLAY_MODE_CHANGE);
@@ -228,12 +228,12 @@ int main(void) {
 
         case MODE_TIME_SET:
           // if the hour switch is low and the minute switch is high, increment the hours by 3
-          if ( !(switchHoldState & INPUT_HOUR_SET) && (switchHoldState & INPUT_MIN_MODE) ) {
+          if ( !(switchHoldState & INPUT_HOUR) && (switchHoldState & INPUT_MIN) ) {
             set[1] = (set[1] + 3) % 12;
             set[1] = (set[1] == 0) ? 12 : set[1];
           }
           // else if the hour switch is high and the minute switch is low, increment the minutes by 5
-          else if ( (switchHoldState & INPUT_HOUR_SET) && !(switchHoldState & INPUT_MIN_MODE) ) {
+          else if ( (switchHoldState & INPUT_HOUR) && !(switchHoldState & INPUT_MIN) ) {
             set[0] = (set[0] + 5) % 60;
           }
           // else both buttons were held down, so go back to clock mode
@@ -310,16 +310,16 @@ void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame) {
 // initialize input pins as inputs with pullups enabled
 void initPins(void) {
   // clear pins in DDR to inputs
-  INPUT_DDR &= ~( INPUT_HOUR_SET | INPUT_MIN_MODE );
+  DDR(INPUT_PORT) &= ~( INPUT_HOUR | INPUT_MIN );
   // enable pull up resistors
-  INPUT_PORT |= ( INPUT_HOUR_SET | INPUT_MIN_MODE );
+  INPUT_PORT |= ( INPUT_HOUR | INPUT_MIN );
 
   // set up pin change interrupt on these pins
-  INPUT_PCMSK |= ( INPUT_HOUR_SET | INPUT_MIN_MODE );
+  INPUT_PCMSK |= ( INPUT_HOUR | INPUT_MIN );
 }
 
 uint8_t getSwitchState(void) {
-  return INPUT_PIN & ( INPUT_HOUR_SET | INPUT_MIN_MODE );
+  return PIN(INPUT_PORT) & ( INPUT_HOUR | INPUT_MIN );
 }
 
 void initSwitchTimer(void) {
@@ -351,5 +351,5 @@ void disableSwitchInt(void) {
 }
 
 bool switchStatePushed(void) {
-  return (switchState != ( INPUT_HOUR_SET | INPUT_MIN_MODE ));
+  return (switchState != ( INPUT_HOUR | INPUT_MIN ));
 }
