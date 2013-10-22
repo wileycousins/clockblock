@@ -137,6 +137,8 @@ int main(void) {
   tlc.init();
   #ifdef BREADBOARD
   initTLCTimers();
+  #else
+  tlc.setFC(TLC5971_DSPRPT | TLC5971_TMGRST);
   #endif
 
   // enable a falling edge interrupt on the square wave pin
@@ -300,10 +302,16 @@ void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame) {
   leds.getDisplay(hour, min, sec, frame, dots);
 
   // update the LEDs
+  #ifdef BREADBOARD
+  // breadboard edition uses TLC5940
   for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
     tlc.setGS(i, dots[i]);
   }
   tlc.update();
+  #else
+  // v0.1 uses TLC5971
+  tlc.setGS(dots);
+  #endif
 }
 
 // initialize input pins as inputs with pullups enabled

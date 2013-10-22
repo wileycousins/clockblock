@@ -19,7 +19,6 @@
 #define TLC5971_OUTTMG  (1<<4)
 
 
-
 class TLC5971 {
 public:
   // constructor takes number of drivers daisychained on one serial line and the pindefs
@@ -28,11 +27,12 @@ public:
   void init();
   // control the chip(s)
   // parameters
-  //   - *fc: array of n uint8_t for function control
-  //   - *bc: array of n*3 uint8_t for brightness correction
-  //   - *gs: array of n*12 uint16_t for greyscale data (PWM)  
-  void setLeds(uint8_t *fc, uint8_t *bc, uint8_t *gs);
-
+  //   - *gs: array of n*12 uint16_t for greyscale data (PWM)
+  //   - *bc: array of 3 uint8_t for brightness correction 
+  //   - fc: uint8_t for function control
+  void setGS(uint16_t *g);
+  void setBC(uint8_t *bc);
+  void setFC(uint8_t fc);
 private:
   // serial helpers
   // send the write command to the device (6-bits = 0x25 = 0b100101)
@@ -43,12 +43,16 @@ private:
   void sendBC();
   // send the greyscale
   void sendGS();
+  // send generic data
+  void sendData(uint8_t, uint8_t);
+
+  // control registers
+  // function control
+  uint8_t fc;
+  // brightness control
+  uint8_t bc[3];
 
   // buffer pointers
-  // function control
-  uint8_t *fc;
-  // brightness control
-  uint8_t *bc;
   // greyscale control
   uint16_t *gs;
 

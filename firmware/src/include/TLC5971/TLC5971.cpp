@@ -16,6 +16,12 @@ TLC5971::TLC5971(uint8_t n, volatile uint8_t *sckPo, uint8_t sckPi, volatile uin
 
   // number of drivers
   num = n;
+
+  // function control to blank outputs and brightness control to full by default
+  fc = TLC5971_BLANK;
+  bc[0] = 127;
+  bc[1] = 127;
+  bc[2] = 127;
 }
 
 // initialize pins as outputs and hang out
@@ -37,13 +43,9 @@ void TLC5971::init() {
 //     - { bcR0, bcG0, bcB0, bcR1, bcG1, ... , bcBN }
 //   - *gs: array of N*12 uint16_t for greyscale data (PWM)  
 //     - { gs0.0, gs0.1, gs0.2, gs0.3, gs0.4, ... , gs1.0, gs1.1, ... , gsN.12 }
-void TLC5971::setLeds(uint8_t *f, uint8_t *b, uint16_t *g) {
+void TLC5971::setGS(uint16_t *g) {
   // do this for all the drivers
   for (int8_t i=num-1; i>=0; i--) {
-    // function control data - 1x 5-bit byte per driver
-    fc = f + i;
-    // brightness control - 3x 7-bit bytes per driver
-    bc = b + (3*i);
     // greyscale data - 12x 16-bit words per driver
     gs = g + (12*i);
     // send the write command
@@ -54,8 +56,22 @@ void TLC5971::setLeds(uint8_t *f, uint8_t *b, uint16_t *g) {
     sendBC();
     // greyscale data
     sendGS();
-    
   }
+}
+
+void TLC5971::setBC(uint8_t *b) {
+  for (uint8_t i=0; i<3; i++) {
+    if (b[i] < 128) {
+      bc[i] = b[i];
+    }
+    else {
+      bc[i] = 127;
+    }
+  }
+}
+
+void TLC5971::setFC(uint8_t f) {
+  fc = f;
 }
 
 // serial helpers
@@ -69,10 +85,10 @@ void TLC5971::sendData(uint8_t data, uint8_t n) {
   for (int8_t i=n-1; i>=0; i--) {
     // set or clear the MOSI pin
     if (data & (1 << i)) {
-      mosiPort |= (1 << mosiPin);
+      *mosiPort |= (1 << mosiPin);
     }
     else {
-      mosiPort &= ~(1 << mosiPin);
+      *mosiPort &= ~(1 << mosiPin);
     }
     // pulse the serial clock
     *sckPort |= (1 << sckPin);
@@ -87,7 +103,7 @@ void TLC5971::sendWriteCommand() {
 
 // send the function control packet
 void TLC5971::sendFC() {
-  sendData(5);
+  sendData(fc, 5);
 }
 
 // send the brightness control

@@ -18,7 +18,7 @@
 #include "display.h"
 #include "StuPId.h"
 #include "DS3234.h"
-//#include "TLC5971.h"
+#include "TLC5971.h"
 
 
 // *******************
@@ -67,12 +67,14 @@ StuPId spi(&SPI_MOSI_DDR, SPI_MOSI_PIN, &SPI_SCK_DDR, SPI_SCK_PIN);
 //   interrupt PORT, pin   - PD2
 DS3234 rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_RST_PORT, RTC_RST_PIN, &RTC_INT_PORT, RTC_INT_PIN);
 
+#ifndef BREADBOARD
 // TLC5971 LED driver - TO BE IMPLEMENTED
 // parameters:
 //   3 drivers
 //   serial clock PORT, pin - PC5
 //   serial data PORT, pin  - PC4
-//TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
+TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
+#endif
 
 // Display class - contains all the different display modes of the clockblock
 Display leds;
