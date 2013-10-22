@@ -15,7 +15,10 @@
 // LED brightness levels
 #define DISPLAY_LVL_MAX 1000
 // clock stuff
-#define DISPLAY_NUM_DOTS 36
+#define DISPLAY_NUM_DOTS    36
+// framerate
+#define DISPLAY_FRAMERATE        32
+#define DISPLAY_FRAMERATE_FLOAT  32.0
 
 // effect modes
 #define DISPLAY_NUM_MODES  2

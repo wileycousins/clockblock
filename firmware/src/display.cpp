@@ -80,11 +80,11 @@ void Display::displayFill(DisplayParams p) {
   uint8_t secHand = p.sec/5;
 
   // percentage of the second hand passed
-  float secFrac = ((p.sec%5) + (p.frame/32.0))/5;
+  float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
   // percentage of minute hand passed
-  float minFrac = ((p.min%5) + ((p.sec+(p.frame/32.0))/60))/5;
+  float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
-  float hourFrac = ((p.frame/32.0) + p.sec + (60*p.min))/3600.0;
+  float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
   
   // fill the hour dots
   // all hours previous are full
@@ -157,11 +157,11 @@ void Display::displayBlend(DisplayParams p) {
   uint8_t nextHour     = (p.hour == 11) ? 0 : p.hour+1;
 
   // percentage of the second hand passed
-  float secFrac = ((p.sec%5) + (p.frame/32.0))/5;
+  float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
   // percentage of minute hand passed
-  float minFrac = ((p.min%5) + ((p.sec+(p.frame/32.0))/60))/5;
+  float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
-  float hourFrac = ((p.frame/32.0) + p.sec + (60*p.min))/3600.0;
+  float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
 
 
   // fill the hour dots
@@ -249,11 +249,11 @@ void Display::displaySet(DisplayParams p) {
   // pulse the second lights, blend the minute hand, and have a discrete hour dot
   // second lights
   float frac;
-  if (p.frame > 15) {
-    frac = (32-p.frame)/16.0;
+  if (p.frame > ((DISPLAY_FRAMERATE/2)+1)) {
+    frac = (DISPLAY_FRAMERATE-p.frame)/(DISPLAY_FRAMERATE_FLOAT/2);
   }
   else {
-    frac = (1+p.frame)/16.0;
+    frac = (1+p.frame)/(DISPLAY_FRAMERATE_FLOAT/2);
   }
   for (uint8_t i=0; i<12; i++) {
     p.dots[(i*3)+2] = (uint16_t)((DISPLAY_LVL_MAX) * frac);
@@ -291,11 +291,11 @@ void Display::displayChange(DisplayParams p) {
   // pulse the hour lights, let the rest be what their mode says
   // second lights
   float frac;
-  if (p.frame > 15) {
-    frac = (32-p.frame)/16.0;
+  if ( p.frame > ((DISPLAY_FRAMERATE/2)+1) ) {
+    frac = (DISPLAY_FRAMERATE-p.frame)/(DISPLAY_FRAMERATE_FLOAT/2);
   }
   else {
-    frac = (1+p.frame)/16.0;
+    frac = (1+p.frame)/(DISPLAY_FRAMERATE_FLOAT/2);
   }
   for (uint8_t i=0; i<12; i++) {
     p.dots[(i*3)] = (uint16_t)((DISPLAY_LVL_MAX) * frac);
