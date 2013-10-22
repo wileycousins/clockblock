@@ -2,11 +2,11 @@
 // Copyright 2013 by Wiley Cousins, LLC.
 // shared under the terms of the MIT License
 //
-// file: display.cpp
+// file: display.h
 // description: header for display class that handles computing the time display
 
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#ifndef CLOCKBLOCK_DISPLAY_H
+#define CLOCKBLOCK_DISPLAY_H
 
 // avr includes
 #include <stdint.h>
