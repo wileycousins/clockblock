@@ -13,9 +13,6 @@ Display::Display(void) {
 }
 
 void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
-  // pass in milliseconds (16 bit volatile ISR int needs an atomic block to ensure proper copying)
-  //ATOMIC_BLOCK
-
   DisplayParams p = {
     hour,
     min,
@@ -81,11 +78,13 @@ void Display::displayFill(DisplayParams p) {
   // hands
   uint8_t minHand = p.min/5;
   uint8_t secHand = p.sec/5;
-  // fractions
-  uint8_t minFrac = p.min/12;
-  // mods
-  uint8_t minMod = p.min%5;
-  uint8_t secMod = p.sec%5;
+
+  // percentage of the second hand passed
+  float secFrac = ((p.sec%5) + (p.frame/32.0))/5;
+  // percentage of minute hand passed
+  float minFrac = ((p.min%5) + ((p.sec+(p.frame/32.0))/60))/5;
+  // percentage of hour passed
+  float hourFrac = ((p.frame/32.0) + p.sec + (60*p.min))/3600.0;
   
   // fill the hour dots
   // all hours previous are full
@@ -93,7 +92,7 @@ void Display::displayFill(DisplayParams p) {
     p.dots[i*3] = DISPLAY_LVL_MAX;
   }
   // current hour to fraction
-  p.dots[p.hour*3] = (DISPLAY_LVL_MAX/5)*(minFrac+1);
+  p.dots[p.hour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
   // all other hours off
   for (uint8_t i=p.hour+1; i<12; i++) {
     p.dots[i*3] = 0;
@@ -105,7 +104,7 @@ void Display::displayFill(DisplayParams p) {
     p.dots[(i*3)+1] = DISPLAY_LVL_MAX;
   }
   // current minute dot to fraction
-  p.dots[(minHand*3)+1] = (DISPLAY_LVL_MAX/5)*(minMod+1);
+  p.dots[(minHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * minFrac);
   // all other minute dots off
   for (uint8_t i=minHand+1; i<12; i++) {
     p.dots[(i*3)+1] = 0;
@@ -117,10 +116,32 @@ void Display::displayFill(DisplayParams p) {
     p.dots[(i*3)+2] = DISPLAY_LVL_MAX;
   }
   // current second dot to fraction
-  p.dots[(secHand*3)+2] = (DISPLAY_LVL_MAX/5)*(secMod+1);
+  p.dots[(secHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
   // all other second dots off
   for (uint8_t i=secHand+1; i<12; i++) {
     p.dots[(i*3)+2] = 0;
+  }
+
+  // wrap-arounds!
+  if (p.sec == 59 && p.frame >= 21) {
+    // turn off 1 led every frame in the last 11 frames of the second
+    for (uint8_t i=1; i<=p.frame-20; i++) {
+      p.dots[(i*3)+2] = 0;
+    }
+    // do the same if minutes are wrapping around
+    if (p.min == 59) {
+      // turn off 1 led every frame in the last 11 frames of the second
+      for (uint8_t i=1; i<=p.frame-20; i++) {
+        p.dots[(i*3)+1] = 0;
+      }
+      // do the same if hours are wrapping around
+      if (p.hour == 11) {
+        // turn off 1 led every frame in the last 11 frames of the second
+        for (uint8_t i=1; i<=p.frame-20; i++) {
+          p.dots[i*3] = 0;
+        }
+      }
+    }
   }
 }
 

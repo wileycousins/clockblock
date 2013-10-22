@@ -24,20 +24,6 @@
 // *******************
 // application defines
 // *******************
-// interrupt pin for RTC
-//#define RTC_INT_PORT PORTD
-//#define RTC_INT_PIN  2
-// avr external interrupt (0 or 1, INT0_vect or INT1_vect)
-//#define RTC_INT      0
-// input pins
-//#define INPUT_PORT      PORTC
-//#define INPUT_PIN       PINC
-//#define INPUT_DDR       DDRC
-//#define INPUT_HOUR_SET  (1<<0)
-//#define INPUT_MIN_MODE  (1<<1)
-//#define INPUT_PCMSK     PCMSK1
-//#define INPUT_PCICR     PCICR
-//#define INPUT_PCIE      (1<<PCIE1)
 // operating modes
 #define MODE_CLOCK        0
 #define MODE_TIME_SET     1
@@ -86,7 +72,7 @@ DS3234 rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_RST_PORT, RTC_RST_PIN, &RTC_INT_
 //   3 drivers
 //   serial clock PORT, pin - PC5
 //   serial data PORT, pin  - PC4
-//TLC5971 leds(3, &PORTC, 5, &PORTC, 4);
+//TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
 
 // Display class - contains all the different display modes of the clockblock
 Display leds;
@@ -130,7 +116,7 @@ void initTLCTimers(void) {
   sei();
 }
 #endif
-// BREADBOARD YOU'RE MY HERO
+// BREADBOARD YOU'RE MY HERO!!1
 // ****************************
 
 // *******************

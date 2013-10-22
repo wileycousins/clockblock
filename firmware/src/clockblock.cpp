@@ -8,7 +8,6 @@
 // ************************************
 // AVR includes necessary for this file
 // ************************************
-#include <util/delay.h>
 #include <util/atomic.h>
 
 // ********************
@@ -130,7 +129,7 @@ int main(void) {
   rtc.enableSquareWave(1);
   // check if the RTC has a good time
   if(rtc.hasLostTime()) {
-    // if it has, assume it's 1:42 AM, because that's when people set up their clocks
+    // if it has, assume it's 11:58 AM, because that's when people set up their clocks
     rtc.setTime(DS3234_AM, tm);
   }
 

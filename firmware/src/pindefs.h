@@ -34,6 +34,7 @@
 #define RTC_EXT_INT_vect  INT0_vect
 
 // TLC5971
+#define TLC_N          3
 #define TLC_MOSI_PORT  PORTC
 #define TLC_MOSI_PIN   4
 #define TLC_SCK_PORT   PORTC
