@@ -8,13 +8,13 @@
 // ************************************
 // AVR includes necessary for this file
 // ************************************
-#include <avr/io.h>
 #include <avr/interrupt.h>
 
 
 // ********************
 // application includes
 // ********************
+#include "pindefs.h"
 #include "display.h"
 #include "StuPId.h"
 #include "DS3234.h"
@@ -25,10 +25,10 @@
 // application defines
 // *******************
 // interrupt pin for RTC
-#define RTC_INT_PORT PORTD
-#define RTC_INT_PIN  2
+//#define RTC_INT_PORT PORTD
+//#define RTC_INT_PIN  2
 // avr external interrupt (0 or 1, INT0_vect or INT1_vect)
-#define RTC_INT      0
+//#define RTC_INT      0
 // input pins
 #define INPUT_PORT      PORTC
 #define INPUT_PIN       PINC
@@ -79,7 +79,7 @@ StuPId spi(&DDRB, 3, &DDRB, 5);
 //   chip select PORT, pin - PB2
 //   reset PORT, pin       - PB0
 //   interrupt PORT, pin   - PD2
-DS3234 rtc(&spi, &PORTB, 2, &PORTB, 0, &RTC_INT_PORT, RTC_INT_PIN);
+DS3234 rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_RST_PORT, RTC_RST_PIN, &RTC_INT_PORT, RTC_INT_PIN);
 
 // TLC5971 LED driver - TO BE IMPLEMENTED
 // parameters:

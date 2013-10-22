@@ -21,7 +21,7 @@
 // INTERRUPT SERVICE ROUTINES
 // **************************
 // this ISR driven by a 1024 Hz squarewave from the RTC
-ISR(INT0_vect) {
+ISR(RTC_EXT_INT_vect) {
   ms++;
   // tick the display 32 times a second
   if ( !(ms%32) ) {
@@ -142,8 +142,8 @@ int main(void) {
 
   // enable a falling edge interrupt on the square wave pin
   cli();
-  EICRA = (0x2 << (2*RTC_INT));
-  EIMSK = (1 << RTC_INT);
+  EICRA = (0x2 << (2*RTC_EXT_INT));
+  EIMSK = (1 << RTC_EXT_INT);
   sei();
 
   // set the display mode
