@@ -21,7 +21,7 @@
 #define DISPLAY_FRAMERATE_FLOAT  32.0
 
 // effect modes
-#define DISPLAY_NUM_MODES  2
+#define DISPLAY_NUM_MODES  4
 #define DISPLAY_MODE_FILL  0
 #define DISPLAY_MODE_BLEND 1
 #define DISPLAY_MODE_PIE   2

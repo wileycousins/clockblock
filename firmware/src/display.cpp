@@ -235,6 +235,17 @@ void Display::displayArms(DisplayParams p) {
   uint8_t hourHand = p.hour % 12;
   uint8_t minHand  = p.min / 5;
   uint8_t secHand  = p.sec / 5;
+
+  // empty out the array
+  for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
+    p.dots[i] = 0;
+  }
+
+  // set the hands
+  p.dots[3*hourHand]    = DISPLAY_LVL_MAX;
+  p.dots[(3*minHand)+1] = DISPLAY_LVL_MAX;
+  p.dots[(3*secHand)+2] = DISPLAY_LVL_MAX;
+
 }
 
 // animation to display when setting the time
