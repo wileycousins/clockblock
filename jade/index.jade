@@ -23,53 +23,77 @@ block content
           a(href='#learn') learn
         .nav-link
           a(href='http://wileycousins.com/#contact', target='_blank') contact
-  #about.row
+  #main.container
+    br
+    .col-sm-12
+      #clockblock-block.col-sm-6.text-center
+        canvas#clockblock(width='400px', height='400px')
+        img.clockblock(src='/images/clockblock.jpg', width='400px', title='clockblock')
+        .col-sm-12.time-wrapper
+          br
+          .time.short
+            .row
+              .unit.text-right
+                p hour:
+              .measure.text-left
+                p#hour 6
+            .row
+              .unit.text-right
+                p minute:
+              .measure.text-left
+                p#minute 23
+            .row
+              .unit.text-right
+                p second:
+              .measure.text-left
+                p#second 47
+      #blurb.col-sm-3.col-sm-offset-1
+        .row
+        h2 clock<span class='red'>block</span>
+        .col-sm-6.col-sm-offset-3.text-justify
+          p <i>clockblock</i> is a minimalistic clock for people who appreciate modern design and contemporary technology<strong>.</strong> <i>clockblock</i> is made out of fine hand finished wood and a specially designed circuit<strong>.</strong> Everything is made by hand with care in the city of New Orleans<strong>.</strong>
+  #about.container
+    br
+    hr.dotted
+    br
+    br
+    br
+    br
+  .container
+    #equation.col-xs-12
+      .col-xs-3.cypress
+        img.img-rounded(src='/images/cypress.jpg')
+        div
+          table
+            tr
+              td
+                div
+                  h4.white wood
+      .col-xs-1.plus
+        h4.red +
+      .col-xs-3.tech
+        img(src='/images/tech.png')
+        div
+          table
+            tr
+              td
+                div
+                  h4.white tech
+      .col-xs-1.plus
+        h4.red =
+      .col-xs-3
+        img(src='/images/logo.png')
+  .container
+    br
+    br
+    br
+    br
+    hr.dotted
+    br
+  #buy
     br
     .container
       .col-sm-12
-        .row
-          h2 clock<span class='red'>block</span>
-          br
-          .col-sm-6.col-sm-offset-3.text-justify
-            p <i>clockblock</i> is a minimalistic clock for people who appreciate modern design and contemporary technology<strong>.</strong> <i>clockblock</i> is made out of fine hand finished wood and a specially designed circuit<strong>.</strong> Everything is made by hand with care in the city of New Orleans<strong>.</strong>
-        .row
-          .col-xs-12
-            br
-            br
-        .row
-          #equation.col-xs-12
-            .col-xs-3.cypress
-              img.img-rounded(src='/images/cypress.jpg')
-              div
-                table
-                  tr
-                    td
-                      div
-                        h4.white wood
-            .col-xs-1.plus
-              h4.red +
-            .col-xs-3.tech
-              img(src='/images/tech.png')
-              div
-                table
-                  tr
-                    td
-                      div
-                        h4.white tech
-            .col-xs-1.plus
-              h4.red =
-            .col-xs-3
-              img(src='/images/logo.png')
-  .row
-    .col-sm-12
-      br
-      br
-      hr.dotted
-      br
-  #buy.row
-    br
-    .container
-      .col-sm-7
         .row
           h2 you want one?
           br
@@ -90,29 +114,13 @@ block content
                     button#email-signup-button.btn.btn-default submit
             br
             p really want one? the first 5 will be sold in person in New Orleans in early November, so <a href='http://blog.wileycousins.com' target='_blank'>track us down!</a>
-      .col-sm-4.text-center
+      .row
         br
-        canvas#clockblock(width='400px', height='400px')
-        img.clockblock(src='/images/clockblock.jpg', width='400px', style='max-width: 500px', title='clockblock')
-        .col-sm-12.time(style='display: none;')
-          br
-          .row
-            .unit.text-right
-              p hour:
-            .measure.text-left
-              p#hour 6
-          .row
-            .unit.text-right
-              p minute:
-            .measure.text-left
-              p#minute 23
-          .row
-            .unit.text-right
-              p second:
-            .measure.text-left
-              p#second 47
-  #learn.row
+        br
+        br
+  #learn
     .container
+      br
       br
       .col-sm-12
         .row

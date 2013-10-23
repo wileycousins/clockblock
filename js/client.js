@@ -105,13 +105,40 @@ function drawTime(){
   }, 1000);
 }
 
+function checkSize(){
+  var w = 400;
+  if( $(window).width() < 389 ){
+    w = 256;
+  }
+  else if( $(window).width() < 460 ){
+    w = 290;
+  }
+  else if( $(window).width() < 760 ){
+    w = 337;
+  }
+  $("#clockblock").width(w);
+  $("#clockblock-block img").width(w);
+}
+
+$(window).resize(checkSize);
 $(window).ready(function(){
-  $("#clockblock").click(function(){
-    var div = $(this).siblings(".time");
-    if( div.css('display').match('block') )
-      div.slideUp(400);
-    else
-      div.slideDown(400);
+  checkSize();
+  $("#clockblock-block").click(function(){
+    var div = $(this).find(".time");
+    if( !div.data('out') ){
+      div.removeClass("short");
+      //div.animate({
+        //height: 120
+      //},400);
+      div.data('out', true);
+    }
+    else {
+      div.addClass("short");
+      //div.animate({
+        //height: 0
+      //},400);
+      div.data('out', false);
+    }
   });
   drawTime();
 });

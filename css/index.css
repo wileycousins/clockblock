@@ -115,12 +115,6 @@ hr.white {
 .link:hover img:not(.hover) {
   opacity: 0;
 }
-#home > div:not(.nav) {
-  margin: 50px auto;
-}
-grid-float-breakpoint {
-  width: 930px;
-}
 div.navbar.nav {
   height: auto;
   background: #b9c3cc;
@@ -202,77 +196,118 @@ div.navbar.nav .nav-link.home-link img {
     border-bottom: none;
   }
 }
-#about h2 {
+#clockblock-block .time-wrapper {
+  height: 120px;
+}
+#clockblock-block .time.short {
+  height: 0px;
+  transition: height 0.5s;
+  -webkit-transition: height 0.5s;
+}
+#clockblock-block .time {
+  transition: height 0.5s;
+  -webkit-transition: height 0.5s;
+  overflow: hidden;
+  height: 120px;
+}
+#clockblock-block:hover {
+  cursor: pointer;
+}
+#clockblock-block:hover .time.short {
+  transition: height 0.5s;
+  -webkit-transition: height 0.5s;
+  height: 120px;
+}
+#main {
+  margin: 70px auto 0px auto;
+}
+#main #blurb p {
+  line-height: 40px;
+}
+#main h2 {
   border-bottom: 2px solid #242323;
   border-top: 2px solid #242323;
-  margin: 10px auto;
+  margin: 0px auto 15px auto;
   width: 337px;
   height: 75px;
 }
-#about .text-justify {
+#main .text-justify {
   width: 365px;
   margin: 0 auto;
   float: none;
 }
-#about #equation {
+#equation {
   display: block;
 }
-#about #equation > div > div {
+#equation > div > div {
   position: absolute;
   top: 0px;
   left: 0px;
   right: 0px;
   bottom: 0px;
 }
-#about #equation > div > div table {
+#equation > div > div table {
   width: 100%;
   height: 100%;
   text-align: center;
   vertical-align: middle;
 }
-#about #equation .cypress {
+#equation .cypress {
   margin-left: 40px;
 }
-#about #equation h4 {
+#equation h4 {
   text-align: center;
   vertical-align: middle;
   width: 100%;
-  font-weight: 900;
+  font-weight: 100;
+  font-size: 40px;
 }
-#about #equation img {
+#equation img {
   display: table-cell;
   width: 100%;
   height: auto;
   border-radius: 15px;
   vertical-align: middle;
 }
-#about #equation .plus h4 {
+#equation .plus h4 {
   font-weight: 900;
   font-size: 40px;
   padding-top: 145%;
 }
-#about #equation .tech h4 {
-  font-weight: 900;
+#equation .tech h4 {
   margin-left: 5px;
 }
-@media screen and (max-width: 460px) {
-  #about h2 {
-    border-bottom: 2px solid #242323;
-    border-top: 2px solid #242323;
+@media screen and (max-width: 460px) and (min-width: 390px) {
+  #main h2 {
     margin: 10px auto;
     width: 290px;
     height: 66px;
     font-size: 50px;
   }
+  #main .text-justify {
+    width: 325px;
+  }
+}
+@media screen and (max-width: 389px) {
+  #main h2 {
+    margin: 10px auto;
+    width: 256px;
+    height: 56px;
+    font-size: 43px;
+  }
+  #main .text-justify {
+    width: 275px;
+    padding-left: 5px;
+  }
 }
 @media (max-width: 650px) {
-  #about #equation > div,
-  #about #equation > div.cypress {
+  #equation > div,
+  #equation > div.cypress {
     width: 250px;
     float: none;
     margin: 0 auto;
   }
-  #about #equation .plus h4 {
+  #equation .plus h4 {
     padding-top: 0px;
   }
 }
@@ -297,25 +332,26 @@ div.navbar.nav .nav-link.home-link img {
   border: none;
   box-shadow: 0px 0px 2px #cc2920;
 }
-#buy #clockblock {
+#clockblock {
   position: absolute;
 }
-#buy .time {
+.time {
   width: 230px;
   margin: 0 auto;
   float: none;
 }
-#buy .time .unit {
+.time .unit {
   width: 70px;
   margin-right: 20px;
   display: inline-block;
 }
-#buy .time .measure {
+.time .measure {
   width: 40px;
   display: inline-block;
 }
 #learn {
   background: #242323;
+  margin-top: 40px;
   padding-bottom: 100px;
 }
 #learn * {
