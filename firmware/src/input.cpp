@@ -167,4 +167,3 @@ void Input::enableTimer(void) {
 void Input::disableTimer(void) {
   TIMSK2 = 0;
 }
-

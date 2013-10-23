@@ -127,4 +127,3 @@ void initUnusedPins(void);
 // button handling logic
 uint8_t handleButtonPress(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* tm);
 uint8_t handleButtonHold(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* tm);
-

@@ -273,4 +273,3 @@ uint8_t handleButtonHold(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* t
   // return the opMode
   return opMode;
 }
-

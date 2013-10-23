@@ -315,4 +315,3 @@ void Display::displayChange(DisplayParams p) {
     p.dots[(i*3)] = (uint16_t)((DISPLAY_LVL_MAX) * frac);
   }
 }
-
