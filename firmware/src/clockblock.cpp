@@ -8,7 +8,8 @@
 // ************************************
 // AVR includes necessary for this file
 // ************************************
-#include <util/atomic.h>
+//#include <util/atomic.h>
+#include <util/delay.h>
 
 // ********************
 // application includes
@@ -20,35 +21,35 @@
 // INTERRUPT SERVICE ROUTINES
 // **************************
 // this ISR driven by a 1024 Hz squarewave from the RTC
-ISR(RTC_EXT_INT_vect) {
-  ms++;
-  // tick the display 32 times a second
-  if ( !(ms%32) ) {
-    tick = true;
-  }
-}
+//ISR(RTC_EXT_INT_vect) {
+//  ms++;
+//  // tick the display 32 times a second
+//  if ( !(ms%32) ) {
+//    tick = true;
+//  }
+//}
 
-#ifdef BREADBOARD
-// ISR for serial data input into TLC5940
-ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
-  // disable this ISR
-  TIMSK0 &= ~(1 << OCIE0A);
-  // refresh the data
-  tlc.refreshGS();
-  // re-enable this ISR
-  TIMSK0 |= (1 << OCIE0A);
-}
-#endif
+//#ifdef BREADBOARD
+//// ISR for serial data input into TLC5940
+//ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
+//  // disable this ISR
+//  TIMSK0 &= ~(1 << OCIE0A);
+//  // refresh the data
+//  tlc.refreshGS();
+//  // re-enable this ISR
+//  TIMSK0 |= (1 << OCIE0A);
+//}
+//#endif
 
 // ISR for switch inputs
-ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
-  buttons.handleChange();
-}
+//ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
+//  buttons.handleChange();
+//}
 
 // switch debouncer / timer
-ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
-  buttons.handleTimer();
-}
+//ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
+//  buttons.handleTimer();
+//}
 
 
 // ***********
@@ -57,99 +58,143 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
 // main
 int main(void) {
   // give those ISR volatile vairables some values
-  ms = 0;
-  tick = false;
+  //ms = 0;
+  //tick = false;
 
   // application variables
   // time vector - { seconds, minutes, hours}
-  uint8_t tm[3] = {0, 58, 11};
-  // set time vector - { minutes, hours }
-  uint8_t set[2] = {0, 0};
-  // animation frame
-  uint8_t fr = 0;
-  // last second measurement - used to sync up the milliseconds
-  uint8_t lastSec = 0;
-  // set the operating mode
-  uint8_t opMode = MODE_CLOCK;
+  //uint8_t tm[3] = {0, 58, 11};
+  //// set time vector - { minutes, hours }
+  //uint8_t set[2] = {0, 0};
+  //// animation frame
+  //uint8_t fr = 0;
+  //// last second measurement - used to sync up the milliseconds
+  //uint8_t lastSec = 0;
+  //// set the operating mode
+  //uint8_t opMode = MODE_CLOCK;
 
-  // initialize the RTC
-  rtc.init();
-  // enable a 1024 Hz squarewave output on interrupt pin
-  rtc.enableSquareWave(1);
-  // check if the RTC has a good time
-  if(rtc.hasLostTime()) {
-    // if it has, assume it's 11:58 AM, because that's when people set up their clocks
-    rtc.setTime(DS3234_AM, tm);
-  }
+  //// initialize the RTC
+  //rtc.init();
+  //// enable a 1024 Hz squarewave output on interrupt pin
+  //rtc.enableSquareWave(1);
+  //// check if the RTC has a good time
+  //if(rtc.hasLostTime()) {
+  //  // if it has, assume it's 11:58 AM, because that's when people set up their clocks
+  //  rtc.setTime(DS3234_AM, tm);
+  //}
 
   // initialize the LED drivers
   tlc.init();
-  #ifdef BREADBOARD
-  initTLCTimers();
-  #else
+  //#ifdef BREADBOARD
+  //initTLCTimers();
+  //#else
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
   tlc.setFC(TLC5971_DSPRPT | TLC5971_TMGRST);
-  #endif
+  //#endif
 
   // enable a falling edge interrupt on the square wave pin
-  cli();
-  EICRA = (0x2 << (2*RTC_EXT_INT));
-  EIMSK = (1 << RTC_EXT_INT);
-  sei();
+  //cli();
+  //EICRA = (0x2 << (2*RTC_EXT_INT));
+  //EIMSK = (1 << RTC_EXT_INT);
+  //sei();
 
   // set the display mode
-  leds.setMode(DISPLAY_MODE_BLEND);
+  //leds.setMode(DISPLAY_MODE_BLEND);
 
   // enable inputs
-  buttons.init();
+  //buttons.init();
+
+  uint16_t d[TLC_N_LEDS];
+  uint16_t count = 0;
+  int8_t dir = 1;
+
+  for (uint8_t i=0; i<TLC_N_LEDS; i++) {
+    d[i] = 0;
+  }
 
   // get lost
   for (;;) {
-
-    uint8_t buttonState;
-    // take care of any switch presses
-    if (buttons.getPress(&buttonState)) {
-      opMode = handleButtonPress(buttonState, opMode, set, tm);
+    // do a generic pulse of the LEDs
+    if (count <= 500) {
+      dir = 1;
     }
-
-    // take care of any switch holds
-    if (buttons.getHold(&buttonState)) {
-      opMode = handleButtonHold(buttonState, opMode, set, tm);
+    else if (count >= 20000) {
+      dir = -1;
     }
-
-    // update the arms on a tick
-    if (tick) {
-      tick = false;
-      // increment the frame
-      fr++;
-      // get the time
-      rtc.getTime(tm);
-      // reset milliseconds if new second
-      if (tm[0] != lastSec) {
-        lastSec = tm[0];
-        fr = 0;
-        ATOMIC_BLOCK(ATOMIC_FORCEON) {
-          ms = 0;
-        }
-      }
-
-      // update the clock arms
-      if (opMode == MODE_CLOCK) {
-        updateArms(tm[2], tm[1], tm[0], fr);
-      }
-      else if (opMode == MODE_TIME_SET) {
-        updateArms(set[1], set[0], tm[0], fr);
-      }
-      else {
-        updateArms(tm[2], tm[1], tm[0], fr);
-      } 
+    count += 1000 * dir;
+    for (uint8_t i=0; i<TLC_N_LEDS; i++) {
+      d[i] = count;
     }
+    // end pulse
+
+    /*
+    // alternately, do a ping pong effect
+    d[count] = 20000;
+    if (count == 0) {
+      dir = 1;
+      d[count+1] = 0;
+    }
+    else if (count == 12) {
+      dir = -1;
+      d[count-1] = 0;
+    }
+    else {
+      d[count-dir] = 0;
+    }
+    count += dir;
+    // end ping pong
+    */
+    
+    // send data
+    tlc.setGS(d);
+    // slight delay
+    _delay_ms(30);
+
+    // uint8_t buttonState;
+    // // take care of any switch presses
+    // if (buttons.getPress(&buttonState)) {
+    //   opMode = handleButtonPress(buttonState, opMode, set, tm);
+    // }
+
+    // // take care of any switch holds
+    // if (buttons.getHold(&buttonState)) {
+    //   opMode = handleButtonHold(buttonState, opMode, set, tm);
+    // }
+
+    // // update the arms on a tick
+    // if (tick) {
+    //   tick = false;
+    //   // increment the frame
+    //   fr++;
+    //   // get the time
+    //   rtc.getTime(tm);
+    //   // reset milliseconds if new second
+    //   if (tm[0] != lastSec) {
+    //     lastSec = tm[0];
+    //     fr = 0;
+    //     ATOMIC_BLOCK(ATOMIC_FORCEON) {
+    //       ms = 0;
+    //     }
+    //   }
+
+    //   // update the clock arms
+    //   if (opMode == MODE_CLOCK) {
+    //     updateArms(tm[2], tm[1], tm[0], fr);
+    //   }
+    //   else if (opMode == MODE_TIME_SET) {
+    //     updateArms(set[1], set[0], tm[0], fr);
+    //   }
+    //   else {
+    //     updateArms(tm[2], tm[1], tm[0], fr);
+    //   } 
+    // }
   }
 
   // one day we might get the answer
   return 42;
 }
 
+/*
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame) {
@@ -273,3 +318,4 @@ uint8_t handleButtonHold(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* t
   // return the opMode
   return opMode;
 }
+*/

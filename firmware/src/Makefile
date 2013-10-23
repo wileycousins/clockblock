@@ -19,10 +19,11 @@ PRJ = clockblock
 # avr mcu
 MCU = atmega328p
 # mcu clock frequency
-CLK = 16000000
+CLK = 8000000
 # avr programmer (and port if necessary)
 # e.g. PRG = usbtiny -or- PRG = arduino -P /dev/tty.usbmodem411
-PRG = arduino -P /dev/tty.usbmodem411
+#PRG = arduino -P /dev/tty.usbmodem411
+PRG = avrisp -P /dev/tty.usbmodem411
 # fuse values for avr: low, high, and extended
 # these values are from an Arduino Uno (ATMega328P)
 # see http://www.engbedded.com/fusecalc/ for other MCUs and options
@@ -30,12 +31,14 @@ LFU = 0xFF
 HFU = 0xDE
 EFU = 0x05
 # program source files
-SRC = $(PRJ).cpp display.cpp input.cpp
+#SRC = $(PRJ).cpp display.cpp input.cpp
+SRC = $(PRJ).cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)
 # e.g. INC = ../../EyeToSee ../../YouSART
-INC = include/DS3234 include/StuPId include/TLC5971 ../../../TLC5940
+#INC = include/DS3234 include/StuPId include/TLC5971 ../../../TLC5940
+INC = include/TLC5971
 # any defines to send the compiler
-DEF = BREADBOARD
+DEF = 
 # directories
 OBJDIR = ../bin/obj
 EXEDIR = ../bin/exe
