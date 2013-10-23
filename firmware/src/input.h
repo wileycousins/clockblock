@@ -11,19 +11,26 @@
 // typedefs
 #include <stdint.h>
 
+// timer counts
+#define INPUT_DEBOUNCE_COUNT 2
+#define INPUT_HOLD_COUNT     50
+
+// press or hold defines
+#define INPUT_PRESS  0
+#define INPUT_HOLD   1
+
 class Input {
 public:
   // contructor - gives private variables default values
   Input(void);
-  // get switch state
-  uint8_t getState(void);
+
   // get the flag states and clear as necessary
   bool getHold(void);
   bool getPress(void);
   // handle pin change
   void handleChange(void);
   // handle debouncing
-  void handleDebounce(void);
+  void handleTimer(void);
 
   // disable the debounce timer and wait for a pin change (e.g. to exit a pin hold loop)
   void reset(void);
@@ -31,6 +38,9 @@ public:
   void init(void);
 
 private:
+  // get switch state
+  uint8_t getState(void);
+
   // init switch pins as inputs with pullups enabled
   void initPins(void);
   // init pin change interrupts

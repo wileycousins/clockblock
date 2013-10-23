@@ -80,6 +80,9 @@ TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
 // Display class - contains all the different display modes of the clockblock
 Display leds;
 
+// Input class - handles the pushbuttons
+Input buttons;
+
 // ****************************
 // BREADBOARD EDITION EXCLUSIVE
 // TLC5940 LED driver from github.com/mcous/TLC5940
@@ -130,12 +133,12 @@ int main(void);
 // update clock arms
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr);
 // initialize input and timer
-void initPins(void);
-void initSwitchTimer(void);
+void initUnusedPins(void);
+//void initSwitchTimer(void);
 // switch state and timer state
-uint8_t getSwitchState(void);
-void enableSwitchTimer(void);
-void disableSwitchTimer(void);
-void enableSwitchInt(void);
-void disableSwitchInt(void);
+//uint8_t getSwitchState(void);
+//void enableSwitchTimer(void);
+//void disableSwitchTimer(void);
+//void enableSwitchInt(void);
+//void disableSwitchInt(void);
 bool switchStatePushed(void);

@@ -51,9 +51,10 @@
 #define INPUT_MIN   (1<<1)
 //#define INPUT_MODE
 // switch interrupts
-#define INPUT_PCMSK  PCMSK1
-#define INPUT_PCICR  PCICR
-#define INPUT_PCIE   (1<<PCIE1)
+#define INPUT_PCMSK       PCMSK1
+#define INPUT_PCICR       PCICR
+#define INPUT_PCIE        (1<<PCIE1)
+#define INPUT_PCINT_vect  PCINT1_vect
 // END PIN DEFINES FOR BREADBOARD EDITION
 // **************************************
 
@@ -90,11 +91,13 @@
 #define INPUT_PORT  PORTD
 #define INPUT_HOUR  (1<<7)
 #define INPUT_MIN   (1<<6)
+#define INPUT_MASK  (INPUT_HOUR | INPUT_MIN)
 //#define INPUT_MODE
 // switch interrupts
-#define INPUT_PCMSK  PCMSK2
-#define INPUT_PCICR  PCICR
-#define INPUT_PCIE   (1<<PCIE2)
+#define INPUT_PCMSK       PCMSK2
+#define INPUT_PCICR       PCICR
+#define INPUT_PCIE        (1<<PCIE2)
+#define INPUT_PCINT_vect  PCINT2_vect
 
 // unused pins to be pulled up internally
 #define UNUSED_PORTA_MASK

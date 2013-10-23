@@ -41,7 +41,9 @@ ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
 #endif
 
 // ISR for switch inputs
-ISR(PCINT1_vect, ISR_NOBLOCK) {
+ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
+  buttons.handleChange();
+  /*
   // diable the timer and switch interrupts and reset the switch timer counter
   disableSwitchTimer();
   disableSwitchInt();
@@ -50,10 +52,13 @@ ISR(PCINT1_vect, ISR_NOBLOCK) {
   switchState = getSwitchState();
   // start the switch timer to debounce and time if necessary
   enableSwitchTimer();
+  */
 }
 
 // switch debouncer / timer
 ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
+  buttons.handleTimer();
+  /*
   // disable this interrupt
   disableSwitchTimer();
   // increment the counter
@@ -93,6 +98,7 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
   }
   // re-enable the pin change interrupt
   enableSwitchInt();
+  */
 }
 
 
@@ -104,6 +110,7 @@ int main(void) {
   // give those ISR volatile vairables some values
   ms = 0;
   tick = false;
+  /*
   switchState = 0;
   switchPressState = 0;
   switchHoldState = 0;
@@ -111,7 +118,7 @@ int main(void) {
   switchRelease = false;
   switchPress = false;
   switchHold = 0;
-
+  */
 
   // application variables
   // time vector - { seconds, minutes, hours}
@@ -152,10 +159,13 @@ int main(void) {
   leds.setMode(DISPLAY_MODE_BLEND);
 
   // enable inputs
+  buttons.init();
+  /*
   switchTimerCount = 0;
   initPins();
   initSwitchTimer();
   enableSwitchInt();
+  */
 
   // set the operating mode
   uint8_t opMode = MODE_CLOCK;
@@ -316,13 +326,15 @@ void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame) {
 }
 
 // initialize input pins as inputs with pullups enabled
-void initPins(void) {
+void initUnusedPins(void) {
+  /*
   // clear pins in DDR to inputs
   DDR(INPUT_PORT) &= ~( INPUT_HOUR | INPUT_MIN );
   // enable pull up resistors
   INPUT_PORT |= ( INPUT_HOUR | INPUT_MIN );
   // set up pin change interrupt on these pins
   INPUT_PCMSK |= ( INPUT_HOUR | INPUT_MIN );
+  */
 
   // handle unused pins in PCB version (set as inputs with pullups enabled)
   #ifndef BREADBOARD
@@ -338,37 +350,49 @@ void initPins(void) {
   #endif
 }
 
+/*
 uint8_t getSwitchState(void) {
   return PIN(INPUT_PORT) & ( INPUT_HOUR | INPUT_MIN );
 }
+*/
 
+/*
 void initSwitchTimer(void) {
   // ensure timer2 settings are cleared out
   TCCR2A = 0;
   // set prescaler to 1024
   TCCR2B = ( (1 << CS22) | (1 << CS21) | (1 << CS20) );
 }
+*/
 
+/*
 void enableSwitchTimer(void) {
   // reload timer
   TCNT2 = 0;
   // enable the overflow interrupt
   TIMSK2 = (1 << TOIE2);
 }
+*/
 
+/*
 void disableSwitchTimer(void) {
   TIMSK2 = 0;
 }
+*/
 
+/*
 void enableSwitchInt(void) {
   // enable the pin change interrupt
   INPUT_PCICR |= INPUT_PCIE;
 }
+*/
 
+/*
 void disableSwitchInt(void) {
   // disable the pin change interrupt
   INPUT_PCICR &= ~INPUT_PCIE;
 }
+*/
 
 bool switchStatePushed(void) {
   return (switchState != ( INPUT_HOUR | INPUT_MIN ));
