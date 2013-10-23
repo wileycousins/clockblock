@@ -34,7 +34,6 @@ bool Input::getHold(uint8_t *s) {
   if (hold) {
     hold = false;
     *s = INPUT_MASK & ~holdState;
-    //*s = holdState;
     return true;
   }
   return false;
@@ -45,7 +44,6 @@ bool Input::getPress(uint8_t *s) {
     press = false;
     release = false;
     *s = INPUT_MASK & ~pressState;
-    //*s = pressState;
     return true;
   }
   return false;
@@ -53,7 +51,7 @@ bool Input::getPress(uint8_t *s) {
 
 // handle pin change
 void Input::handleChange(void) {
-  // diable the timer and switch interrupts and reset the switch timer counter
+  // disable the timer and switch interrupts and reset the switch timer counter
   disableTimer();
   disableInt();
   timerCount = 0;

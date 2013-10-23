@@ -60,7 +60,7 @@ private:
   volatile uint8_t pressState;
   volatile uint8_t holdState;
   // switch timer counter
-  volatile uint8_t timerCount;
+  volatile uint16_t timerCount;
   // switch event flags
   volatile bool release;
   volatile bool press;

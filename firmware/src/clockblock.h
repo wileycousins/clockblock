@@ -37,18 +37,6 @@
 volatile uint16_t ms;
 // flag set by the ISR when it's time to update the clock arms
 volatile bool tick;
-/*
-// switch states
-volatile uint8_t switchState;
-volatile uint8_t switchPressState;
-volatile uint8_t switchHoldState;
-// switch timer counter
-volatile uint8_t switchTimerCount;
-// switch event flags
-volatile bool switchRelease;
-volatile bool switchPress;
-volatile bool switchHold;
-*/
 
 // ***********
 // peripherals
@@ -133,13 +121,6 @@ void initTLCTimers(void) {
 int main(void);
 // update clock arms
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr);
-// initialize input and timer
+// initialize unused pins to a safe state
 void initUnusedPins(void);
-//void initSwitchTimer(void);
-// switch state and timer state
-//uint8_t getSwitchState(void);
-//void enableSwitchTimer(void);
-//void disableSwitchTimer(void);
-//void enableSwitchInt(void);
-//void disableSwitchInt(void);
-//bool switchStatePushed(void);
+
