@@ -39,11 +39,11 @@ void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, 
       displayArms(p);
       break;
     
-    case DISPLAY_MODE_CHANGE:
+    case DISPLAY_SET_MODE:
       displayChange(p);
       break;
 
-    case DISPLAY_MODE_SET:
+    case DISPLAY_SET_TIME:
       displaySet(p);
 
     default:
@@ -52,22 +52,25 @@ void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, 
 }
 
 void Display::setMode(uint8_t m) {
-  if (m == DISPLAY_MODE_CHANGE_EXIT) {
+  if (m == DISPLAY_SET_EXIT) {
     mode = newMode;
   }
-  else if (mode == DISPLAY_MODE_CHANGE) {
+  else if (mode == DISPLAY_SET_MODE) {
     newMode = m;
   }
-  else if (m == DISPLAY_MODE_CHANGE) {
+  else if (m == DISPLAY_SET_MODE || m == DISPLAY_SET_TIME) {
     newMode = mode;
     mode = m;
   }
-  else if (m < DISPLAY_NUM_MODES || m == DISPLAY_MODE_SET) {
+  else if (m < DISPLAY_NUM_MODES) {
     mode = m;
   }
 }
 
 uint8_t Display::getMode(void) {
+  if (mode == DISPLAY_SET_MODE) {
+    return newMode;
+  }
   return mode;
 }
 
@@ -297,7 +300,7 @@ void Display::displaySet(DisplayParams p) {
 void Display::displayChange(DisplayParams p) {
   mode = newMode;
   getDisplay(p.hour, p.min, p.sec, p.frame, p.dots);
-  mode = DISPLAY_MODE_CHANGE;
+  mode = DISPLAY_SET_MODE;
 
   // pulse the hour lights, let the rest be what their mode says
   // second lights

@@ -27,9 +27,9 @@
 #define DISPLAY_MODE_PIE   2
 #define DISPLAY_MODE_ARMS  3
 
-#define DISPLAY_MODE_CHANGE       253
-#define DISPLAY_MODE_CHANGE_EXIT  254 
-#define DISPLAY_MODE_SET          255
+#define DISPLAY_SET_MODE  253
+#define DISPLAY_SET_TIME  254 
+#define DISPLAY_SET_EXIT  255
 
 class Display {
 public:
