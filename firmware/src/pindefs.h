@@ -82,6 +82,7 @@
 
 // TLC5971
 #define TLC_N          3
+#define TLC_N_LEDS     (TLC_N * 12)
 #define TLC_MOSI_PORT  PORTC
 #define TLC_MOSI_PIN   4
 #define TLC_SCK_PORT   PORTC
@@ -101,7 +102,6 @@
 #define INPUT_PCINT_vect  PCINT2_vect
 
 // unused pins to be pulled up internally
-#define UNUSED_PORTA_MASK
 #define UNUSED_PORTB_MASK  ( (1<<7) | (1<<6) | (1<<2) | (1<<1) | (1<<0) )
 #define UNUSED_PORTC_MASK  ( (1<<1) | (1<<0) )
 #define UNUSED_PORTD_MASK  ( (1<<5) | (1<<4) | (1<<3) )
