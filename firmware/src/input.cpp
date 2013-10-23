@@ -29,12 +29,12 @@ uint8_t Input::getState(void) {
 
 // get the flag states and clear as necessary
 // set uint8_t at pointer to switch state if flag is true
-// todo: outputted switch state is bit flipped for convenience in the app
+// outputted switch state is bit flipped for convenience in the app
 bool Input::getHold(uint8_t *s) {
   if (hold) {
     hold = false;
-    //*s = INPUT_MASK & ~holdState;
-    *s = holdState;
+    *s = INPUT_MASK & ~holdState;
+    //*s = holdState;
     return true;
   }
   return false;
@@ -44,8 +44,8 @@ bool Input::getPress(uint8_t *s) {
   if (press && release) {
     press = false;
     release = false;
-    //*s = INPUT_MASK & ~pressState;
-    *s = pressState;
+    *s = INPUT_MASK & ~pressState;
+    //*s = pressState;
     return true;
   }
   return false;
