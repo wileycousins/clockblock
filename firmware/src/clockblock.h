@@ -16,6 +16,7 @@
 // ********************
 #include "pindefs.h"
 #include "display.h"
+#include "input.h"
 #include "StuPId.h"
 #include "DS3234.h"
 #include "TLC5971.h"
@@ -141,4 +142,4 @@ void initUnusedPins(void);
 //void disableSwitchTimer(void);
 //void enableSwitchInt(void);
 //void disableSwitchInt(void);
-bool switchStatePushed(void);
+//bool switchStatePushed(void);

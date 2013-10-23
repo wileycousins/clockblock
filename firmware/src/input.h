@@ -25,8 +25,8 @@ public:
   Input(void);
 
   // get the flag states and clear as necessary
-  bool getHold(void);
-  bool getPress(void);
+  bool getHold(uint8_t *s);
+  bool getPress(uint8_t *s);
   // handle pin change
   void handleChange(void);
   // handle debouncing

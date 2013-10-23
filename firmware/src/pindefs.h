@@ -49,6 +49,7 @@
 #define INPUT_PORT  PORTC
 #define INPUT_HOUR  (1<<0)
 #define INPUT_MIN   (1<<1)
+#define INPUT_MASK  (INPUT_HOUR | INPUT_MIN)
 //#define INPUT_MODE
 // switch interrupts
 #define INPUT_PCMSK       PCMSK1

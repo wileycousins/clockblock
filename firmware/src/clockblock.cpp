@@ -174,6 +174,91 @@ int main(void) {
   // get lost
   for (;;) {
 
+    uint8_t buttonState;
+    // take care of any switch presses
+    if (buttons.getPress(&buttonState)) {
+      // switch press only matters in time and display set modes
+      // time set mode
+      if (opMode == MODE_TIME_SET) {
+        // if the hour switch is low and the minute switch is high, increment the hours by 1
+        if ( !(buttonState & INPUT_HOUR) && (buttonState & INPUT_MIN) ) {
+          set[1] = (set[1] + 1) % 12;
+          set[1] = (set[1] == 0) ? 12 : set[1];
+        }
+        // else if the hour switch is high and the minute switch is low, increment the minutes by 1
+        else if ( (buttonState & INPUT_HOUR) && !(buttonState & INPUT_MIN) ) {
+          set[0] = (set[0] + 1) % 60;
+        }
+      }
+      // display set mode
+      else if (opMode == MODE_DISPLAY_SET) {
+        // if the hour switch is low and the minute switch is high, increment the mode
+        if ( !(buttonState & INPUT_HOUR) && (buttonState & INPUT_MIN) ) {
+          dispMode = (dispMode >= (DISPLAY_NUM_MODES-1)) ? 0 : (dispMode+1);
+          leds.setMode(dispMode);
+        }
+        // else if the hour switch is high and the minute switch is low, decrement the mode
+        else if ( (buttonState & INPUT_HOUR) && !(buttonState & INPUT_MIN) ) {
+          dispMode = (dispMode == 0) ? (DISPLAY_NUM_MODES-1) : (dispMode-1);
+          leds.setMode(dispMode);
+        }
+      }
+    }
+
+    // take care of any switch holds
+    if (buttons.getHold(&buttonState)) {
+      // figure out what to do with the hold
+      // if we're currently operating as a clock: check for a mode command
+      if (opMode == MODE_CLOCK) {
+        // if the hour switch is low and the minute switch is high, go into time set mode
+        if ( !(buttonState & INPUT_HOUR) && (buttonState & INPUT_MIN) ) {
+          opMode = MODE_TIME_SET;
+          set[0] = tm[1];
+          set[1] = tm[2];
+          dispMode = leds.getMode();
+          leds.setMode(DISPLAY_MODE_SET);
+        }
+        // else if the hour switch is high and the minute switch is low, go into display set mode
+        else if ( (buttonState & INPUT_HOUR) && !(buttonState & INPUT_MIN) ) {
+          dispMode = leds.getMode();
+          opMode = MODE_DISPLAY_SET;
+          leds.setMode(DISPLAY_MODE_CHANGE);
+        }
+        // reset the buttons to prevent the hold from continuing to fire
+        buttons.reset();
+      }
+      // if we're currently setting the time
+      else if (opMode == MODE_TIME_SET) {
+          // if the hour switch is low and the minute switch is high, increment the hours by 3
+          if ( !(buttonState & INPUT_HOUR) && (buttonState & INPUT_MIN) ) {
+            set[1] = (set[1] + 3) % 12;
+            set[1] = (set[1] == 0) ? 12 : set[1];
+          }
+          // else if the hour switch is high and the minute switch is low, increment the minutes by 5
+          else if ( (buttonState & INPUT_HOUR) && !(buttonState & INPUT_MIN) ) {
+            set[0] = (set[0] + 5) % 60;
+          }
+          // else both buttons were held down, so go back to clock mode
+          else {
+            opMode = MODE_CLOCK;
+            tm[2] = set[1];
+            tm[1] = set[0];
+            tm[0] = 0;
+            rtc.setTime(tm);
+            leds.setMode(dispMode);
+          }
+      }
+      // if we're in display setting mode
+      else if (opMode == MODE_DISPLAY_SET) {
+          // both buttons were held down, so go back to clock mode
+          if (!buttonState) {
+            opMode = MODE_CLOCK;
+            leds.setMode(DISPLAY_MODE_CHANGE_EXIT);
+          }
+      }
+    }
+
+    /*
     // take care of any switch presses
     if (switchPress && switchRelease) {
       // clear the flags
@@ -271,6 +356,7 @@ int main(void) {
           break;
       }
     }
+    */
 
     // update the arms on a tick
     if (tick) {
@@ -394,6 +480,8 @@ void disableSwitchInt(void) {
 }
 */
 
+/*
 bool switchStatePushed(void) {
   return (switchState != ( INPUT_HOUR | INPUT_MIN ));
 }
+*/

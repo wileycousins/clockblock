@@ -24,14 +24,16 @@ Input::Input(void) {
 
 // get switch state
 uint8_t Input::getState(void) {
-  return PIN(INPUT_PORT) & ( INPUT_HOUR | INPUT_MIN );
+  return PIN(INPUT_PORT) & INPUT_MASK;
 }
 
 // get the flag states and clear as necessary
 // set uint8_t at pointer to switch state if flag is true
+// todo: outputted switch state is bit flipped for convenience in the app
 bool Input::getHold(uint8_t *s) {
   if (hold) {
     hold = false;
+    //*s = INPUT_MASK & ~holdState;
     *s = holdState;
     return true;
   }
@@ -39,9 +41,10 @@ bool Input::getHold(uint8_t *s) {
 }
 
 bool Input::getPress(uint8_t *s) {
-    if (press && release) {
+  if (press && release) {
     press = false;
     release = false;
+    //*s = INPUT_MASK & ~pressState;
     *s = pressState;
     return true;
   }
@@ -89,7 +92,7 @@ void Input::handleTimer(void) {
         holdState = state;
       }
       // check for a press
-      else if (switchTimerCount == INPUT_DEBOUNCE_COUNT) {
+      else if (timerCount == INPUT_DEBOUNCE_COUNT) {
         press = true;
         pressState = state;
       }
@@ -118,6 +121,7 @@ void Input::init(void) {
   initPins();
   initInt();
   initTimer();
+  enableInt();
 }
 
 // init switch pins as inputs with pullups enabled
