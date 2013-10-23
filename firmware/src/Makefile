@@ -37,8 +37,8 @@ INC = include/DS3234 include/StuPId include/TLC5971 ../../../TLC5940
 # any defines to send the compiler
 DEF = BREADBOARD
 # directories
-OBJDIR = bin/obj
-EXEDIR = bin/exe
+OBJDIR = ../bin/obj
+EXEDIR = ../bin/exe
 
 #################################################################################################
 # \/ stuff nobody needs to worry about until such time that worrying about it is appropriate \/ #
@@ -91,7 +91,7 @@ clean:
 	rm -f $(EXEDIR)/$(PRJ).elf $(OBJ)
 
 # elf file
-$(EXEDIR)/$(PRJ).elf: $(OBJDEPS) | $(EXEDIR)
+$(EXEDIR)/$(PRJ).elf: $(OBJDEPS)
 	$(CC) $(CFLAGS) -o $(EXEDIR)/$(PRJ).elf $(OBJ)
 
 # hex file
@@ -100,17 +100,18 @@ $(EXEDIR)/$(PRJ).hex: $(EXEDIR)/$(PRJ).elf
 	$(OBJCOPY) -j .text -j .data -O ihex $(EXEDIR)/$(PRJ).elf $(EXEDIR)/$(PRJ).hex
 	$(SIZE) $(EXEDIR)/$(PRJ).elf
 
-$(EXEDIR):
-	mkdir -p $(EXEDIR)
+$(OBJDEPS): | $(OBJDIR)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
+	mkdir -p $(EXEDIR)
+
 
 # pattern matching for object files
 # objects from c files
-%.o : %.c | $(OBJDIR)
+%.o : %.c 
 	$(CC) $(CFLAGS) -c $< -o $(OBJDIR)/$(notdir $@)
 
 # objects from c++ files
-%.o : %.cpp | $(OBJDIR)
+%.o : %.cpp 
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $(OBJDIR)/$(notdir $@)
