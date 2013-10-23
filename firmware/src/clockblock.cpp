@@ -69,6 +69,8 @@ int main(void) {
   uint8_t fr = 0;
   // last second measurement - used to sync up the milliseconds
   uint8_t lastSec = 0;
+  // set the operating mode
+  uint8_t opMode = MODE_CLOCK;
 
   // initialize the RTC
   rtc.init();
@@ -100,10 +102,6 @@ int main(void) {
 
   // enable inputs
   buttons.init();
-
-  // set the operating mode
-  uint8_t opMode = MODE_CLOCK;
-  //uint8_t dispMode = leds.getMode();
 
   // get lost
   for (;;) {
@@ -223,9 +221,6 @@ uint8_t handleButtonPress(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* 
 }
 
 uint8_t handleButtonHold(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* tm) {
-  // static variable to hold the display mode, which button holding can change
-  //static uint8_t dispMode = leds.getMode();
-
   // figure out what to do with the hold
   // if we're currently operating as a clock: check for a mode command
   if (opMode == MODE_CLOCK) {
