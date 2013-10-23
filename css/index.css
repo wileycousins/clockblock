@@ -60,9 +60,7 @@ h2 {
   font-weight: 500;
 }
 strong {
-  font-variant: small-caps;
-  font-size: 13pt;
-  color: #242323;
+  font-weight: 300;
 }
 i {
   font-style: italic;
@@ -116,9 +114,6 @@ hr.white {
 }
 .link:hover img:not(.hover) {
   opacity: 0;
-}
-#home {
-  padding-bottom: 100px;
 }
 #home > div:not(.nav) {
   margin: 50px auto;
@@ -214,6 +209,11 @@ div.navbar.nav .nav-link.home-link img {
   width: 337px;
   height: 75px;
 }
+#about .text-justify {
+  width: 365px;
+  margin: 0 auto;
+  float: none;
+}
 #about #equation {
   display: block;
 }
@@ -296,4 +296,28 @@ div.navbar.nav .nav-link.home-link img {
 #buy .input-group input:focus {
   border: none;
   box-shadow: 0px 0px 2px #cc2920;
+}
+#buy #clockblock {
+  position: absolute;
+}
+#buy .time {
+  width: 230px;
+  margin: 0 auto;
+  float: none;
+}
+#buy .time .unit {
+  width: 70px;
+  margin-right: 20px;
+  display: inline-block;
+}
+#buy .time .measure {
+  width: 40px;
+  display: inline-block;
+}
+#learn {
+  background: #242323;
+  padding-bottom: 100px;
+}
+#learn * {
+  color: #f9ffff;
 }
