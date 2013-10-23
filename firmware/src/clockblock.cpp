@@ -138,6 +138,7 @@ int main(void) {
   #ifdef BREADBOARD
   initTLCTimers();
   #else
+  // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
   tlc.setFC(TLC5971_DSPRPT | TLC5971_TMGRST);
   #endif
 
@@ -320,9 +321,21 @@ void initPins(void) {
   DDR(INPUT_PORT) &= ~( INPUT_HOUR | INPUT_MIN );
   // enable pull up resistors
   INPUT_PORT |= ( INPUT_HOUR | INPUT_MIN );
-
   // set up pin change interrupt on these pins
   INPUT_PCMSK |= ( INPUT_HOUR | INPUT_MIN );
+
+  // handle unused pins in PCB version (set as inputs with pullups enabled)
+  #ifndef BREADBOARD
+  // PORTB
+  DDRB &= ~UNUSED_PORTB_MASK;
+  PORTB |= UNUSED_PORTB_MASK;
+  // PORTC
+  DDRC &= ~UNUSED_PORTC_MASK;
+  PORTC |= UNUSED_PORTC_MASK;
+  //PORTD
+  DDRD &= ~UNUSED_PORTD_MASK;
+  PORTD |= UNUSED_PORTD_MASK;
+  #endif
 }
 
 uint8_t getSwitchState(void) {
