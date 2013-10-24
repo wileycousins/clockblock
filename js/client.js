@@ -35,16 +35,17 @@ function drawTime(){
   $("#second").text(second);
   //second /= 5;
 
+  var minOpacity = 0.1;
   var maxOpacity = 0.5;
   var defaultFill = "rgba(230,20,20,"+maxOpacity+")";
 
   // hands and percent fills
   var hourPercent = (second + (minute*60) + 1)/3600.0;
-  hourPercent     = map(hourPercent, 0, 1, 0, maxOpacity);
+  hourPercent     = map(hourPercent, 0, 1, minOpacity, maxOpacity);
   var minPercent  = (((minute%5)*60) + second + 1)/(5*60.0);
-  minPercent      = map(minPercent, 0, 1, 0, maxOpacity);
+  minPercent      = map(minPercent, 0, 1, minOpacity, maxOpacity);
   var secPercent  = ((second%5) +1 )/5.0;
-  secPercent      = map(secPercent, 0, 1, 0, maxOpacity);
+  secPercent      = map(secPercent, 0, 1, minOpacity, maxOpacity);
   hour = hour % 12;
   minute = Math.floor(minute / 5);
   second = Math.floor(second / 5);
