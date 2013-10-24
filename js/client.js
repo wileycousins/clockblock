@@ -25,18 +25,32 @@ function drawTime(){
   var hour = time.getHours();
   if ( hour > 12 )
     hour -= 12;
+  else if ( hour === 0 )
+    hour = 12
   $("#hour").text(hour);
   var minute = time.getMinutes();
   $("#minute").text(minute);
-  minute /= 5;
+  //minute /= 5;
   var second = time.getSeconds();
   $("#second").text(second);
-  second /= 5;
+  //second /= 5;
+
+  var maxOpacity = 0.5;
+  var defaultFill = "rgba(230,20,20,"+maxOpacity+")";
+
+  // hands and percent fills
+  var hourPercent = (second + (minute*60) + 1)/3600.0;
+  hourPercent     = map(hourPercent, 0, 1, 0, maxOpacity);
+  var minPercent  = (((minute%5)*60) + second + 1)/(5*60.0);
+  minPercent      = map(minPercent, 0, 1, 0, maxOpacity);
+  var secPercent  = ((second%5) +1 )/5.0;
+  secPercent      = map(secPercent, 0, 1, 0, maxOpacity);
+  hour = hour % 12;
+  minute = Math.floor(minute / 5);
+  second = Math.floor(second / 5);
 
   var nbr_circles = 12;
   
-  var maxOpacity = 0.5;
-  var defaultFill = "rgba(230,20,20,"+maxOpacity+")";
   // hours
   ctx.fillStyle = defaultFill;
   var lg_rad = (width/2) * .85;
@@ -44,15 +58,15 @@ function drawTime(){
   var sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   var cx = width/2;
   var cy = height/2;
-  for (var i = 0; i < nbr_circles; ++i) {
-    if( i < hour ) {
-      ctx.beginPath();
-      var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
-      var x = cx + Math.cos(angle) * lg_rad;
-      var y = cy + Math.sin(angle) * lg_rad;
-      ctx.arc(x, y, sm_rad, 0, 2*Math.PI, false);
-      ctx.fill();
-    }
+  for (var i = 0; i <= hour; ++i) {
+    if( i === hour )
+      ctx.fillStyle = "rgba(230,20,20,"+hourPercent+")";
+    ctx.beginPath();
+    var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
+    var x = cx + Math.cos(angle) * lg_rad;
+    var y = cy + Math.sin(angle) * lg_rad;
+    ctx.arc(x, y, sm_rad, 0, 2*Math.PI, false);
+    ctx.fill();
   }
 
   // minutes
@@ -62,20 +76,15 @@ function drawTime(){
   sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   cx = width/2;
   cy = height/2;
-  for (var i = 0; i < nbr_circles; ++i) {
-    if( i <= Math.floor(minute) ) {
-      if( i == Math.floor(minute) ) {
-        var percent = minute - i;
-        percent = map(percent, 0, 1, 0, maxOpacity);
-        ctx.fillStyle = "rgba(255,0,0,"+percent+")";
-      }
-      ctx.beginPath();
-      var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
-      var x = cx + Math.cos(angle) * lg_rad;
-      var y = cy + Math.sin(angle) * lg_rad;
-      ctx.arc(x, y, sm_rad, 0, 2*Math.PI, false);
-      ctx.fill();
-    }
+  for (var i = 0; i <= minute; ++i) {
+    if( i === minute )
+      ctx.fillStyle = "rgba(230,20,20,"+minPercent+")";
+    ctx.beginPath();
+    var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
+    var x = cx + Math.cos(angle) * lg_rad;
+    var y = cy + Math.sin(angle) * lg_rad;
+    ctx.arc(x, y, sm_rad, 0, 2*Math.PI, false);
+    ctx.fill();
   }
 
   // seconds
@@ -85,20 +94,15 @@ function drawTime(){
   sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   cx = width/2;
   cy = height/2;
-  for (var i = 0; i < nbr_circles; ++i) {
-    if( i <= Math.floor(second) ) {
-      if( i == Math.floor(second) ) {
-        var percent = second - i;
-        percent = map(percent, 0, 1, 0, maxOpacity);
-        ctx.fillStyle = "rgba(255,0,0,"+percent+")";
-      }
-      ctx.beginPath();
-      var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
-      var x = cx + Math.cos(angle) * lg_rad;
-      var y = cy + Math.sin(angle) * lg_rad;
-      ctx.arc(x, y, sm_rad, 0, 2*Math.PI, false);
-      ctx.fill();
-    }
+  for (var i = 0; i <= second; ++i) {
+    if( i === second )
+      ctx.fillStyle = "rgba(230,20,20,"+secPercent+")";
+    ctx.beginPath();
+    var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
+    var x = cx + Math.cos(angle) * lg_rad;
+    var y = cy + Math.sin(angle) * lg_rad;
+    ctx.arc(x, y, sm_rad, 0, 2*Math.PI, false);
+    ctx.fill();
   }
   window.setTimeout(function(){
     drawTime();
