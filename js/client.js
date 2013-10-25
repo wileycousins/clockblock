@@ -13,6 +13,10 @@ function map(value, fromMin, fromMax, toMin, toMax) {
 
 
 function drawTime(){
+  // refresh rate
+  var refreshRate = 30;
+  var refreshTime = (1/refreshRate)*1000;
+
   var canvas = document.getElementById("clockblock");
   var ctx = canvas.getContext("2d");
   var width = canvas.width;
@@ -30,28 +34,42 @@ function drawTime(){
   $("#hour").text(hour);
   var minute = time.getMinutes();
   $("#minute").text(minute);
-  //minute /= 5;
   var second = time.getSeconds();
   $("#second").text(second);
-  //second /= 5;
+  var milli = time.getMilliseconds();
 
+  var nbr_circles = 12;
   var minOpacity = 0.1;
   var maxOpacity = 0.5;
   var defaultFill = "rgba(230,20,20,"+maxOpacity+")";
 
-  // hands and percent fills
-  var hourPercent = (second + (minute*60) + 1)/3600.0;
-  hourPercent     = map(hourPercent, 0, 1, minOpacity, maxOpacity);
-  var minPercent  = (((minute%5)*60) + second + 1)/(5*60.0);
-  minPercent      = map(minPercent, 0, 1, minOpacity, maxOpacity);
-  var secPercent  = ((second%5) +1 )/5.0;
-  secPercent      = map(secPercent, 0, 1, minOpacity, maxOpacity);
+  // percent fills mapped to opacity
+  var hourPercent = (((milli+1)/1000) + second + (minute*60))/3600.0;
+  var minPercent  = (((milli+1)/1000) + second + ((minute%5)*60))/(5*60.0);
+  var secPercent  = (((milli+1)/1000) + (second%5))/5.0;
+  hourPercent = map(hourPercent, 0, 1, minOpacity, maxOpacity);
+  minPercent  = map(minPercent, 0, 1, minOpacity, maxOpacity);    
+  secPercent  = map(secPercent, 0, 1, minOpacity, maxOpacity);
+
+  // replicate the overflow animation from hardware
+  var secStart = 0;
+  var minStart = 0;
+  var hourStart = 0;
+  if ( (second === 59) && (milli >= (1000 - (nbr_circles*refreshTime))) ) {
+    secStart = Math.floor((milli - (1000 - (nbr_circles*refreshTime)))/refreshTime);
+    if (minute == 59) {
+      minStart = secStart;
+      if (hour === 11) {
+        hourStart = secStart;
+      }
+    }
+  }
+
+  // convert times to hands
   hour = hour % 12;
   minute = Math.floor(minute / 5);
   second = Math.floor(second / 5);
 
-  var nbr_circles = 12;
-  
   // hours
   ctx.fillStyle = defaultFill;
   var lg_rad = (width/2) * .85;
@@ -59,7 +77,7 @@ function drawTime(){
   var sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   var cx = width/2;
   var cy = height/2;
-  for (var i = 0; i <= hour; ++i) {
+  for (var i = hourStart; i <= hour; ++i) {
     if( i === hour )
       ctx.fillStyle = "rgba(230,20,20,"+hourPercent+")";
     ctx.beginPath();
@@ -77,7 +95,7 @@ function drawTime(){
   sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   cx = width/2;
   cy = height/2;
-  for (var i = 0; i <= minute; ++i) {
+  for (var i = minStart; i <= minute; ++i) {
     if( i === minute )
       ctx.fillStyle = "rgba(230,20,20,"+minPercent+")";
     ctx.beginPath();
@@ -95,7 +113,7 @@ function drawTime(){
   sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   cx = width/2;
   cy = height/2;
-  for (var i = 0; i <= second; ++i) {
+  for (var i = secStart; i <= second; ++i) {
     if( i === second )
       ctx.fillStyle = "rgba(230,20,20,"+secPercent+")";
     ctx.beginPath();
@@ -107,7 +125,7 @@ function drawTime(){
   }
   window.setTimeout(function(){
     drawTime();
-  }, 1000);
+  }, refreshTime);
 }
 
 function checkSize(){
