@@ -82,12 +82,12 @@ void Display::displayFill(DisplayParams p) {
   uint8_t minHand = p.min/5;
   uint8_t secHand = p.sec/5;
 
-  // percentage of the second hand passed
-  float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
+  // percentage of the second hand passed (offset by one frame to fill properly)
+  float secFrac = ((p.sec%5) + ((p.frame+1)/DISPLAY_FRAMERATE_FLOAT))/5;
   // percentage of minute hand passed
-  float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
+  float minFrac = ((p.min%5) + ((p.sec+((p.frame+1)/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
-  float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
+  float hourFrac = (((p.frame+1)/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
   
   // fill the hour dots
   // all hours previous are full
