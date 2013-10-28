@@ -23,7 +23,7 @@ CLK = 8000000
 # avr programmer (and port if necessary)
 # e.g. PRG = usbtiny -or- PRG = arduino -P /dev/tty.usbmodem411
 #PRG = arduino -P /dev/tty.usbmodem411
-PRG = avrisp -P /dev/tty.usbmodem411
+PRG = avrisp -P /dev/tty.usbmodem411 -b 19200
 # fuse values for avr: low, high, and extended
 # these values are from an Arduino Uno (ATMega328P)
 # see http://www.engbedded.com/fusecalc/ for other MCUs and options
