@@ -50,6 +50,7 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
   buttons.handleTimer();
 }
 
+uint16_t dots[DISPLAY_NUM_DOTS];
 
 // ***********
 // application
@@ -153,7 +154,7 @@ int main(void) {
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame) {
-  uint16_t dots[DISPLAY_NUM_DOTS];
+  //static uint16_t dots[DISPLAY_NUM_DOTS];
 
   leds.getDisplay(hour, min, sec, frame, dots);
 
