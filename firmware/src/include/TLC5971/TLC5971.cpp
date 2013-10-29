@@ -6,6 +6,7 @@
 // description: TLC5971 LED-driver class
 
 #include "TLC5971.h"
+#include "avr/io.h"
 
 TLC5971::TLC5971(uint8_t n, volatile uint8_t *sckPo, uint8_t sckPi, volatile uint8_t *mosiPo, uint8_t mosiPi) {
   // save pin defs
@@ -80,7 +81,7 @@ void TLC5971::setFC(uint8_t f) {
 // sends data MSb first
 void TLC5971::sendData(uint8_t data, uint8_t n) {
   // ensure the clock line is low
-  *sckPort &= ~(1 << sckPin);
+  //*sckPort &= ~(1 << sckPin);
   // for nBits
   for (int8_t i=n-1; i>=0; i--) {
     // set or clear the MOSI pin
@@ -115,9 +116,9 @@ void TLC5971::sendBC() {
 
 // send the greyscale
 void TLC5971::sendGS() {
-  for (int8_t j=12; j>=0; j--) {
-    uint8_t hi = gs[j] >> 8;
-    uint8_t lo = gs[j] & 0xFF;
+  for (int8_t j=11; j>=0; j--) {
+    uint8_t hi = (uint8_t)(gs[j] >> 8);
+    uint8_t lo = (uint8_t)(gs[j] & 0xFF);
     sendData(hi, 8);
     sendData(lo, 8);
   }

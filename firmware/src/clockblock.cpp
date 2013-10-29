@@ -88,7 +88,7 @@ int main(void) {
   initTLCTimers();
   #else
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
-  tlc.setFC(TLC5971_DSPRPT | TLC5971_TMGRST);
+  tlc.setFC(TLC5971_DSPRPT);
   #endif
 
   // enable a falling edge interrupt on the square wave pin

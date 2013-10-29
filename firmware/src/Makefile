@@ -34,9 +34,9 @@ EFU = 0x05
 SRC = $(PRJ).cpp display.cpp input.cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)
 # e.g. INC = ../../EyeToSee ../../YouSART
-INC = include/DS3234 include/StuPId include/TLC5971 ../../../TLC5940
+INC = include/DS3234 include/StuPId include/TLC5971
 # any defines to send the compiler
-DEF = BREADBOARD
+DEF = 
 # directories
 OBJDIR = ../bin/obj
 EXEDIR = ../bin/exe
