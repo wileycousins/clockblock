@@ -56,14 +56,8 @@ int main(void) {
   // application variables
   // time vector - { seconds, minutes, hours}
   uint8_t tm[3] = {0, 58, 11};
-  // set time vector - { minutes, hours }
-  uint8_t set[2] = {0, 0};
   // animation frame
   uint8_t fr = 0;
-  // last second measurement - used to sync up the milliseconds
-  uint8_t lastSec = 0;
-  // set the operating mode
-  uint8_t opMode = MODE_CLOCK;
   // arms leds
   uint16_t dots[DISPLAY_NUM_DOTS];
 
@@ -71,13 +65,6 @@ int main(void) {
   rtc.init();
   // enable a 1024 Hz squarewave output on interrupt pin
   rtc.enableSquareWave(1);
-  // check if the RTC has a good time
-  // if(rtc.hasLostTime()) {
-  //   // if it has, assume it's 1:15 AM, because that's when people set up their clocks
-  //   tm[2] = 1;
-  //   tm[1] = 15;
-  //   //rtc.setTime(DS3234_AM, tm);
-  // }
 
   // initialize the LED driver
   tlc.init();
@@ -98,23 +85,21 @@ int main(void) {
 
   // get lost
   for (;;) {
-
     uint8_t buttonState;
     // take care of any switch presses
     if (buttons.getPress(&buttonState)) {
-      opMode = handleButtonPress(buttonState, opMode, set, tm);
+      handleButtonPress(buttonState, tm);
     }
 
     // take care of any switch holds
     if (buttons.getHold(&buttonState)) {
-      opMode = handleButtonHold(buttonState, opMode, set, tm);
+      handleButtonHold(buttonState, tm);
     }
 
     // update the arms on a tick
     if (tick) {
       // clear the flag
       tick = false;
-
       // get the time
       if (fr++ >= 32) {
         fr = 0;
@@ -130,15 +115,7 @@ int main(void) {
       }
 
       // update the clock arms
-      if (opMode == MODE_CLOCK) {
-        updateArms(tm[2], tm[1], tm[0], fr, dots);
-      }
-      else if (opMode == MODE_TIME_SET) {
-        updateArms(set[1], set[0], tm[0], fr, dots);
-      }
-      else {
-        updateArms(tm[2], tm[1], tm[0], fr, dots);
-      } 
+      updateArms(tm[2], tm[1], tm[0], fr, dots);
     }
   }
 
@@ -156,7 +133,7 @@ void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t 
   tlc.setGS(dots);
 }
 
-// initialize input pins as inputs with pullups enabled
+// initialize unused pins as inputs with pullups enabled
 void initUnusedPins(void) {
   // PORTB
   DDRB &= ~UNUSED_PORTB_MASK;
@@ -170,87 +147,33 @@ void initUnusedPins(void) {
 }
 
 // button handling logic
-uint8_t handleButtonPress(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* tm) {
-  // switch press only matters in time and display set modes
-  // time set mode
-  if (opMode == MODE_TIME_SET) {
-    // if hour switch, increment the hours by 1
-    if (state == INPUT_HOUR) {
-      set[1] = (set[1] + 1) % 12;
-      set[1] = (set[1] == 0) ? 12 : set[1];
-    }
-    // if minute switch, increment minutes
-    else if (state == INPUT_MIN) {
-      set[0] = (set[0] + 1) % 60;
-    }
+void handleButtonPress(uint8_t state, uint8_t *tm) {
+  // if hour switch, increment the hours by 1
+  if (state == INPUT_HOUR) {
+    tm[2] = (tm[2] + 1) % 12;
+    tm[2] = (tm[2] == 0) ? 12 : tm[2];
   }
-  // display set mode
-  else if (opMode == MODE_DISPLAY_SET) {
-    // if hour switch, increment the mode
-    if (state == INPUT_HOUR) {
-      uint8_t dispMode = leds.getMode();
-      dispMode = (dispMode >= (DISPLAY_NUM_MODES-1)) ? 0 : (dispMode+1);
-      leds.setMode(dispMode);
-    }
-    // if minute switch, decrement the mode
-    else if (state == INPUT_MIN) {
-      uint8_t dispMode = leds.getMode();
-      dispMode = (dispMode == 0) ? (DISPLAY_NUM_MODES-1) : (dispMode-1);
-      leds.setMode(dispMode);
-    }
+  // if minute switch, increment minutes
+  else if (state == INPUT_MIN) {
+    tm[1] = (tm[1] + 1) % 60;
   }
-  // return the opMode
-  return opMode;
 }
 
-uint8_t handleButtonHold(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* tm) {
-  // figure out what to do with the hold
-  // if we're currently operating as a clock: check for a mode command
-  if (opMode == MODE_CLOCK) {
-    // if hour switch is held, go into time set mode
-    if (state == INPUT_HOUR) {
-      opMode = MODE_TIME_SET;
-      set[0] = tm[1];
-      set[1] = tm[2];
-      leds.setMode(DISPLAY_SET_TIME);
-    }
-    // if minute switch is held, go into display set mode
-    else if (state == INPUT_MIN) {
-      opMode = MODE_DISPLAY_SET;
-      leds.setMode(DISPLAY_SET_MODE);
-    }
-    // reset the buttons to prevent the hold from continuing to fire
-    buttons.reset();
+void handleButtonHold(uint8_t state, uint8_t *tm) {
+  // if the hour switch is held, increment the hours by 3
+  if (state == INPUT_HOUR) {
+    tm[2] = (tm[2] + 3) % 12;
+    tm[2] = (tm[2] == 0) ? 12 : tm[2];
   }
-  // if we're currently setting the time
-  else if (opMode == MODE_TIME_SET) {
-    // if the hour switch is held, increment the hours by 3
-    if (state == INPUT_HOUR) {
-      set[1] = (set[1] + 3) % 12;
-      set[1] = (set[1] == 0) ? 12 : set[1];
-    }
-    // else if the minute switch is held, increment the minutes by 5
-    else if (state == INPUT_MIN) {
-      set[0] = (set[0] + 5) % 60;
-    }
-    // else both buttons were held down, so go back to clock mode
-    else {
-      opMode = MODE_CLOCK;
-      tm[2] = set[1];
-      tm[1] = set[0];
-      tm[0] = 0;
-      //rtc.setTime(tm);
-      leds.setMode(DISPLAY_SET_EXIT);
-    }
+  // else if the minute switch is held, increment the minutes by 5
+  else if (state == INPUT_MIN) {
+    tm[1] = (tm[1] + 5) % 60;
   }
-  // if we're in display setting mode
-  else if (opMode == MODE_DISPLAY_SET) {
-    // both buttons were held down, so go back to clock mode
-    if (state == INPUT_MASK) {
-      opMode = MODE_CLOCK;
-      leds.setMode(DISPLAY_SET_EXIT);
-    }
+  // else both buttons were held down, so increment the display mode
+  else {
+    uint8_t mode = leds.getMode();
+    mode = (mode == (DISPLAY_NUM_MODES-1)) ? 0 : (mode + 1);
+    leds.setMode(mode);
   }
-  // return the opMode
-  return opMode;
+
 }

@@ -13,7 +13,7 @@
 
 // display parameters
 // LED brightness levels
-#define DISPLAY_LVL_MAX 1000
+#define DISPLAY_LVL_MAX 10000
 // clock stuff
 #define DISPLAY_NUM_DOTS    36
 // framerate
@@ -26,10 +26,6 @@
 #define DISPLAY_MODE_BLEND 1
 #define DISPLAY_MODE_PIE   2
 #define DISPLAY_MODE_ARMS  3
-
-#define DISPLAY_SET_MODE  253
-#define DISPLAY_SET_TIME  254 
-#define DISPLAY_SET_EXIT  255
 
 class Display {
 public:

@@ -39,38 +39,18 @@ void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, 
       displayArms(p);
       break;
     
-    case DISPLAY_SET_MODE:
-      displayChange(p);
-      break;
-
-    case DISPLAY_SET_TIME:
-      displaySet(p);
-
     default:
       break;
   }
 }
 
 void Display::setMode(uint8_t m) {
-  if (m == DISPLAY_SET_EXIT) {
-    mode = newMode;
-  }
-  else if (mode == DISPLAY_SET_MODE) {
-    newMode = m;
-  }
-  else if (m == DISPLAY_SET_MODE || m == DISPLAY_SET_TIME) {
-    newMode = mode;
-    mode = m;
-  }
-  else if (m < DISPLAY_NUM_MODES) {
+  if (m < DISPLAY_NUM_MODES) {
     mode = m;
   }
 }
 
 uint8_t Display::getMode(void) {
-  if (mode == DISPLAY_SET_MODE) {
-    return newMode;
-  }
   return mode;
 }
 
@@ -251,6 +231,7 @@ void Display::displayArms(DisplayParams p) {
 
 }
 
+/*
 // animation to display when setting the time
 void Display::displaySet(DisplayParams p) {
   // hands (take care of the wrap around)
@@ -315,3 +296,4 @@ void Display::displayChange(DisplayParams p) {
     p.dots[(i*3)] = (uint16_t)((DISPLAY_LVL_MAX) * frac);
   }
 }
+*/

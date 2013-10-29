@@ -82,5 +82,5 @@ void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr, uint16_t *do
 void initUnusedPins(void);
 
 // button handling logic
-uint8_t handleButtonPress(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* tm);
-uint8_t handleButtonHold(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* tm);
+void handleButtonPress(uint8_t state, uint8_t* tm);
+void handleButtonHold(uint8_t state, uint8_t* tm);
