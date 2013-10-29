@@ -1,5 +1,0 @@
-#!/bin/sh
-# Automatically recompile Jade files when they change.
-
-exec stylus -w css/*.styl &
-jade -w jade/* --out .

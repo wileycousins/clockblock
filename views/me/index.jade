@@ -1,0 +1,40 @@
+extends ../layout
+
+block content
+  h1= user.name
+  hr
+  h4 Edit User Info
+  -var needsUpdate = needsUpdate || false
+  if needsUpdate
+    h1(style='color: #c22') You need to update your name, email, and password!
+    form.form-inline.span4(action='/me', method='post')
+      input(type='hidden', name='_method', value='put')
+      label Email
+      input.pull-right(required='true', type='email', name='email', placeholder='Email', value=user.email)
+      br
+      br
+      label Name
+      input.pull-right(required='true', type='text', name='name', placeholder='Name', value=user.name)
+      br
+      br
+      label Password
+      input.pull-right(required='true', type='password', name='password', placeholder='Password')
+      br
+      br
+      button.pull-right.btn.btn-primary Update
+  else
+    form.form-inline.span4(action='/me', method='post')
+      input(type='hidden', name='_method', value='put')
+      label Email
+      input.pull-right(type='email', name='email', placeholder='Email', value=user.email)
+      br
+      br
+      label Name
+      input.pull-right(type='text', name='name', placeholder='Name', value=user.name)
+      br
+      br
+      label Password
+      input.pull-right(type='password', name='password', placeholder='Password')
+      br
+      br
+      button.pull-right.btn.btn-primary Update

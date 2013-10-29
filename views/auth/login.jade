@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+  if info
+    h1.red-text=info
+    br
+    hr
+    br
+  form(method='POST', action='/auth/login')
+    h2 What is the password!?
+    input(type='password', name='password', placeholder='Password')
+    button.btn.btn-primary(type='submit') Submit you answer...

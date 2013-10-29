@@ -1,0 +1,13 @@
+html
+  title Lightwave Database Server
+  !=css ('client')
+  body
+    .row
+      .container-fluid
+        .span4.offset5
+          h3 Sign In
+          form(action='/auth/email', method='post')
+            input(name='email', type='text', placeholder='Email')
+            input(name='password', type='password', placeholder='Password')
+            br
+            input.btn(type='submit') Sign in

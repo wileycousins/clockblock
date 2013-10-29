@@ -1,10 +1,26 @@
 {
-  "name"      : "code.hcwiley.com",
+  "name"      : "studio-brain",
   "version"   : "0.0.1",
-  "devDependencies": {
-      "jade":"*",
-      "stylus":"0.30.*",
-      "coffee-script": "*",
-      "nib": "*"
+  "private": true,
+  "engines": {
+    "node": ">0.8"
+  },
+  "scripts": {
+    "start": "coffee app.coffee"
+  },
+  "dependencies": {
+    "async"                 : "*",
+    "coffee-script"         : "*",
+    "connect-assets"        : "*",
+    "cookie"                : "*",
+    "express"               : "*",
+    "jade"                  : "*",
+    "mongoose"              : "*",
+    "nib"                   : "*",
+    "stylus"                : "*",
+    "socket.io"             : "*",
+    "socket.io-client"      : "*",
+    "stripe"                : "*",
+    "supervisor"            : "*"
   }
 }

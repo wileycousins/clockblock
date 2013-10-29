@@ -1,0 +1,156 @@
+extends layout
+
+block content
+  .navbar.nav(role="navigation")
+    .navbar-header
+      .nav-link.home-link.navbar-brand
+        a(href='/')
+          img(src='/images/logo.png')
+      button.navbar-toggle(data-toggle="collapse", data-target=".navbar-ex1-collapse")
+        span.sr-only Toggle Navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+    .collapse.navbar-collapse.navbar-ex1-collapse
+      ul.nav.navbar-nav
+        .nav-link
+          a(href='#about') about
+        .nav-link
+          a(href='#buy') buy
+        .nav-link
+          a(href='#learn') learn
+        .nav-link
+          a(href='http://wileycousins.com/#contact', target='_blank') contact
+  #main.container
+    br
+    .col-sm-12
+      #clockblock-block.col-sm-6.text-center
+        canvas#clockblock(width='400px', height='400px')
+        img.clockblock(src='/images/clockblock.jpg', width='400px', title='clockblock')
+        .col-sm-12.time-wrapper
+          br
+          .time.short
+            .row
+              .unit.text-right
+                p hour:
+              .measure.text-left
+                p#hour 6
+            .row
+              .unit.text-right
+                p minute:
+              .measure.text-left
+                p#minute 23
+            .row
+              .unit.text-right
+                p second:
+              .measure.text-left
+                p#second 47
+      #blurb.col-sm-3.col-sm-offset-1
+        .row
+        h2 clock<span class='red'>block</span>
+        .col-sm-6.col-sm-offset-3.text-justify
+          p <i>clockblock</i> is a minimalistic clock for people who appreciate modern design and contemporary technology<strong>.</strong> <i>clockblock</i> is made out of fine hand finished wood and a specially designed circuit<strong>.</strong> Everything is made by hand with care in the city of New Orleans<strong>.</strong>
+  #about.container
+    br
+    hr.dotted
+    br
+    br
+    br
+    br
+  .container
+    #equation.col-xs-12
+      .col-xs-3.cypress
+        img.img-rounded(src='/images/cypress.jpg')
+        div
+          table
+            tr
+              td
+                div
+                  h4.white wood
+      .col-xs-1.plus
+        h4.red +
+      .col-xs-3.tech
+        img(src='/images/tech.png')
+        div
+          table
+            tr
+              td
+                div
+                  h4.white tech
+      .col-xs-1.plus
+        h4.red =
+      .col-xs-3
+        img(src='/images/logo.png')
+  .container
+    br
+    br
+    br
+    br
+    hr.dotted
+    br
+  #buy
+    br
+    .container
+      .col-sm-12
+        .row
+          h2 you want one?
+          br
+          .col-sm-8.col-sm-offset-2.text-justify
+            p see, we knew you had good taste... signup here and we'll let you know when they're available. <i>clockblock</i> will be available for this holiday season.
+            div.hidden-xs
+              form#payment-form.form-inline(action='/purchase', method='POST')
+                .form-group.payment-errors.red
+                .form-group
+                  label.inline first name
+                  input.inline.form-control(type='text', required='true', name='first_name')
+                .form-group
+                  label.inline last name
+                  input.inline.form-control(type='text', required='true', name='last_name')
+                .form-group
+                  label.inline email
+                  input.inline.form-control(type='email', required='true', name='email')
+                .form-group
+                  label.inline card number
+                  input.inline.form-control(type='text', required='true',size='20', name='cc-number', x-autocompletetype='cc-number', data-stripe='number', placeholder='####-####-####-####')
+                .form-group
+                  label.inline cvc
+                  input.mini.inline.form-control(type='text', required='true',size='4', data-stripe='cvc', placeholder='###')
+                .form-group
+                  label.inline expiration
+                  input.mini.inline.form-control(type='text', required='true',size='2', data-stripe='exp-month', placeholder='mm')
+                  label(style='width:10px;').inline  / 
+                  input.mini.inline.form-control(type='text', required='true',size='4', data-stripe='exp-year', placeholder='yyyy')
+                br
+                button#email-signup-button.btn.btn-default(type='submit') Purchase
+            div.visible-xs
+              form(action="http://wileycousins.us7.list-manage1.com/subscribe/post?u=a1a988834f7bae7bc666c5757&amp;id=81a56087ef", method="post", id="mc-embedded-subscribe-form", name="mc-embedded-subscribe-form", target="_blank", novalidate)
+                .input-group
+                  input.form-control(type='email', name='EMAIL', placeholder='email@foo.com')
+                  span.input-group-addon
+                    button#email-signup-button.btn.btn-default submit
+            br
+            p really want one? the first 5 will be sold in person in New Orleans in early November, so <a href='http://blog.wileycousins.com' target='_blank'>track us down!</a>
+      .row
+        br
+        br
+        br
+  #learn
+    .container
+      br
+      br
+      .col-sm-12
+        .row
+          h2.pull-right we're open  source
+        .row
+          br
+          br
+        .row
+          p.text-center check it out on github
+          .col-sm-12
+            .link
+              a(href='https://github.com/wileycousins/clockblock', target='_blank')
+                img(src='/images/oshw-logo.svg', title='open source hardware')
+                img.hover(src='/images/oshw-logo-hover.svg', title='open source hardware')
+  !=js('client')
