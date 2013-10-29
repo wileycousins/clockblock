@@ -24,11 +24,12 @@ CLK = 8000000
 # e.g. PRG = usbtiny -or- PRG = arduino -P /dev/tty.usbmodem411
 #PRG = arduino -P /dev/tty.usbmodem411
 PRG = avrisp -P /dev/tty.usbmodem411 -b 19200
-# fuse values for avr: low, high, and extended
-# these values are from an Arduino Uno (ATMega328P)
-# see http://www.engbedded.com/fusecalc/ for other MCUs and options
-LFU = 0xFF
-HFU = 0xDE
+# fuse bit values for v0.1 pcb
+# use internal 8 MHz RC oscillator with no clock division and slowest available startup
+# enable SPI programming
+# brownout detection at 2.7 V
+LFU = 0xE2
+HFU = 0xDF
 EFU = 0x05
 # program source files
 #SRC = $(PRJ).cpp display.cpp input.cpp

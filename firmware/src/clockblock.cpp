@@ -52,6 +52,21 @@
 //}
 
 
+void shiftOut(uint8_t val)
+{
+  for (int8_t i=7; i >= 0; i--)  {
+    if (val & (1 << i)) {
+      TLC_MOSI_PORT |= (1 << TLC_MOSI_PIN);
+    }
+    else {
+      TLC_MOSI_PORT &= ~(1 << TLC_MOSI_PIN);
+    }
+    TLC_SCK_PORT |= (1 << TLC_SCK_PIN);
+    TLC_SCK_PORT &= ~(1 << TLC_SCK_PIN);                
+  }
+}
+
+
 // ***********
 // application
 // ***********
@@ -83,13 +98,15 @@ int main(void) {
   //  rtc.setTime(DS3234_AM, tm);
   //}
 
+  //uint8_t data[4] = { 0x94, 0x5F, 0xFF, 0xFF };
+
   // initialize the LED drivers
   tlc.init();
   //#ifdef BREADBOARD
   //initTLCTimers();
   //#else
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
-  tlc.setFC(TLC5971_DSPRPT | TLC5971_TMGRST);
+  tlc.setFC(TLC5971_DSPRPT /*| TLC5971_TMGRST*/);
   //#endif
 
   // enable a falling edge interrupt on the square wave pin
@@ -114,11 +131,12 @@ int main(void) {
 
   // get lost
   for (;;) {
+    
     // do a generic pulse of the LEDs
-    if (count <= 500) {
+    if (count <= 2000) {
       dir = 1;
     }
-    else if (count >= 20000) {
+    else if (count >= 40000) {
       dir = -1;
     }
     count += 1000 * dir;
@@ -126,7 +144,7 @@ int main(void) {
       d[i] = count;
     }
     // end pulse
-
+    
     /*
     // alternately, do a ping pong effect
     d[count] = 20000;
@@ -144,11 +162,28 @@ int main(void) {
     count += dir;
     // end ping pong
     */
-    
+    //tlc.gs = d;
+    //tlc.sendWriteCommand();
+    //tlc.sendFC();
+    //tlc.sendBC();
+    //shiftOut(data[0]);
+    //shiftOut(data[1]);
+    //shiftOut(data[2]);
+    //shiftOut(data[3]);
+    //tlc.sendGS();
+    /*
+    for (int8_t i=TLC_N_LEDS-1; i>=0; i--) {
+      uint8_t hi = (uint8_t)(d[i] >> 8);
+      uint8_t lo = (uint8_t)(d[i] & 0xFF);
+      shiftOut(hi);
+      shiftOut(lo);
+    }
+    */
+
     // send data
     tlc.setGS(d);
     // slight delay
-    _delay_ms(30);
+    _delay_ms(10);
 
     // uint8_t buttonState;
     // // take care of any switch presses
