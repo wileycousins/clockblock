@@ -42,8 +42,6 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
   buttons.handleTimer();
 }
 
-uint16_t dots[DISPLAY_NUM_DOTS];
-
 // ***********
 // application
 // ***********
