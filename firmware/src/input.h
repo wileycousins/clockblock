@@ -12,8 +12,7 @@
 #include <stdint.h>
 
 // timer counts
-#define INPUT_DEBOUNCE_COUNT 2
-#define INPUT_HOLD_COUNT     50
+#define INPUT_HOLD_COUNT  35
 
 // press or hold defines
 #define INPUT_PRESS  0

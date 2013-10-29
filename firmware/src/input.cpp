@@ -67,32 +67,24 @@ void Input::handleTimer(void) {
   disableTimer();
   // increment the counter
   timerCount++;
-  
-  // debounce
-  if (timerCount < INPUT_DEBOUNCE_COUNT) {
-    // reset the release flag
-    release = false;
-    // keep the timer going
-    enableTimer();
-    return;
-  }
-  
-  // else, we're debounced
+  // clear the flags
+  release = false;
+
   // check the values still match (i.e. if true, it wasn't a bounce)
   if (getState() == state) {
     // if one or both switches are down (if both switches are up, both will read high)
     if ( state != INPUT_MASK) {
+      // check for a press
+      if (timerCount == 1) {
+        press = true;
+        pressState = state;
+      }
       // check for a hold
-      if (timerCount >= INPUT_HOLD_COUNT) {
-        timerCount = INPUT_DEBOUNCE_COUNT + 1;
+      else if (timerCount >= INPUT_HOLD_COUNT) {
         press = false;
         hold = true;
         holdState = state;
-      }
-      // check for a press
-      else if (timerCount == INPUT_DEBOUNCE_COUNT) {
-        press = true;
-        pressState = state;
+        timerCount = 1;
       }
       // re-enable the timer
       enableTimer();

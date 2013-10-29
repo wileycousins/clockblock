@@ -69,12 +69,12 @@ int main(void) {
   // enable a 1024 Hz squarewave output on interrupt pin
   rtc.enableSquareWave(1);
   // check if the RTC has a good time
-  if(rtc.hasLostTime()) {
-    // if it has, assume it's 1:15 AM, because that's when people set up their clocks
-    tm[2] = 1;
-    tm[1] = 15;
-    //rtc.setTime(DS3234_AM, tm);
-  }
+  // if(rtc.hasLostTime()) {
+  //   // if it has, assume it's 1:15 AM, because that's when people set up their clocks
+  //   tm[2] = 1;
+  //   tm[1] = 15;
+  //   //rtc.setTime(DS3234_AM, tm);
+  // }
 
   // initialize the LED driver
   tlc.init();
