@@ -28,17 +28,17 @@ ISR(RTC_EXT_INT_vect) {
   }
 }
 
-#ifdef BREADBOARD
-// ISR for serial data input into TLC5940
-ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
-  // disable this ISR
-  TIMSK0 &= ~(1 << OCIE0A);
-  // refresh the data
-  tlc.refreshGS();
-  // re-enable this ISR
-  TIMSK0 |= (1 << OCIE0A);
-}
-#endif
+// #ifdef BREADBOARD
+// // ISR for serial data input into TLC5940
+// ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
+//   // disable this ISR
+//   TIMSK0 &= ~(1 << OCIE0A);
+//   // refresh the data
+//   tlc.refreshGS();
+//   // re-enable this ISR
+//   TIMSK0 |= (1 << OCIE0A);
+// }
+// #endif
 
 // ISR for switch inputs
 ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
@@ -84,12 +84,12 @@ int main(void) {
 
   // initialize the LED drivers
   tlc.init();
-  #ifdef BREADBOARD
-  initTLCTimers();
-  #else
+  // #ifdef BREADBOARD
+  // initTLCTimers();
+  // #else
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
   tlc.setFC(TLC5971_DSPRPT);
-  #endif
+  //#endif
 
   // enable a falling edge interrupt on the square wave pin
   cli();
@@ -158,22 +158,22 @@ void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame) {
   leds.getDisplay(hour, min, sec, frame, dots);
 
   // update the LEDs
-  #ifdef BREADBOARD
-  // breadboard edition uses TLC5940
-  for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
-    tlc.setGS(i, dots[i]);
-  }
-  tlc.update();
-  #else
+  // #ifdef BREADBOARD
+  // // breadboard edition uses TLC5940
+  // for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
+  //   tlc.setGS(i, dots[i]);
+  // }
+  // tlc.update();
+  // #else
   // v0.1 uses TLC5971
   tlc.setGS(dots);
-  #endif
+  //#endif
 }
 
 // initialize input pins as inputs with pullups enabled
 void initUnusedPins(void) {
   // handle unused pins in PCB version (set as inputs with pullups enabled)
-  #ifndef BREADBOARD
+  //#ifndef BREADBOARD
   // PORTB
   DDRB &= ~UNUSED_PORTB_MASK;
   PORTB |= UNUSED_PORTB_MASK;
@@ -183,7 +183,7 @@ void initUnusedPins(void) {
   //PORTD
   DDRD &= ~UNUSED_PORTD_MASK;
   PORTD |= UNUSED_PORTD_MASK;
-  #endif
+  //#endif
 }
 
 // button handling logic
