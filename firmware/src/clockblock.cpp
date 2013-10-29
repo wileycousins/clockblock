@@ -101,13 +101,13 @@ int main(void) {
       // clear the flag
       tick = false;
       // get the time
-      if (fr++ >= 32) {
+      if (++fr >= 32) {
         fr = 0;
-        if (tm[0]++ >= 60) {
+        if (++tm[0] >= 60) {
           tm[0] = 0;
-          if (tm[1]++ >= 60) {
+          if (++tm[1] >= 60) {
             tm[1] = 0;
-            if (tm[2]++ >= 13) {
+            if (++tm[2] >= 13) {
               tm[2] = 1;
             }
           }
@@ -175,5 +175,4 @@ void handleButtonHold(uint8_t state, uint8_t *tm) {
     mode = (mode == (DISPLAY_NUM_MODES-1)) ? 0 : (mode + 1);
     leds.setMode(mode);
   }
-
 }
