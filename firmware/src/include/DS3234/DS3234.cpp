@@ -5,7 +5,6 @@
 // file: DS3234.cpp
 // description: class for DS3234 real-time clock
 
-#include <util/delay.h>
 #include "DS3234.h"
 
 // can we build it? yes we can!
@@ -207,7 +206,6 @@ void DS3234::spiStart() {
 void DS3234::spiEnd() {
   // pull the chip select line high to end the transfer
   *csPort |= (1 << csPin);
-  //_delay_ms(1);
 }
 
 // read / write
