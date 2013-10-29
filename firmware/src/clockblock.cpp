@@ -26,6 +26,9 @@ ISR(RTC_EXT_INT_vect) {
   // tick the display 32 times a second
   if ( !(ms%32) ) {
     tick = true;
+    if (ms >= 1024) {
+      ms = 0;
+    }
   }
 }
 
@@ -111,31 +114,18 @@ int main(void) {
     if (tick) {
       // clear the flag
       tick = false;
-      // increment the frame
-      fr++;
+
       // get the time
-      //rtc.getTime(tm);
-      if (fr >= 32) {
-        tm[0]++;
-        if (tm[0] >= 60) {
+      if (fr++ >= 32) {
+        fr = 0;
+        if (tm[0]++ >= 60) {
           tm[0] = 0;
-          tm[1]++;
-          if (tm[1] >= 60) {
+          if (tm[1]++ >= 60) {
             tm[1] = 0;
-            tm[2]++;
-            if (tm[2] >= 13) {
+            if (tm[2]++ >= 13) {
               tm[2] = 1;
             }
           }
-        }
-      }
-
-      // reset milliseconds if new second
-      if (tm[0] != lastSec) {
-        lastSec = tm[0];
-        fr = 0;
-        ATOMIC_BLOCK(ATOMIC_FORCEON) {
-          ms = 0;
         }
       }
 

@@ -67,7 +67,7 @@ void Input::handleTimer(void) {
   disableTimer();
   // increment the counter
   timerCount++;
-  // clear the flags
+  // clear the release flag
   release = false;
 
   // check the values still match (i.e. if true, it wasn't a bounce)
