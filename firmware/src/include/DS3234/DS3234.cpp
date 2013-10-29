@@ -207,7 +207,7 @@ void DS3234::spiStart() {
 void DS3234::spiEnd() {
   // pull the chip select line high to end the transfer
   *csPort |= (1 << csPin);
-  _delay_ms(1);
+  //_delay_ms(1);
 }
 
 // read / write

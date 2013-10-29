@@ -6,7 +6,6 @@
 // description: TLC5971 LED-driver class
 
 #include "TLC5971.h"
-#include "avr/io.h"
 
 TLC5971::TLC5971(uint8_t n, volatile uint8_t *sckPo, uint8_t sckPi, volatile uint8_t *mosiPo, uint8_t mosiPi) {
   // save pin defs

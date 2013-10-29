@@ -57,14 +57,12 @@ StuPId spi(&SPI_MOSI_DDR, SPI_MOSI_PIN, &SPI_SCK_DDR, SPI_SCK_PIN);
 //   interrupt PORT, pin   - PD2
 DS3234 rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_RST_PORT, RTC_RST_PIN, &RTC_INT_PORT, RTC_INT_PIN);
 
-//#ifndef BREADBOARD
 // TLC5971 LED driver - TO BE IMPLEMENTED
 // parameters:
 //   3 drivers
 //   serial clock PORT, pin - PC5
 //   serial data PORT, pin  - PC4
 TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
-//#endif
 
 // Display class - contains all the different display modes of the clockblock
 Display leds;
@@ -72,47 +70,6 @@ Display leds;
 // Input class - handles the pushbuttons
 Input buttons;
 
-// ****************************
-// BREADBOARD EDITION EXCLUSIVE
-// TLC5940 LED driver from github.com/mcous/TLC5940
-// #ifdef BREADBOARD
-// #include "TLC5940.h"
-// TLC5940 tlc;
-// void initTLCTimers(void) {
-//   cli();
-//   // user timer 1 to toggle the gs clock pin
-//   TCCR1A = 0;
-//   TCCR1B = 0;
-//   TCCR1C = 0;
-//   TIMSK1 = 0;
-//   // toggle OC1A (pin B1) on compare match event
-//   TCCR1A |= (1 << COM1A0);
-//   // set the top of the timer
-//   // PS = 1, F_CPU = 16 MHz, F_OC = F_CPU/(2 * PS * (OCR1A+1)
-//   // gs edge gets sent every 32*2=64 clock ticks
-//   OCR1A = 31;
-//   // put the timer in CTC mode and start timer with no prescaler
-//   TCCR1B |= ( (1 << WGM12) | (1 << CS10) );
-
-//   // set up an isr for the serial cycle to live in
-//   // let it live in timer 0
-//   TCCR0A = 0;
-//   TCCR0B = 0;
-//   TIMSK0 = 0;
-//   // set waveform generation bit to put the timer into CTC mode
-//   TCCR0A |= (1 << WGM01);
-//   // set the top of the timer - want this to happen every 4096 * gs clocks = every 8192 clock ticks
-//   // set top to 255 for an interrupt every 256 * 1024 = 64 * 4096 clock ticks
-//   OCR0A = 255;
-//   // start the timer with a 1024 prescaler
-//   TCCR0B |= ( (1 << CS02) | (1 << CS00) );
-//   // enable the interrupt of output compare A match
-//   TIMSK0 |= (1 << OCIE0A);
-//   sei();
-// }
-// #endif
-// BREADBOARD YOU'RE MY HERO!!1
-// ****************************
 
 // *******************
 // function prototypes
@@ -120,7 +77,7 @@ Input buttons;
 // main application
 int main(void);
 // update clock arms
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr);
+void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr, uint16_t *dots);
 // initialize unused pins to a safe state
 void initUnusedPins(void);
 

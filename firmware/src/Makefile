@@ -107,7 +107,6 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 	mkdir -p $(EXEDIR)
 
-
 # pattern matching for object files
 # objects from c files
 %.o : %.c 

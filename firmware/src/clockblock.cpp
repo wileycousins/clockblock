@@ -9,6 +9,7 @@
 // AVR includes necessary for this file
 // ************************************
 #include <util/atomic.h>
+#include <util/delay.h>
 
 // ********************
 // application includes
@@ -27,18 +28,6 @@ ISR(RTC_EXT_INT_vect) {
     tick = true;
   }
 }
-
-// #ifdef BREADBOARD
-// // ISR for serial data input into TLC5940
-// ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
-//   // disable this ISR
-//   TIMSK0 &= ~(1 << OCIE0A);
-//   // refresh the data
-//   tlc.refreshGS();
-//   // re-enable this ISR
-//   TIMSK0 |= (1 << OCIE0A);
-// }
-// #endif
 
 // ISR for switch inputs
 ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
@@ -72,6 +61,8 @@ int main(void) {
   uint8_t lastSec = 0;
   // set the operating mode
   uint8_t opMode = MODE_CLOCK;
+  // arms leds
+  uint16_t dots[DISPLAY_NUM_DOTS];
 
   // initialize the RTC
   rtc.init();
@@ -79,18 +70,16 @@ int main(void) {
   rtc.enableSquareWave(1);
   // check if the RTC has a good time
   if(rtc.hasLostTime()) {
-    // if it has, assume it's 11:58 AM, because that's when people set up their clocks
-    rtc.setTime(DS3234_AM, tm);
+    // if it has, assume it's 1:15 AM, because that's when people set up their clocks
+    tm[2] = 1;
+    tm[1] = 15;
+    //rtc.setTime(DS3234_AM, tm);
   }
 
-  // initialize the LED drivers
+  // initialize the LED driver
   tlc.init();
-  // #ifdef BREADBOARD
-  // initTLCTimers();
-  // #else
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
   tlc.setFC(TLC5971_DSPRPT);
-  //#endif
 
   // enable a falling edge interrupt on the square wave pin
   cli();
@@ -120,11 +109,27 @@ int main(void) {
 
     // update the arms on a tick
     if (tick) {
+      // clear the flag
       tick = false;
       // increment the frame
       fr++;
       // get the time
-      rtc.getTime(tm);
+      //rtc.getTime(tm);
+      if (fr >= 32) {
+        tm[0]++;
+        if (tm[0] >= 60) {
+          tm[0] = 0;
+          tm[1]++;
+          if (tm[1] >= 60) {
+            tm[1] = 0;
+            tm[2]++;
+            if (tm[2] >= 13) {
+              tm[2] = 1;
+            }
+          }
+        }
+      }
+
       // reset milliseconds if new second
       if (tm[0] != lastSec) {
         lastSec = tm[0];
@@ -136,13 +141,13 @@ int main(void) {
 
       // update the clock arms
       if (opMode == MODE_CLOCK) {
-        updateArms(tm[2], tm[1], tm[0], fr);
+        updateArms(tm[2], tm[1], tm[0], fr, dots);
       }
       else if (opMode == MODE_TIME_SET) {
-        updateArms(set[1], set[0], tm[0], fr);
+        updateArms(set[1], set[0], tm[0], fr, dots);
       }
       else {
-        updateArms(tm[2], tm[1], tm[0], fr);
+        updateArms(tm[2], tm[1], tm[0], fr, dots);
       } 
     }
   }
@@ -151,30 +156,18 @@ int main(void) {
   return 42;
 }
 
+
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame) {
-  //static uint16_t dots[DISPLAY_NUM_DOTS];
-
+void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
+  // get the display
   leds.getDisplay(hour, min, sec, frame, dots);
-
-  // update the LEDs
-  // #ifdef BREADBOARD
-  // // breadboard edition uses TLC5940
-  // for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
-  //   tlc.setGS(i, dots[i]);
-  // }
-  // tlc.update();
-  // #else
-  // v0.1 uses TLC5971
+  // send to the LED driver
   tlc.setGS(dots);
-  //#endif
 }
 
 // initialize input pins as inputs with pullups enabled
 void initUnusedPins(void) {
-  // handle unused pins in PCB version (set as inputs with pullups enabled)
-  //#ifndef BREADBOARD
   // PORTB
   DDRB &= ~UNUSED_PORTB_MASK;
   PORTB |= UNUSED_PORTB_MASK;
@@ -184,7 +177,6 @@ void initUnusedPins(void) {
   //PORTD
   DDRD &= ~UNUSED_PORTD_MASK;
   PORTD |= UNUSED_PORTD_MASK;
-  //#endif
 }
 
 // button handling logic
@@ -230,12 +222,10 @@ uint8_t handleButtonHold(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* t
       opMode = MODE_TIME_SET;
       set[0] = tm[1];
       set[1] = tm[2];
-      //dispMode = leds.getMode();
       leds.setMode(DISPLAY_SET_TIME);
     }
     // if minute switch is held, go into display set mode
     else if (state == INPUT_MIN) {
-      //dispMode = leds.getMode();
       opMode = MODE_DISPLAY_SET;
       leds.setMode(DISPLAY_SET_MODE);
     }
@@ -259,7 +249,7 @@ uint8_t handleButtonHold(uint8_t state, uint8_t opMode, uint8_t *set, uint8_t* t
       tm[2] = set[1];
       tm[1] = set[0];
       tm[0] = 0;
-      rtc.setTime(tm);
+      //rtc.setTime(tm);
       leds.setMode(DISPLAY_SET_EXIT);
     }
   }
