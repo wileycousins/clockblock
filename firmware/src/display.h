@@ -13,7 +13,7 @@
 
 // display parameters
 // LED brightness levels
-#define DISPLAY_LVL_MAX 10000
+#define DISPLAY_LVL_MAX 65535
 // clock stuff
 #define DISPLAY_NUM_DOTS    36
 // framerate
