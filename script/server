@@ -1,0 +1,6 @@
+#!/bin/sh
+# Compile and start a development server.
+
+exec stylus -w css/*.styl &
+exec jade -w jade/* --out . & 
+jekyll serve --watch

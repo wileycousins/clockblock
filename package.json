@@ -1,0 +1,10 @@
+{
+  "name"      : "code.hcwiley.com",
+  "version"   : "0.0.1",
+  "devDependencies": {
+      "jade":"*",
+      "stylus":"0.30.*",
+      "coffee-script": "*",
+      "nib": "*"
+  }
+}
