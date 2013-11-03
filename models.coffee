@@ -15,6 +15,9 @@ Product = new Schema
   purchase_date:
     type: Date
     default: (new Date()).toJSON()
+  buyer:
+    type: Schema.ObjectId
+    ref: 'User'
 
 User = new Schema
   email:

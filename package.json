@@ -17,6 +17,7 @@
     "jade"                  : "*",
     "mongoose"              : "*",
     "nib"                   : "*",
+    "nodemailer"            :" *",
     "stylus"                : "*",
     "socket.io"             : "*",
     "socket.io-client"      : "*",

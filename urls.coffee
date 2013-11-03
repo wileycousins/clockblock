@@ -2,6 +2,7 @@ models    = require './models'
 stripe    = require('stripe')('sk_test_n06Ogoe7k2fAfGwEsLohPmZV')
 Users     = models.User
 Products  = models.Product
+mailer    = require './mailer'
 
 module.exports = (app) ->
   # UI routes
@@ -48,13 +49,14 @@ module.exports = (app) ->
           console.log err
           res.send "error... bummer man"
         else
-          product = new Products()
+          product = new Products buyer: user
           product.save (err, product) ->
             if err
               console.log err
               return res.send "error creating purchase record in db, sorry"
             user.purchased_products.addToSet product
             user.save()
+            mailer.newPurchase user
             res.json charge
             console.log 'cha-ching!'
   
