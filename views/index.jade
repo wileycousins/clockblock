@@ -97,42 +97,51 @@ block content
         .row
           h2 you want one?
           br
-          .col-sm-8.col-sm-offset-2.text-justify
-            p see, we knew you had good taste... signup here and we'll let you know when they're available. <i>clockblock</i> will be available for this holiday season.
-            div.hidden-xs
+          .col-sm-9.col-sm-offset-1.text-justify
+            p see, we knew you had good taste... <i>clockblock</i> will be available for this holiday season. You can purchase one now and we will ship it as soon as its ready.
+            .col-sm-12
               form#payment-form.form-inline(action='/purchase', method='POST')
                 .form-group.payment-errors.red
-                .form-group
-                  label.inline first name
-                  input.inline.form-control(type='text', required='true', name='first_name')
-                .form-group
-                  label.inline last name
-                  input.inline.form-control(type='text', required='true', name='last_name')
-                .form-group
-                  label.inline email
-                  input.inline.form-control(type='email', required='true', name='email')
-                .form-group
-                  label.inline card number
-                  input.inline.form-control(type='text', required='true',size='20', name='cc-number', x-autocompletetype='cc-number', data-stripe='number', placeholder='####-####-####-####')
-                .form-group
-                  label.inline cvc
-                  input.mini.inline.form-control(type='text', required='true',size='4', data-stripe='cvc', placeholder='###')
-                .form-group
-                  label.inline expiration
-                  input.mini.inline.form-control(type='text', required='true',size='2', data-stripe='exp-month', placeholder='mm')
-                  label(style='width:10px;').inline  / 
-                  input.mini.inline.form-control(type='text', required='true',size='4', data-stripe='exp-year', placeholder='yyyy')
+                .row
+                  .form-group
+                    label.inline full name
+                    input.inline.form-control(type='text', required='true', x-autocompletetype='cc-name', name='name')
+                  .form-group
+                    label.inline email
+                    input.inline.form-control(type='email', required='true', name='email')
+                .row
+                  .form-group
+                    label.inline phone
+                    input.inline.form-control(type='phone', required='true', name='phone')
+                  .form-group
+                    label.inline address
+                    input.inline.form-control(type='text', required='true', name='address')
+                .row
+                  .form-group
+                    label.inline city
+                    input.inline.form-control(type='city', required='true', name='city')
+                  .form-group
+                    label.inline state
+                    input.mini.inline.form-control(type='state', required='true', name='state')
+                  .form-group
+                    label.mini.inline zip
+                    input.mini.inline.form-control(type='zip', required='true', name='zip')
+                .row
+                  .form-group
+                    label.inline card #
+                    input.cc.inline.form-control(type='text', required='true',size='20', name='cc-number', x-autocompletetype='cc-number', data-stripe='number', placeholder='####-####-####-####')
+                  .form-group
+                    label.inline cvc
+                    input.mini.inline.form-control(type='text', required='true',size='4',name='cc-cvc', x-autocompletetype='cc-csc', data-stripe='cvc', placeholder='###')
+                .row
+                  .form-group
+                    label.inline expiration
+                    input.mini.inline.form-control(type='text', required='true',size='2', name='cc-exp-month', data-stripe='exp-month', placeholder='mm')
+                    label(style='width:10px;margin-left:-15px;').inline  / 
+                    input.mini.inline.form-control(type='text', required='true',size='4', name='cc-exp-year', data-stripe='exp-year', placeholder='yyyy')
                 br
-                button#email-signup-button.btn.btn-default(type='submit') Purchase
-            div.visible-xs
-              form(action="http://wileycousins.us7.list-manage1.com/subscribe/post?u=a1a988834f7bae7bc666c5757&amp;id=81a56087ef", method="post", id="mc-embedded-subscribe-form", name="mc-embedded-subscribe-form", target="_blank", novalidate)
-                .input-group
-                  input.form-control(type='email', name='EMAIL', placeholder='email@foo.com')
-                  span.input-group-addon
-                    button#email-signup-button.btn.btn-default submit
+                button#email-signup-button.btn.btn-default(type='submit') Buy one
             br
-            p really want one? the first 5 will be sold in person in New Orleans in early November, so <a href='http://blog.wileycousins.com' target='_blank'>track us down!</a>
-      .row
         br
         br
         br

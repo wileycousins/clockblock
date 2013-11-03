@@ -1,20 +1,33 @@
 config   = require './config'
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
-Email = Schema.Types.Email
 
 Product = new Schema
-  name: String
-  price: Number
-  image: String
+  name:
+    type: String
+    default: "clockblock"
+  price:
+    type: Number
+    default: 150
+  image:
+    type: String
+    default: "http://clockblocknola.com/images/clockblock.jpg"
+  purchase_date:
+    type: Date
+    default: (new Date()).toJSON()
 
 User = new Schema
   email:
-    type      : Email
+    type      : String
     required  : true
     unique    : true
-  first_name: String
-  last_name: String
+  name: String
+  phone: String
+  address: String
+  city: String
+  state: String
+  zip: String
   purchased_products: [Product]
 
 exports.User = mongoose.model 'User', User
+exports.Product = mongoose.model 'Product', Product

@@ -1,17 +1,24 @@
 ###
 Module dependencies.
 ###
-config    = require './config'
-express   = require 'express'
-stylus    = require 'stylus'
-nib       = require 'nib'
-path      = require 'path'
-http      = require 'http'
-socketIo  = require 'socket.io'
-path      = require 'path'
-mongoose  = require 'mongoose'
-exec      = require('child_process').exec
-stripe    = require('stripe')('sk_test_n06Ogoe7k2fAfGwEsLohPmZV')
+config      = require './config'
+express     = require 'express'
+stylus      = require 'stylus'
+nib         = require 'nib'
+path        = require 'path'
+https       = require 'https'
+socketIo    = require 'socket.io'
+path        = require 'path'
+mongoose    = require 'mongoose'
+exec        = require('child_process').exec
+stripe      = require('stripe')('sk_test_n06Ogoe7k2fAfGwEsLohPmZV')
+fs          = require 'fs'
+privateKey  = fs.readFileSync './server.key', 'utf8'
+certificate = fs.readFileSync './server.crt', 'utf8'
+
+credentials = 
+  key: privateKey
+  cert: certificate
 
 #passport.use "email", new LocalStrategy(
   #usernameField: "email"
@@ -32,7 +39,7 @@ mongoose.connect config.mongodb
 
 # create app, server, and web sockets
 app = express()
-server = http.createServer(app)
+server = https.createServer(credentials, app)
 io = socketIo.listen(server)
 
 # Make socket.io a little quieter
@@ -80,26 +87,7 @@ io.sockets.on "connection",  (socket) ->
   socket.on "disconnect", ->
     console.log "disconnected"
 
-# UI routes
-app.get "/", (req, res) ->
-  res.render "index.jade"
-
-
-app.post "/purchase", (req, res) ->
-  stripeToken = req.body.stripeToken
-  console.log stripeToken
-  charge =
-    amount: 150*100
-    currency: 'USD'
-    card: stripeToken
-
-  stripe.charges.create charge, (err, charge) ->
-    if err
-      console.log err
-      res.send "error... bummer man"
-    else
-      res.json charge
-      console.log 'cha-ching!'
+require("./urls")(app)
 
 server.listen app.get("port"), ->
   console.log "Express server listening on port " + app.get("port")
