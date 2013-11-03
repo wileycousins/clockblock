@@ -201,21 +201,8 @@ div.navbar.nav .nav-link.home-link img {
 }
 #clockblock-block .time.short {
   height: 0px;
-  transition: height 0.5s;
-  -webkit-transition: height 0.5s;
 }
 #clockblock-block .time {
-  transition: height 0.5s;
-  -webkit-transition: height 0.5s;
-  overflow: hidden;
-  height: 120px;
-}
-#clockblock-block:hover {
-  cursor: pointer;
-}
-#clockblock-block:hover .time.short {
-  transition: height 0.5s;
-  -webkit-transition: height 0.5s;
   height: 120px;
 }
 #main {
