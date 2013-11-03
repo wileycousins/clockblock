@@ -1,3 +1,5 @@
+var displayMode = 0
+   ,numModes = 3;
 
 function map(value, fromMin, fromMax, toMin, toMax) {
   var norm;
@@ -69,6 +71,16 @@ function drawTime(){
   hour = hour % 12;
   minute = Math.floor(minute / 5);
   second = Math.floor(second / 5);
+  if( displayMode == 1 ){
+    hourStart = hour;
+    minStart  = minute;
+    secStart  = second;
+  }
+  else if( displayMode == 2 ){
+    hourStart = hour - 1;
+    minStart  = minute - 1;
+    secStart  = second - 1;
+  }
 
   // hours
   ctx.fillStyle = defaultFill;
@@ -78,6 +90,10 @@ function drawTime(){
   var cx = width/2;
   var cy = height/2;
   for (var i = hourStart; i <= hour; ++i) {
+    if( displayMode == 2 ){
+      if( i === hour - 1 )
+        ctx.fillStyle = "rgba(230,20,20,"+(maxOpacity - hourPercent)/maxOpacity+")";
+    }
     if( i === hour )
       ctx.fillStyle = "rgba(230,20,20,"+hourPercent+")";
     ctx.beginPath();
@@ -96,6 +112,10 @@ function drawTime(){
   cx = width/2;
   cy = height/2;
   for (var i = minStart; i <= minute; ++i) {
+    if( displayMode == 2 ){
+      if( i === minute - 1 )
+        ctx.fillStyle = "rgba(230,20,20,"+(maxOpacity - minPercent)/maxOpacity+")";
+    }
     if( i === minute )
       ctx.fillStyle = "rgba(230,20,20,"+minPercent+")";
     ctx.beginPath();
@@ -114,6 +134,10 @@ function drawTime(){
   cx = width/2;
   cy = height/2;
   for (var i = secStart; i <= second; ++i) {
+    if( displayMode == 2 ){
+      if( i === second - 1 )
+        ctx.fillStyle = "rgba(230,20,20,"+(maxOpacity - secPercent)/maxOpacity+")";
+    }
     if( i === second )
       ctx.fillStyle = "rgba(230,20,20,"+secPercent+")";
     ctx.beginPath();
@@ -146,22 +170,15 @@ function checkSize(){
 $(window).resize(checkSize);
 $(window).ready(function(){
   checkSize();
-  $("#clockblock-block").click(function(){
-    var div = $(this).find(".time");
-    if( !div.data('out') ){
-      div.removeClass("short");
-      //div.animate({
-        //height: 120
-      //},400);
-      div.data('out', true);
-    }
-    else {
-      div.addClass("short");
-      //div.animate({
-        //height: 0
-      //},400);
-      div.data('out', false);
-    }
-  });
   drawTime();
+  $("[type='radio']").click(function(e){
+    $("[type='radio'][checked]")[0].removeAttribute('checked');
+    displayMode = parseInt($(this).val());
+    $("[type='radio'][value="+displayMode+"]")[0].setAttribute('checked', '');
+  });
+  $('#display').click(function(){
+    $("[type='radio'][checked]")[0].removeAttribute('checked');
+    displayMode = ++displayMode % numModes;
+    $("[type='radio'][value="+displayMode+"]")[0].setAttribute('checked', '');
+  });
 });
