@@ -1,3 +1,5 @@
+var displayMode = 0
+   ,numModes = 3;
 
 function map(value, fromMin, fromMax, toMin, toMax) {
   var norm;
@@ -22,8 +24,6 @@ function drawTime(){
   var width = canvas.width;
   var height = canvas.height;
   ctx.clearRect(0, 0, width, height)
-  //ctx.arc(width/2, 45,10,0,2*Math.PI);
-  //ctx.fill();
 
   var time = new Date();
   var hour = time.getHours();
@@ -39,28 +39,46 @@ function drawTime(){
   var milli = time.getMilliseconds();
 
   var nbr_circles = 12;
-  var minOpacity = 0.1;
-  var maxOpacity = 0.5;
+  var minOpacity = 0.2;
+  // blend mode needs to go to zero
+  if (displayMode === 2)
+    minOpacity = 0
+  var maxOpacity = 0.6;
   var defaultFill = "rgba(230,20,20,"+maxOpacity+")";
 
-  // percent fills mapped to opacity
-  var hourPercent = (((milli+1)/1000) + second + (minute*60))/3600.0;
-  var minPercent  = (((milli+1)/1000) + second + ((minute%5)*60))/(5*60.0);
-  var secPercent  = (((milli+1)/1000) + (second%5))/5.0;
-  hourPercent = map(hourPercent, 0, 1, minOpacity, maxOpacity);
-  minPercent  = map(minPercent, 0, 1, minOpacity, maxOpacity);    
-  secPercent  = map(secPercent, 0, 1, minOpacity, maxOpacity);
+  // percent fills
+  var hourPercent = 0;
+  var minPercent = 0;
+  var secPercent = 0;
+  if (displayMode === 0 || displayMode === 1) {
+    hourPercent = (((milli+1)/1000) + second + (minute*60))/3600.0;
+    minPercent  = (((milli+1)/1000) + second + ((minute%5)*60))/(5*60.0);
+    secPercent  = (((milli+1)/1000) + (second%5))/5.0;
+  }
+  else if (displayMode === 2) {
+    hourPercent = ((milli/1000) + second + (minute*60))/3600.0;
+    minPercent  = ((milli/1000) + second + ((minute%5)*60))/(5*60.0);
+    secPercent  = ((milli/1000) + (second%5))/5.0;
+  }
 
-  // replicate the overflow animation from hardware
+  // map the percents to opacity
+  hourBrightness = map(hourPercent, 0, 1, minOpacity, maxOpacity);
+  minBrightness  = map(minPercent, 0, 1, minOpacity, maxOpacity);    
+  secBrightness  = map(secPercent, 0, 1, minOpacity, maxOpacity);
+
+  
   var secStart = 0;
   var minStart = 0;
   var hourStart = 0;
-  if ( (second === 59) && (milli >= (1000 - (nbr_circles*refreshTime))) ) {
-    secStart = Math.floor((milli - (1000 - (nbr_circles*refreshTime)))/refreshTime);
-    if (minute == 59) {
-      minStart = secStart;
-      if (hour === 11) {
-        hourStart = secStart;
+  // replicate the overflow animation from hardware for fill mode
+  if (displayMode === 0) {
+    if ( (second === 59) && (milli >= (1000 - (nbr_circles*refreshTime))) ) {
+      secStart = Math.floor((milli - (1000 - (nbr_circles*refreshTime)))/refreshTime);
+      if (minute == 59) {
+        minStart = secStart;
+        if (hour === 11) {
+          hourStart = secStart;
+        }
       }
     }
   }
@@ -69,6 +87,18 @@ function drawTime(){
   hour = hour % 12;
   minute = Math.floor(minute / 5);
   second = Math.floor(second / 5);
+  
+  
+  if( displayMode === 1 || displayMode === 2){
+    hourStart = hour;
+    minStart  = minute;
+    secStart  = second;
+  }
+  if (displayMode == 2) {
+    hour += 1;
+    minute += 1;
+    second += 1;
+  }
 
   // hours
   ctx.fillStyle = defaultFill;
@@ -78,8 +108,11 @@ function drawTime(){
   var cx = width/2;
   var cy = height/2;
   for (var i = hourStart; i <= hour; ++i) {
+    if (displayMode === 2 && i === hourStart)
+      var brightness = map((1-hourPercent), 0, 1, minOpacity, maxOpacity);
+      ctx.fillStyle = "rgba(230,20,20,"+brightness+")";
     if( i === hour )
-      ctx.fillStyle = "rgba(230,20,20,"+hourPercent+")";
+      ctx.fillStyle = "rgba(230,20,20,"+hourBrightness+")";
     ctx.beginPath();
     var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
     var x = cx + Math.cos(angle) * lg_rad;
@@ -96,8 +129,11 @@ function drawTime(){
   cx = width/2;
   cy = height/2;
   for (var i = minStart; i <= minute; ++i) {
+    if (displayMode === 2 && i === minStart)
+      var brightness = map((1-minPercent), 0, 1, minOpacity, maxOpacity);
+      ctx.fillStyle = "rgba(230,20,20,"+brightness+")";
     if( i === minute )
-      ctx.fillStyle = "rgba(230,20,20,"+minPercent+")";
+      ctx.fillStyle = "rgba(230,20,20,"+minBrightness+")";
     ctx.beginPath();
     var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
     var x = cx + Math.cos(angle) * lg_rad;
@@ -114,8 +150,11 @@ function drawTime(){
   cx = width/2;
   cy = height/2;
   for (var i = secStart; i <= second; ++i) {
+    if (displayMode === 2 && i === secStart)
+      var brightness = map((1-secPercent), 0, 1, minOpacity, maxOpacity);
+      ctx.fillStyle = "rgba(230,20,20,"+brightness+")";
     if( i === second )
-      ctx.fillStyle = "rgba(230,20,20,"+secPercent+")";
+      ctx.fillStyle = "rgba(230,20,20,"+secBrightness+")";
     ctx.beginPath();
     var angle = (i - nbr_circles - 3 ) *2*Math.PI/nbr_circles;
     var x = cx + Math.cos(angle) * lg_rad;
@@ -146,22 +185,15 @@ function checkSize(){
 $(window).resize(checkSize);
 $(window).ready(function(){
   checkSize();
-  $("#clockblock-block").click(function(){
-    var div = $(this).find(".time");
-    if( !div.data('out') ){
-      div.removeClass("short");
-      //div.animate({
-        //height: 120
-      //},400);
-      div.data('out', true);
-    }
-    else {
-      div.addClass("short");
-      //div.animate({
-        //height: 0
-      //},400);
-      div.data('out', false);
-    }
-  });
   drawTime();
+  $("[type='radio']").click(function(e){
+    $("[type='radio'][checked]")[0].removeAttribute('checked');
+    displayMode = parseInt($(this).val());
+    $("[type='radio'][value="+displayMode+"]")[0].setAttribute('checked', '');
+  });
+  $('#display').click(function(){
+    $("[type='radio'][checked]")[0].removeAttribute('checked');
+    displayMode = ++displayMode % numModes;
+    $("[type='radio'][value="+displayMode+"]")[0].setAttribute('checked', '');
+  });
 });

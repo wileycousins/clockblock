@@ -1,4 +1,4 @@
-@import url("http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css");
+@import url("/css/bootstrap-min.css");
 .red {
   color: #cc2920;
 }
@@ -196,27 +196,25 @@ div.navbar.nav .nav-link.home-link img {
     border-bottom: none;
   }
 }
-#clockblock-block .time-wrapper {
-  height: 120px;
+#clockblock {
+  position: absolute;
 }
-#clockblock-block .time.short {
-  height: 0px;
-  transition: height 0.5s;
-  -webkit-transition: height 0.5s;
+.row.h30 {
+  height: 30px;
 }
-#clockblock-block .time {
-  transition: height 0.5s;
-  -webkit-transition: height 0.5s;
-  overflow: hidden;
-  height: 120px;
+.time {
+  width: 230px;
+  margin: 0 auto;
+  float: none;
 }
-#clockblock-block:hover {
-  cursor: pointer;
+.time .unit {
+  width: 80px;
+  margin-right: 20px;
+  display: inline-block;
 }
-#clockblock-block:hover .time.short {
-  transition: height 0.5s;
-  -webkit-transition: height 0.5s;
-  height: 120px;
+.time .measure {
+  width: 40px;
+  display: inline-block;
 }
 #main {
   margin: 70px auto 0px auto;
@@ -331,23 +329,6 @@ div.navbar.nav .nav-link.home-link img {
 #buy .input-group input:focus {
   border: none;
   box-shadow: 0px 0px 2px #cc2920;
-}
-#clockblock {
-  position: absolute;
-}
-.time {
-  width: 230px;
-  margin: 0 auto;
-  float: none;
-}
-.time .unit {
-  width: 70px;
-  margin-right: 20px;
-  display: inline-block;
-}
-.time .measure {
-  width: 40px;
-  display: inline-block;
 }
 #learn {
   background: #242323;

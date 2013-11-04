@@ -29,24 +29,35 @@ block content
       #clockblock-block.col-sm-6.text-center
         canvas#clockblock(width='400px', height='400px')
         img.clockblock(src='/images/clockblock.jpg', width='400px', title='clockblock')
-        .col-sm-12.time-wrapper
+        .col-sm-6
           br
-          .time.short
-            .row
+          .time
+            .row.h30
               .unit.text-right
                 p hour:
               .measure.text-left
                 p#hour 6
-            .row
+            .row.h30
               .unit.text-right
                 p minute:
               .measure.text-left
                 p#minute 23
-            .row
+            .row.h30
               .unit.text-right
                 p second:
               .measure.text-left
                 p#second 47
+        .col-sm-3.col-sm-offset-2.text-left
+          br
+          .row.h30
+            input(type='radio', name='display', value='0', checked)
+            |&nbsp;&nbsp;fill
+          .row.h30
+            input(type='radio', name='display', value='1')
+            |&nbsp;&nbsp;dot
+          .row.h30
+            input(type='radio', name='display', value='2')
+            |&nbsp;&nbsp;blend
       #blurb.col-sm-3.col-sm-offset-1
         .row
         h2 clock<span class='red'>block</span>
