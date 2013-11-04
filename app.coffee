@@ -6,6 +6,7 @@ express     = require 'express'
 stylus      = require 'stylus'
 nib         = require 'nib'
 path        = require 'path'
+http        = require 'http'
 https       = require 'https'
 socketIo    = require 'socket.io'
 path        = require 'path'
@@ -42,7 +43,7 @@ app = express()
 if process.env.NODE_ENV != 'production'
   server = https.createServer(credentials, app)
 else
-  server = https.createServer(app)
+  server = http.createServer(app)
 io = socketIo.listen(server)
 
 # Make socket.io a little quieter
