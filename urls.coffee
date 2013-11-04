@@ -13,7 +13,6 @@ module.exports = (app) ->
   
   app.post "/purchase", (req, res) ->
     stripeToken = req.body.stripeToken
-    console.log stripeToken
     charge =
       amount: 150*100
       currency: 'USD'
