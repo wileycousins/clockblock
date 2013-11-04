@@ -11,10 +11,13 @@ socketIo    = require 'socket.io'
 path        = require 'path'
 mongoose    = require 'mongoose'
 exec        = require('child_process').exec
-stripe      = require('stripe')('sk_test_n06Ogoe7k2fAfGwEsLohPmZV')
 fs          = require 'fs'
-privateKey  = fs.readFileSync './server.key', 'utf8'
-certificate = fs.readFileSync './server.crt', 'utf8'
+if process.env.NODE_ENV == 'production'
+  privateKey  = fs.readFileSync './ssl/myserver.key', 'utf8'
+  certificate = fs.readFileSync './ssl/gandi.crt', 'utf8'
+else
+  privateKey  = fs.readFileSync './ssl/server.key', 'utf8'
+  certificate = fs.readFileSync './ssl/server.crt', 'utf8'
 
 credentials = 
   key: privateKey
