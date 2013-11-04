@@ -156,6 +156,16 @@ checkSize = ->
 displayMode = 0
 numModes = 3
 
+stripeResHandler = (status, res) ->
+  form = $("#payment-form")
+  if res.error
+    form.find('.payment-errors').text res.error.message
+    form.find('button').prop 'disabled', false
+    #form.find('button').removeAttr 'disabled'
+  else
+    form.append $("<input type='hidden' name='stripeToken' value='#{res.id}'/>")
+    form.get(0).submit()
+
 bindPaymentForm = ->
   $("#payment-form").submit (e) ->
     form = $(@)
