@@ -38,6 +38,7 @@ function drawTime(){
   $("#second").text(second);
   var milli = time.getMilliseconds();
 
+  var spacing_multi = 0.90;
   var nbr_circles = 12;
   var minOpacity = 0.2;
   // blend mode needs to go to zero
@@ -102,7 +103,7 @@ function drawTime(){
 
   // hours
   ctx.fillStyle = defaultFill;
-  var lg_rad = (width/2) * .85;
+  var lg_rad = (width/4.0) * spacing_multi;
   var lg_circ = 2*Math.PI*lg_rad;
   var sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   var cx = width/2;
@@ -123,7 +124,7 @@ function drawTime(){
 
   // minutes
   ctx.fillStyle = defaultFill;
-  lg_rad = (width/2.5) * .85;
+  lg_rad = (width/2.65) * spacing_multi;
   lg_circ = 2*Math.PI*lg_rad;
   sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   cx = width/2;
@@ -144,7 +145,7 @@ function drawTime(){
 
   // seconds
   ctx.fillStyle = defaultFill;
-  lg_rad = (width/3.5) * .85;
+  lg_rad = (width/2) * spacing_multi;
   lg_circ = 2*Math.PI*lg_rad;
   sm_rad = 10;//(lg_circ / nbr_circles) / 2;
   cx = width/2;
