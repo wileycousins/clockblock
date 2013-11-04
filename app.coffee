@@ -12,10 +12,7 @@ path        = require 'path'
 mongoose    = require 'mongoose'
 exec        = require('child_process').exec
 fs          = require 'fs'
-if process.env.NODE_ENV == 'production'
-  privateKey  = fs.readFileSync './ssl/myserver.key', 'utf8'
-  certificate = fs.readFileSync './ssl/gandi.crt', 'utf8'
-else
+if process.env.NODE_ENV != 'production'
   privateKey  = fs.readFileSync './ssl/server.key', 'utf8'
   certificate = fs.readFileSync './ssl/server.crt', 'utf8'
 
@@ -42,7 +39,10 @@ mongoose.connect config.mongodb
 
 # create app, server, and web sockets
 app = express()
-server = https.createServer(credentials, app)
+if process.env.NODE_ENV != 'production'
+  server = https.createServer(credentials, app)
+else
+  server = https.createServer(app)
 io = socketIo.listen(server)
 
 # Make socket.io a little quieter
