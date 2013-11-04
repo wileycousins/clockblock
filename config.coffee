@@ -6,3 +6,4 @@ exports.sessionSecret = "super duper bowls"
 exports.useLongPolling = process.env.USE_LONG_POLLING || false
 exports.emailPW = process.env.EMAIL_PW
 exports.url = process.env.SITE_URL || "https://127.0.0.1:3000"
+exports.stripe = process.env.STRIPE || 'sk_test_n06Ogoe7k2fAfGwEsLohPmZV'

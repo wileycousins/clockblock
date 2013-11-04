@@ -1,5 +1,6 @@
 models    = require './models'
-stripe    = require('stripe')('sk_test_n06Ogoe7k2fAfGwEsLohPmZV')
+config    = require './config'
+stripe    = require('stripe')(config.stripe)
 Users     = models.User
 Products  = models.Product
 mailer    = require './mailer'

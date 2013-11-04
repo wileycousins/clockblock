@@ -18,9 +18,6 @@ drawTime = ->
   width = canvas.width
   height = canvas.height
   ctx.clearRect 0, 0, width, height
-  
-  #ctx.arc(width/2, 45,10,0,2*Math.PI);
-  #ctx.fill();
   time = new Date()
   hour = time.getHours()
   if hour > 12
@@ -33,32 +30,54 @@ drawTime = ->
   $("#second").text second
   milli = time.getMilliseconds()
   nbr_circles = 12
-  minOpacity = 0.1
-  maxOpacity = 0.5
+  minOpacity = 0.2
+  
+  # blend mode needs to go to zero
+  minOpacity = 0  if displayMode is 2
+  maxOpacity = 0.6
   defaultFill = "rgba(230,20,20," + maxOpacity + ")"
   
-  # percent fills mapped to opacity
-  hourPercent = (((milli + 1) / 1000) + second + (minute * 60)) / 3600.0
-  minPercent = (((milli + 1) / 1000) + second + ((minute % 5) * 60)) / (5 * 60.0)
-  secPercent = (((milli + 1) / 1000) + (second % 5)) / 5.0
-  hourPercent = map(hourPercent, 0, 1, minOpacity, maxOpacity)
-  minPercent = map(minPercent, 0, 1, minOpacity, maxOpacity)
-  secPercent = map(secPercent, 0, 1, minOpacity, maxOpacity)
+  # percent fills
+  hourPercent = 0
+  minPercent = 0
+  secPercent = 0
+  if displayMode is 0 or displayMode is 1
+    hourPercent = (((milli + 1) / 1000) + second + (minute * 60)) / 3600.0
+    minPercent = (((milli + 1) / 1000) + second + ((minute % 5) * 60)) / (5 * 60.0)
+    secPercent = (((milli + 1) / 1000) + (second % 5)) / 5.0
+  else if displayMode is 2
+    hourPercent = ((milli / 1000) + second + (minute * 60)) / 3600.0
+    minPercent = ((milli / 1000) + second + ((minute % 5) * 60)) / (5 * 60.0)
+    secPercent = ((milli / 1000) + (second % 5)) / 5.0
   
-  # replicate the overflow animation from hardware
+  # map the percents to opacity
+  hourBrightness = map(hourPercent, 0, 1, minOpacity, maxOpacity)
+  minBrightness = map(minPercent, 0, 1, minOpacity, maxOpacity)
+  secBrightness = map(secPercent, 0, 1, minOpacity, maxOpacity)
   secStart = 0
   minStart = 0
   hourStart = 0
-  if (second is 59) and (milli >= (1000 - (nbr_circles * refreshTime)))
-    secStart = Math.floor((milli - (1000 - (nbr_circles * refreshTime))) / refreshTime)
-    if minute is 59
-      minStart = secStart
-      hourStart = secStart  if hour is 11
+  
+  # replicate the overflow animation from hardware for fill mode
+  if displayMode is 0
+    if (second is 59) and (milli >= (1000 - (nbr_circles * refreshTime)))
+      secStart = Math.floor((milli - (1000 - (nbr_circles * refreshTime))) / refreshTime)
+      if minute is 59
+        minStart = secStart
+        hourStart = secStart  if hour is 11
   
   # convert times to hands
   hour = hour % 12
   minute = Math.floor(minute / 5)
   second = Math.floor(second / 5)
+  if displayMode is 1 or displayMode is 2
+    hourStart = hour
+    minStart = minute
+    secStart = second
+  if displayMode is 2
+    hour += 1
+    minute += 1
+    second += 1
   
   # hours
   ctx.fillStyle = defaultFill
@@ -70,7 +89,9 @@ drawTime = ->
   i = hourStart
 
   while i <= hour
-    ctx.fillStyle = "rgba(230,20,20," + hourPercent + ")"  if i is hour
+    brightness = map((1 - hourPercent), 0, 1, minOpacity, maxOpacity)  if displayMode is 2 and i is hourStart
+    ctx.fillStyle = "rgba(230,20,20," + brightness + ")"
+    ctx.fillStyle = "rgba(230,20,20," + hourBrightness + ")"  if i is hour
     ctx.beginPath()
     angle = (i - nbr_circles - 3) * 2 * Math.PI / nbr_circles
     x = cx + Math.cos(angle) * lg_rad
@@ -89,7 +110,9 @@ drawTime = ->
   i = minStart
 
   while i <= minute
-    ctx.fillStyle = "rgba(230,20,20," + minPercent + ")"  if i is minute
+    brightness = map((1 - minPercent), 0, 1, minOpacity, maxOpacity)  if displayMode is 2 and i is minStart
+    ctx.fillStyle = "rgba(230,20,20," + brightness + ")"
+    ctx.fillStyle = "rgba(230,20,20," + minBrightness + ")"  if i is minute
     ctx.beginPath()
     angle = (i - nbr_circles - 3) * 2 * Math.PI / nbr_circles
     x = cx + Math.cos(angle) * lg_rad
@@ -108,7 +131,9 @@ drawTime = ->
   i = secStart
 
   while i <= second
-    ctx.fillStyle = "rgba(230,20,20," + secPercent + ")"  if i is second
+    brightness = map((1 - secPercent), 0, 1, minOpacity, maxOpacity)  if displayMode is 2 and i is secStart
+    ctx.fillStyle = "rgba(230,20,20," + brightness + ")"
+    ctx.fillStyle = "rgba(230,20,20," + secBrightness + ")"  if i is second
     ctx.beginPath()
     angle = (i - nbr_circles - 3) * 2 * Math.PI / nbr_circles
     x = cx + Math.cos(angle) * lg_rad
@@ -116,10 +141,9 @@ drawTime = ->
     ctx.arc x, y, sm_rad, 0, 2 * Math.PI, false
     ctx.fill()
     ++i
-  window.setTimeout ->
+  window.setTimeout (->
     drawTime()
-  , refreshTime
-
+  ), refreshTime
 checkSize = ->
   w = 400
   if $(window).width() < 389
@@ -129,45 +153,20 @@ checkSize = ->
   else w = 337  if $(window).width() < 760
   $("#clockblock").width w
   $("#clockblock-block img").width w
-
-stripeResHandler = (status, res) ->
-  form = $("#payment-form")
-  if res.error
-    form.find('.payment-errors').text res.error.message
-    form.find('button').prop 'disabled', false
-    #form.find('button').removeAttr 'disabled'
-  else
-    form.append $("<input type='hidden' name='stripeToken' value='#{res.id}'/>")
-    form.get(0).submit()
-
-bindPaymentForm = ->
-  $("#payment-form").submit (e) ->
-    form = $(@)
-    form.find('button').prop 'disabled', true
-    Stripe.card.createToken form, stripeResHandler
-    false
-
+displayMode = 0
+numModes = 3
 $(window).resize checkSize
-
 $(window).ready ->
-  bindPaymentForm()
   checkSize()
-  $("#clockblock-block").click ->
-    div = $(this).find(".time")
-    unless div.data("out")
-      div.removeClass "short"
-      
-      #div.animate({
-      #height: 120
-      #},400);
-      div.data "out", true
-    else
-      div.addClass "short"
-      
-      #div.animate({
-      #height: 0
-      #},400);
-      div.data "out", false
-
   drawTime()
+  $("[type='radio']").click (e) ->
+    $("[type='radio'][checked]")[0].removeAttribute "checked"
+    displayMode = parseInt($(this).val())
+    $("[type='radio'][value=" + displayMode + "]")[0].setAttribute "checked", ""
+
+  $("#display").click ->
+    $("[type='radio'][checked]")[0].removeAttribute "checked"
+    displayMode = ++displayMode % numModes
+    $("[type='radio'][value=" + displayMode + "]")[0].setAttribute "checked", ""
+
 
