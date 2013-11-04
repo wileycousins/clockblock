@@ -99,7 +99,7 @@ block content
           br
           .col-sm-9.col-sm-offset-1.text-justify
             p see, we knew you had good taste... <i>clockblock</i> will be available for this holiday season. You can purchase one now and we will ship it as soon as its ready.
-            .col-sm-12
+            .col-sm-12.auto-margin
               form#payment-form.form-inline(action='/purchase', method='POST')
                 .form-group.payment-errors.red
                 .row
@@ -115,17 +115,17 @@ block content
                     input.inline.form-control(type='phone', required='true', name='phone')
                   .form-group
                     label.inline address
-                    input.inline.form-control(type='text', required='true', name='address')
+                    input.inline.form-control(type='text', data-stripe='address_line1', required='true', name='address')
                 .row
                   .form-group
                     label.inline city
-                    input.inline.form-control(type='city', required='true', name='city')
+                    input.inline.form-control(type='city', data-stripe='address_city', required='true', name='city')
                   .form-group
                     label.inline state
-                    input.mini.inline.form-control(type='state', required='true', name='state')
+                    input.mini.inline.form-control(type='state', required='true', data-stripe='address_state', name='state')
                   .form-group
                     label.mini.inline zip
-                    input.mini.inline.form-control(type='zip', required='true', name='zip')
+                    input.mini.inline.form-control(type='zip', data-stripe='address_zip', required='true', name='zip')
                 .row
                   .form-group
                     label.inline card #
@@ -139,8 +139,16 @@ block content
                     input.mini.inline.form-control(type='text', required='true',size='2', name='cc-exp-month', data-stripe='exp-month', placeholder='mm')
                     label(style='width:10px;margin-left:-15px;').inline  / 
                     input.mini.inline.form-control(type='text', required='true',size='4', name='cc-exp-year', data-stripe='exp-year', placeholder='yyyy')
-                br
-                button#email-signup-button.btn.btn-default(type='submit') Buy one
+                .row
+                  .col-sm-4.pull-right.text-right
+                    h4.red total: $150
+                .row
+                  .col-sm-12
+                    hr.dotted
+                    br
+                .row
+                  .col-sm-4.pull-right.text-right
+                    button#email-signup-button.btn.btn-default(type='submit') Buy one
             br
         br
         br

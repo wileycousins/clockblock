@@ -28,6 +28,11 @@ body {
 body {
   background: #f9ffff;
 }
+.auto-margin {
+  margin: 0 auto;
+  float: none;
+  padding-left: 50px;
+}
 a {
   color: #cc2920;
   font-weight: 300;

@@ -47,7 +47,7 @@ module.exports = (app) ->
       stripe.charges.create charge, (err, charge) ->
         if err
           console.log err
-          res.send "error... bummer man"
+          return res.render 'error'
         else
           product = new Products buyer: user
           product.save (err, product) ->
@@ -57,6 +57,5 @@ module.exports = (app) ->
             user.purchased_products.addToSet product
             user.save()
             mailer.newPurchase user
-            res.json charge
-            console.log 'cha-ching!'
+            return res.render 'purchase'
   
