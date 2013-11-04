@@ -155,8 +155,17 @@ checkSize = ->
   $("#clockblock-block img").width w
 displayMode = 0
 numModes = 3
+
+bindPaymentForm = ->
+  $("#payment-form").submit (e) ->
+    form = $(@)
+    form.find('button').prop 'disabled', true
+    Stripe.card.createToken form, stripeResHandler
+    false
+
 $(window).resize checkSize
 $(window).ready ->
+  bindPaymentForm()
   checkSize()
   drawTime()
   $("[type='radio']").click (e) ->
