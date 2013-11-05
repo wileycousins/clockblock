@@ -87,6 +87,11 @@ hr.white
   color $white
   border-color $white
 
+.skinny
+  letter-spacing 1px
+.tiny
+  font-size 11px
+
 .link
   text-align center
   margin 0px auto
@@ -164,11 +169,11 @@ div.navbar.nav
   div.navbar.nav
     .nav-link
       padding 15px 40px
-@media screen and (max-width: 840px) and (min-width: 769px)
+@media screen and (max-width: 840px) and (min-width: 767px)
   div.navbar.nav
     .nav-link
       padding 15px 30px
-@media screen and (max-width: 768px)
+@media screen and (max-width: 767px)
   div.navbar.nav
     ul.nav
       margin 0px auto
@@ -184,36 +189,77 @@ div.navbar.nav
 
 $heightTrans = height .5s
 #clockblock-block
-  .time-wrapper
-    height 120px
-  .time.short
-    height 0px
-    transition $heightTrans
-    -webkit-transition $heightTrans
+  width 400px
+  height 505px
+  #clockblock
+    position absolute
   .time
-    transition $heightTrans
-    -webkit-transition $heightTrans
-    overflow hidden
-    height 120px
+    width 130px
+    margin 10px auto
+    float left
+    display inline-block
+    .unit
+      width 70px
+      margin-right 20px
+      display inline-block
+    .measure
+      width 40px
+      display inline-block
+  .modes
+    display inline-block
+    width 65px
+    margin 10px auto
+    text-align left
+    float right
+  .h30
+    height 30px
+    p
+      display inline-block
+  .radio
+    display inline-block
+    margin 0px
+    margin-right 10px
+    width 20px
+    height 20px
+    border 1px solid $red
+    background $white
+    border-radius 5px
+    transition background 1s
+  .radio.checked
+    background $gray
+    
 #clockblock-block:hover
   cursor pointer
   .time.short
     transition $heightTrans
     -webkit-transition $heightTrans
     height 120px
+
+@media screen and (max-width: 940px)
+  #clockblock-block, #blurb
+    display block
+    float none!important
+    margin 0 auto
+    margin-bottom 40px
+
 #main
   margin 70px auto 0px auto
+  max-width 950px
   #blurb
+    width 430px
     p
-      line-height 40px
+      line-height 46px
   h2
     border-bottom 2px solid $black
     border-top 2px solid $black
-    margin 0px auto 15px auto
-    width 337px
+    margin 0px auto 17px auto
+    width 400px
     height 75px
+  h2, h2 span
+    letter-spacing 12px
   .text-justify
-    width 365px
+    width 400px
+    padding 0px
     margin 0 auto
     float none
 #equation
@@ -252,26 +298,62 @@ $heightTrans = height .5s
   .tech
     h4
       margin-left 5px
-@media screen and (max-width: 460px) and (min-width: 390px)
+@media screen and (max-width: 760px) and (min-width: 460px)
   #main
+    #blurb
+      width 367px
+      float none!important
+      margin 0 auto
+      .text-justify
+        width 340px
+        p
+          line-height 36px
+    h2
+      margin 10px auto
+      width 338px
+      height 66px
+      font-size 48px
+
+@media screen and (max-width: 760px) and (min-width: 461px)
+  #clockblock-block
+    height 435px
+@media screen and (max-width: 460px) and (min-width: 390px)
+  #clockblock-block
+    height 405px
+  #main
+    #blurb
+      width 349px
+      float none!important
+      margin 0 auto
+      .text-justify
+        width 290px
+        p
+          line-height 27px
     h2
       margin 10px auto
       width 290px
-      height 66px
-      font-size 50px
-    .text-justify
-      width 325px
+      height 49px
+      font-size 38px
 
 @media screen and (max-width: 389px)
+  #clockblock-block
+    height 350px
   #main
+    #blurb
+      width 290px
+      float none!important
+      margin 0 auto
+      .text-justify
+        width 260px
+        p
+          line-height 21px
     h2
       margin 10px auto
-      width 256px
-      height 56px
-      font-size 43px
-    .text-justify
-      width 275px
-      padding-left 5px
+      width 260px
+      height 40px
+      font-size 31px
+    h2, h2 span
+      letter-spacing 12px
 
 @media (max-width: 650px)
   #equation
@@ -321,19 +403,6 @@ $heightTrans = height .5s
 .payment-errors
   color $red
   font-size 30px
-#clockblock
-  position absolute
-.time
-  width 230px
-  margin 0 auto
-  float none
-  .unit
-    width 70px
-    margin-right 20px
-    display inline-block
-  .measure
-    width 40px
-    display inline-block
 
 #learn
   background $black

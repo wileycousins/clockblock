@@ -144,15 +144,20 @@ drawTime = ->
   window.setTimeout (->
     drawTime()
   ), refreshTime
+
+
 checkSize = ->
   w = 400
   if $(window).width() < 389
     w = 256
   else if $(window).width() < 460
     w = 290
-  else w = 337  if $(window).width() < 760
+  else if $(window).width() < 760
+    w = 337  
+  $("#clockblock-block").width w
   $("#clockblock").width w
   $("#clockblock-block img").width w
+
 displayMode = 0
 numModes = 3
 
@@ -178,14 +183,8 @@ $(window).ready ->
   bindPaymentForm()
   checkSize()
   drawTime()
-  $("[type='radio']").click (e) ->
-    $("[type='radio'][checked]")[0].removeAttribute "checked"
-    displayMode = parseInt($(this).val())
-    $("[type='radio'][value=" + displayMode + "]")[0].setAttribute "checked", ""
-
-  $("#display").click ->
-    $("[type='radio'][checked]")[0].removeAttribute "checked"
-    displayMode = ++displayMode % numModes
-    $("[type='radio'][value=" + displayMode + "]")[0].setAttribute "checked", ""
-
-
+  $(".h30").click (e) ->
+    $('.radio.checked').removeClass 'checked'
+    radio = $(@).find '.radio'
+    displayMode = parseInt(radio.data 'val' )
+    radio.addClass 'checked'

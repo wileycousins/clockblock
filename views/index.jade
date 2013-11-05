@@ -29,36 +29,33 @@ block content
       #clockblock-block.col-sm-6.text-center
         canvas#clockblock(width='400px', height='400px')
         img.clockblock(src='/images/clockblock.jpg', width='400px', title='clockblock')
-        .col-sm-6
-          br
-          .time
-            .row.h30
-              .unit.text-right
-                p hour:
-              .measure.text-left
-                p#hour 6
-            .row.h30
-              .unit.text-right
-                p minute:
-              .measure.text-left
-                p#minute 23
-            .row.h30
-              .unit.text-right
-                p second:
-              .measure.text-left
-                p#second 47
-        .col-sm-3.col-sm-offset-2.text-left
-          br
+        .time
           .row.h30
-            input(type='radio', name='display', value='0', checked)
-            |&nbsp;&nbsp;fill
+            .unit.text-right
+              p hour:
+            .measure.text-left
+              p#hour 6
           .row.h30
-            input(type='radio', name='display', value='1')
-            |&nbsp;&nbsp;dot
+            .unit.text-right
+              p minute:
+            .measure.text-left
+              p#minute 23
           .row.h30
-            input(type='radio', name='display', value='2')
-            |&nbsp;&nbsp;blend
-      #blurb.col-sm-3.col-sm-offset-1
+            .unit.text-right
+              p second:
+            .measure.text-left
+              p#second 47
+        .modes
+          .row.h30
+            div.radio.checked(data-val='0')
+            p fill
+          .row.h30
+            div.radio(data-val='1')
+            p dot
+          .row.h30
+            div.radio(data-val='2')
+            p blend
+      #blurb.col-sm-5.pull-right
         .row
         h2 clock<span class='red'>block</span>
         .col-sm-6.col-sm-offset-3.text-justify
@@ -155,11 +152,24 @@ block content
                     h4.red total: $150
                 .row
                   .col-sm-12
-                    hr.dotted
-                    br
+                    .row
+                      hr.dotted
+                      br
+                    .row
+                      .col-sm-7(style='margin-top: 5px;')
+                        i.gray.skinny we don't store credit card information on our servers
+                        br
+                        br
+                      .col-sm-4.pull-right.text-right
+                        a(href='https://stripe.com/us/help/faq#security', target='_blank')
+                          img(src='/images/stripe.png', width=150, title='stripe')
+                    .row
+                      hr.dotted
+                      br
                 .row
-                  .col-sm-4.pull-right.text-right
-                    button#email-signup-button.btn.btn-default(type='submit') Buy one
+                  .col-sm-8.pull-right.text-right
+                    i.skinny.gray.tiny (this will charge your card)
+                    button#email-signup-button.btn.btn-default.col-sm-offset-1(type='submit') Buy one
             br
         br
         br
