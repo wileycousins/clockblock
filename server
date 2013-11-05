@@ -4,5 +4,5 @@ fi
 if [ $NODE_ENV == 'production' ]; then
   forever start app.coffee
 else
-  supervisor -w ./ -e coffee,jade,less app.coffee
+  supervisor -w ./ -e coffee,jade,styl app.coffee
 fi

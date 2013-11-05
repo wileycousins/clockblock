@@ -4,3 +4,14 @@ block content
   h1.text-center thanks for your patronage
   h4.text-center you should receive a confirmation email shortly
   p.text-center (if not check your spam folder for an email from robot@wileycousins.com)
+  .col-sm-12
+    br
+    hr.dotted
+    br
+  .col-sm-12
+    a(href='/')
+      #clockblock-block.text-center(style='margin: 0 auto; float: none;')
+        canvas#clockblock(width='400px', height='400px')
+        img.clockblock(src='/images/clockblock.jpg', width='400px', title='clockblock')
+      p.text-center (click to go home)
+  !=js('client')
