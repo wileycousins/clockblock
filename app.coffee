@@ -8,7 +8,6 @@ nib         = require 'nib'
 path        = require 'path'
 http        = require 'http'
 https       = require 'https'
-socketIo    = require 'socket.io'
 path        = require 'path'
 mongoose    = require 'mongoose'
 exec        = require('child_process').exec
@@ -16,6 +15,9 @@ fs          = require 'fs'
 if process.env.NODE_ENV != 'production'
   privateKey  = fs.readFileSync './ssl/server.key', 'utf8'
   certificate = fs.readFileSync './ssl/server.crt', 'utf8'
+else
+  privateKey  = fs.readFileSync './ssl/gandi.key', 'utf8'
+  certificate = fs.readFileSync './ssl/gandi.crt', 'utf8'
 
 credentials = 
   key: privateKey
@@ -44,20 +46,7 @@ if process.env.NODE_ENV != 'production'
   server = https.createServer(credentials, app)
 else
   server = http.createServer(app)
-io = socketIo.listen(server)
 
-# Make socket.io a little quieter
-io.set "log level", 1
-
-# Give socket.io access to the passport user from Express
-#io.set('authorization', passportSocketIo.authorize(
-  #sessionKey: 'connect.sid',
-  #sessionStore: sessionStore,
-  #sessionSecret: config.sessionSecret,
-  #fail: (data, accept) ->
-  #keeps socket.io from bombing when user isn't logged in
-    #accept(null, true);
-#));
 compile = (str, path) ->
   stylus(str).set('filename', path).use(nib())
 
@@ -83,13 +72,6 @@ app.configure ->
   app.use express.static path.join __dirname, "assets"  
   app.use express.static path.join __dirname, "public"  
   app.use express.errorHandler()  if config.useErrorHandler
-
-io.sockets.on "connection",  (socket) ->
-
-  socket?.emit "connection", "I am your father"
-
-  socket.on "disconnect", ->
-    console.log "disconnected"
 
 require("./urls")(app)
 

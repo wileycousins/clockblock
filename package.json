@@ -19,8 +19,6 @@
     "nib"                   : "*",
     "nodemailer"            :" *",
     "stylus"                : "*",
-    "socket.io"             : "*",
-    "socket.io-client"      : "*",
     "stripe"                : "*",
     "supervisor"            : "*"
   }
