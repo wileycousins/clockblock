@@ -10,6 +10,10 @@ module.exports = (app) ->
   app.get "/", (req, res) ->
     res.render "index.jade"
   
+
+  if process.env.NODE_ENV != 'production'
+    app.get "/purchase", (req, res) ->
+      return res.render 'purchase'
   
   app.post "/purchase", (req, res) ->
     stripeToken = req.body.stripeToken
