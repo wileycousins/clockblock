@@ -110,5 +110,8 @@ module.exports = (app) ->
       Products.find({purchase_date:{$lte:req.body.clock}}).exec (err, clocks) ->
         if err
           console.log err
-        mailer.confirmation user, clocks.length
-        return res.render 'emailTemplates/confirmation', user: user, num: clocks.length, url: 'http://127.0.0.1:3000'
+        num = clocks.length
+        if num < 10
+          num = "0#{num.toString()}"
+        mailer.confirmation user, num
+        return res.render 'emailTemplates/confirmation', user: user, num:num, url: config.url

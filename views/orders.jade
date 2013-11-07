@@ -2,12 +2,49 @@ extends layout
 
 block content
   .container
-    for user in users
-      .col-sm-6.user-order
-        h4=user.name
-        for clock in user.purchased_products
-          li date: #{clock.purchase_date.toDateString()}
-          form(action='/confirmation/#{user._id}/', method='post')
-            input(name='clock', value='#{clock.purchase_date.toJSON()}', type='hidden')
-            input(name='valid', value='yep', type='hidden')
-            button.btn.btn-primary Resend confirmation
+    .row
+      br
+      h1 orders
+      br
+    .row
+      .col-sm-12
+        hr.dotted
+        br
+    .row
+      .col-sm-12
+        for user in users
+          .col-sm-4.col-sm-offset-1.user-order.radius10.collapsed
+            a(href='#collapse#{user._id}', data-toggle='collapse')
+              h4.red.text-center=user.name.toLowerCase()
+            .col-sm-12.panel-collapse.collapse(id='collapse#{user._id}')
+              form(action='/confirmation/#{user._id}/', method='post')
+                .form-group
+                  label name
+                  input.form-control(name='name', value='#{user.name}')
+                .form-group
+                  label email
+                  input.form-control(name='email', value='#{user.email}')
+                .form-group
+                  label phone
+                  input.form-control(name='phone', value='#{user.phone}')
+                .form-group
+                  label address
+                  input.form-control(name='address', value='#{user.address}')
+                .form-group
+                  label city
+                  input.form-control(name='city', value='#{user.city}')
+                .form-group
+                  label state
+                  input.form-control(name='state', value='#{user.state}')
+                button.btn.btn-default Update
+            .col-sm-10.col-sm-offset-1
+              hr.white.dotted
+            a(href='#collapseClock#{user._id}', data-toggle='collapse')
+              h4.red.text-center clockblocks
+            .col-sm-12.panel-collapse.collapse(id='collapseClock#{user._id}')
+              for clock in user.purchased_products
+                p date: #{clock.purchase_date.toDateString()}
+                form(action='/confirmation/#{user._id}/', method='post')
+                  input.form-control(name='clock', value='#{clock.purchase_date.toJSON()}', type='hidden')
+                  input.form-control(name='valid', value='yep', type='hidden')
+                  button.btn.btn-default Resend confirmation
