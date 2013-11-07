@@ -8,7 +8,7 @@ mailer    = require './mailer'
 module.exports = (app) ->
   # UI routes
   app.get "/", (req, res) ->
-    res.render "index.jade"
+    res.render "index.jade", stripe_js: config.stripe_js
   
 
   app.all "/login", (req, res) ->
