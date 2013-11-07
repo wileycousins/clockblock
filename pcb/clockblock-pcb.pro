@@ -1,5 +1,5 @@
-update=11/6/2013 5:36:56 PM
-last_client=eeschema
+update=11/6/2013 10:03:02 PM
+last_client=kicad
 [pcbnew]
 version=1
 LastNetListRead=
@@ -44,8 +44,6 @@ LibDir=Z:/Projects/kicad-lib/footprints
 [cvpcb]
 version=1
 NetIExt=net
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=Z:/Projects/kicad-lib/components
@@ -69,3 +67,5 @@ LibName11=ti-ic
 LibName12=power
 LibName13=nxp-ic
 LibName14=ftdi-ic
+[general]
+version=1
