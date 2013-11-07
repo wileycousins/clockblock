@@ -23,7 +23,6 @@ User = new Schema
   email:
     type      : String
     required  : true
-    unique    : true
   name: String
   phone: String
   address: String

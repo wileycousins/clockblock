@@ -1,0 +1,11 @@
+div
+  h1 shit!
+  p we got an error sending an email to: #{user.name} <#{user.email}> 
+  p error message:
+  p=error
+  p response message:
+  p=res
+  br
+  br
+  a(href='#{url}/orders')
+    view orders
