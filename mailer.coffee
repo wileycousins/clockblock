@@ -24,21 +24,23 @@ mailOptions =
   subject: "clockblock"
 
 # send mail with defined transport object
-exports.newPurchase = (user) ->
+exports.newPurchase = (user, num) ->
+  # send us an email
   mailOptions.html = newPurchaseTemplate
       user: user
       url: config.url
   mailOptions.subject = '[clockblock] new purchase'
-  # send us an email
-  smtpTransport.sendMail mailOptions, (error, response) ->
-    if error
-      console.log error
-    else
-      console.log "Message sent: " + response.message
+  if process.env.NODE_ENV == 'production'
+    smtpTransport.sendMail mailOptions, (error, response) ->
+      if error
+        console.log error
+      else
+        console.log "Message sent: " + response.message
   # send them an email
   mailOptions.html = confirmationTemplate
       user: user
       url: config.url
+      num: num
   mailOptions.to = user.email
   mailOptions.subject = 'clockblock purchase confirmation'
   smtpTransport.sendMail mailOptions, (error, response) ->

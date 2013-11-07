@@ -8,6 +8,7 @@ map = (value, fromMin, fromMax, toMin, toMax) ->
   toMax = parseFloat(toMax)
   norm = (value - fromMin) / (fromMax - fromMin).toFixed(2)
   norm * (toMax - toMin) + toMin
+
 drawTime = ->
   
   # refresh rate
@@ -30,6 +31,7 @@ drawTime = ->
   $("#second").text second
   milli = time.getMilliseconds()
   nbr_circles = 12
+  spacing_multi = 0.90
   minOpacity = 0.2
   
   # blend mode needs to go to zero
@@ -81,7 +83,7 @@ drawTime = ->
   
   # hours
   ctx.fillStyle = defaultFill
-  lg_rad = (width / 2) * .85
+  lg_rad = (width / 4) * spacing_multi
   lg_circ = 2 * Math.PI * lg_rad
   sm_rad = 10 #(lg_circ / nbr_circles) / 2;
   cx = width / 2
@@ -102,7 +104,7 @@ drawTime = ->
   
   # minutes
   ctx.fillStyle = defaultFill
-  lg_rad = (width / 2.5) * .85
+  lg_rad = (width / 2.65) * spacing_multi
   lg_circ = 2 * Math.PI * lg_rad
   sm_rad = 10 #(lg_circ / nbr_circles) / 2;
   cx = width / 2
@@ -123,7 +125,7 @@ drawTime = ->
   
   # seconds
   ctx.fillStyle = defaultFill
-  lg_rad = (width / 3.5) * .85
+  lg_rad = (width / 2) * spacing_multi
   lg_circ = 2 * Math.PI * lg_rad
   sm_rad = 10 #(lg_circ / nbr_circles) / 2;
   cx = width / 2

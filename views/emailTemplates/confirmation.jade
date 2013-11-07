@@ -1,10 +1,20 @@
-style
-  * {
-    color: #B9C3CC;
-  }
-div(style='width=400px')
-  h1 hey #{user.name.toLowerCase()},
-  p just wanted to let you know we got your order. you will receive another email when your clockblock is assembled.
-  p we will at that time request how you want your clockblock shipped, or if you want us to deliver it to you if you're in New Orleans.
-  p if you have any questions or concerns shoot us an email at <a href='mailto:dev@wileycousins.com'>dev@wileycousins.com</a>
-  img(src='http://clockblocknola.com/images/logo.png', width='200px', height='auto')
+head
+  style
+    * {
+      color: #242323; font-family: "Helvetica Neue", "Helvetica", sans-serif;
+    }
+    img, div {
+      border-radius: 15px;
+    }
+    a {
+      color: #CC2920; text-decoration: none;
+    }
+body
+  div#main(style='border: 1px solid #B9C3CC; border-radius: 20px; padding: 15px; width: 400px; height: 400px; position: relative; margin: 10px auto;')
+    h2 hey #{user.name.toLowerCase()},
+    p just wanted to let you know we got your order. you will receive another email when your clockblock is assembled.
+    p we will at that time request how you want your clockblock shipped, or if you want us to hand deliver it to you (if you're in New Orleans).
+    p if you have any questions or concerns shoot us an email at <a href='mailto:dev@wileycousins.com'>dev@wileycousins.com</a>
+    img(src='http://clockblocknola.com/images/logo.png', width='120px', height='120px', style='display: inline-block;')
+    div(style='width: 120px; height: 120px; background-image:url("http://clockblocknola.com/images/cypress.jpg"); background-repeat: no-repeat; float: right;')
+      h5(style='z-index: 1; top: 60px; text-align: center; background: none; margin: 30px 0px 0px 30px; font-size: 40px; color: #F9FFFF; display: inline-block;') ##{num}

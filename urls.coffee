@@ -13,7 +13,18 @@ module.exports = (app) ->
 
   if process.env.NODE_ENV != 'production'
     app.get "/purchase", (req, res) ->
-      return res.render 'purchase'
+      Products.find().exec (err, clocks) ->
+        if err
+          console.log err
+        return res.render 'purchase', num: clocks.length
+    app.get "/confirmation", (req, res) ->
+      Users.findOne().exec (err, user) ->
+        if err
+          console.log err
+        Products.find().exec (err, clocks) ->
+          if err
+            console.log err
+          return res.render 'emailTemplates/confirmation', user: user, num: clocks.length, url: 'http://127.0.0.1:3000'
   
   app.post "/purchase", (req, res) ->
     stripeToken = req.body.stripeToken
@@ -60,6 +71,7 @@ module.exports = (app) ->
               return res.send "error creating purchase record in db, sorry"
             user.purchased_products.addToSet product
             user.save()
-            mailer.newPurchase user
-            return res.render 'purchase'
+            Products.find( purchase_date: {$lt:(new Date()).toJSON()} ).exec (err, blocks)->
+              mailer.newPurchase user, blocks.length
+              return res.render 'purchase', num: blocks.length
   

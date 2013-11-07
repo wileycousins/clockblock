@@ -10,8 +10,9 @@ block content
     br
   .col-sm-12
     a(href='/')
-      #clockblock-block.text-center(style='margin: 0 auto; float: none;')
+      #clockblock-block.text-center(style='margin: 0 auto; float: none; height: 420px;')
         canvas#clockblock(width='400px', height='400px')
         img.clockblock(src='/images/clockblock.jpg', width='400px', title='clockblock')
+        h4#ser-number ##{num}
       p.text-center (click to go home)
   !=js('client')
