@@ -56,8 +56,13 @@ module.exports = (app) ->
     state = req.body.state
     zip = req.body.zip
     Users.findOne(
-      emai: email
       name: name
+      email: email
+      phone: phone
+      address: address
+      city: city
+      state: state
+      zip: zip
     ).exec (err, user) ->
       if err
         console.log err
@@ -73,7 +78,6 @@ module.exports = (app) ->
           state: state
           zip: zip
         user.save()
-
       stripe.charges.create charge, (err, charge) ->
         if err
           console.log err
@@ -85,8 +89,10 @@ module.exports = (app) ->
               console.log err
               return res.send "error creating purchase record in db, sorry"
             user.purchased_products.addToSet product
-            user.save()
-            Products.find( purchase_date: {$lt:(new Date()).toJSON()} ).exec (err, blocks)->
-              mailer.newPurchase user, blocks.length
-              return res.render 'purchase', num: blocks.length
+            user.save (err, user) ->
+              if err
+                console.log "error saving user post add product: #{err}"
+              Products.find( purchase_date: {$lt:(new Date()).toJSON()} ).exec (err, blocks)->
+                mailer.newPurchase user, blocks.length
+                return res.render 'purchase', num: blocks.length
   
