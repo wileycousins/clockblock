@@ -37,6 +37,8 @@ exports.newPurchase = (user, num) ->
       else
         console.log "Message sent: " + response.message
   # send them an email
+  if num < 10
+    num = "0#{num.toString()}"
   mailOptions.html = confirmationTemplate
       user: user
       url: config.url

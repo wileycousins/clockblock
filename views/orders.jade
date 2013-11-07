@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  .container
+    for user in users
+      .col-sm-6.user-order
+        h4=user.name
+        for clock in user.purchased_products
+          li date purchased: #{clock.purchase_date}

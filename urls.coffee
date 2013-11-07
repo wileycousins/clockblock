@@ -11,6 +11,21 @@ module.exports = (app) ->
     res.render "index.jade"
   
 
+  app.all "/login", (req, res) ->
+    if req.body.password?.match(process.env.ADMIN_PASSWORD)
+      req.session['auth'] = 'so-good'
+      return res.redirect('/orders')
+    return res.render('login.jade', info:"you clearly don't know whats up")
+
+  app.get "/orders", (req, res) ->
+    if !req.session.auth?.match('so-good')
+      return res.render 'login'
+    Users.find().exec (err, users) ->
+      if err
+        console.log err
+        return res.send err
+      res.render "orders.jade", users: users
+
   if process.env.NODE_ENV != 'production'
     app.get "/purchase", (req, res) ->
       Products.find().exec (err, clocks) ->
