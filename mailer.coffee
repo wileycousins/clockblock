@@ -25,8 +25,6 @@ mailOptions =
 
 # send them an email
 exports.confirmation = (user, num) ->
-  if num < 10
-    num = "0#{num.toString()}"
   mailOptions.to = user.email
   mailOptions.subject = 'clockblock purchase confirmation'
   mailOptions.html = confirmationTemplate
