@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/7/2013 2:17:24 AM
+Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/7/2013 4:19:01 PM
 
 BeginCmp
 TimeStamp = /527AD7C9;
@@ -246,13 +246,6 @@ IdModule  = SSOP16;
 EndCmp
 
 BeginCmp
-TimeStamp = /527B8EDC;
-Reference = J1;
-ValeurCmp = ARM;
-IdModule  = ;
-EndCmp
-
-BeginCmp
 TimeStamp = /527AF018;
 Reference = J2;
 ValeurCmp = MICROUSB;
@@ -288,87 +281,31 @@ IdModule  = 0603(1608m)_led;
 EndCmp
 
 BeginCmp
-TimeStamp = /5241A833;
-Reference = P1;
-ValeurCmp = ARM0;
-IdModule  = ;
+TimeStamp = /527C0BFD;
+Reference = LND1;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
 EndCmp
 
 BeginCmp
-TimeStamp = /5241A85B;
-Reference = P2;
-ValeurCmp = ARM1;
-IdModule  = ;
+TimeStamp = /527C0C54;
+Reference = LND2;
+ValeurCmp = HOUR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
 EndCmp
 
 BeginCmp
-TimeStamp = /5241A8A1;
-Reference = P3;
-ValeurCmp = ARM2;
-IdModule  = ;
+TimeStamp = /527C0C5F;
+Reference = LND3;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
 EndCmp
 
 BeginCmp
-TimeStamp = /5241A932;
-Reference = P4;
-ValeurCmp = ARM3;
-IdModule  = ;
-EndCmp
-
-BeginCmp
-TimeStamp = /5241D370;
-Reference = P5;
-ValeurCmp = ARM4;
-IdModule  = ;
-EndCmp
-
-BeginCmp
-TimeStamp = /5241D376;
-Reference = P6;
-ValeurCmp = ARM5;
-IdModule  = ;
-EndCmp
-
-BeginCmp
-TimeStamp = /5241D37C;
-Reference = P7;
-ValeurCmp = ARM6;
-IdModule  = ;
-EndCmp
-
-BeginCmp
-TimeStamp = /5241D382;
-Reference = P8;
-ValeurCmp = ARM7;
-IdModule  = ;
-EndCmp
-
-BeginCmp
-TimeStamp = /5241D636;
-Reference = P9;
-ValeurCmp = ARM8;
-IdModule  = ;
-EndCmp
-
-BeginCmp
-TimeStamp = /5241D63C;
-Reference = P10;
-ValeurCmp = ARM9;
-IdModule  = ;
-EndCmp
-
-BeginCmp
-TimeStamp = /5241D642;
-Reference = P11;
-ValeurCmp = ARM10;
-IdModule  = ;
-EndCmp
-
-BeginCmp
-TimeStamp = /5241D648;
-Reference = P12;
-ValeurCmp = ARM11;
-IdModule  = ;
+TimeStamp = /527C0C6A;
+Reference = LND4;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
 EndCmp
 
 BeginCmp
@@ -396,42 +333,42 @@ BeginCmp
 TimeStamp = /527B91D7;
 Reference = PAD1;
 ValeurCmp = VLED;
-IdModule  = ;
+IdModule  = 3x5MM_SM-PAD;
 EndCmp
 
 BeginCmp
 TimeStamp = /527B9209;
 Reference = PAD2;
 ValeurCmp = HOUR;
-IdModule  = ;
+IdModule  = 3x5MM_SM-PAD;
 EndCmp
 
 BeginCmp
 TimeStamp = /527B9240;
 Reference = PAD3;
 ValeurCmp = MIN;
-IdModule  = ;
+IdModule  = 3x5MM_SM-PAD;
 EndCmp
 
 BeginCmp
 TimeStamp = /527B9268;
 Reference = PAD4;
-ValeurCmp = TEST;
-IdModule  = ;
+ValeurCmp = SEC;
+IdModule  = 3x5MM_SM-PAD;
 EndCmp
 
 BeginCmp
 TimeStamp = /527B3D83;
 Reference = PAD5;
 ValeurCmp = VLED;
-IdModule  = ;
+IdModule  = 3x5MM_SM-PAD;
 EndCmp
 
 BeginCmp
 TimeStamp = /527B3D92;
 Reference = PAD6;
 ValeurCmp = OUT;
-IdModule  = ;
+IdModule  = 3x5MM_SM-PAD;
 EndCmp
 
 BeginCmp
@@ -522,21 +459,357 @@ BeginCmp
 TimeStamp = /527BCDF5;
 Reference = S1;
 ValeurCmp = HOUR;
-IdModule  = ;
+IdModule  = SPST_6MM_sm;
 EndCmp
 
 BeginCmp
 TimeStamp = /527C1D62;
 Reference = S2;
 ValeurCmp = MIN;
-IdModule  = ;
+IdModule  = SPST_6MM_sm;
 EndCmp
 
 BeginCmp
 TimeStamp = /527C1D79;
 Reference = S3;
 ValeurCmp = MODE;
-IdModule  = ;
+IdModule  = SPST_6MM_sm;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C02CC;
+Reference = SPR1;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0310;
+Reference = SPR2;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0316;
+Reference = SPR3;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C031C;
+Reference = SPR4;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C03CA;
+Reference = SPR5;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C03D0;
+Reference = SPR6;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C03D6;
+Reference = SPR7;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C03DC;
+Reference = SPR8;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C03EE;
+Reference = SPR9;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C03F4;
+Reference = SPR10;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C03FA;
+Reference = SPR11;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0400;
+Reference = SPR12;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C044C;
+Reference = SPR13;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0452;
+Reference = SPR14;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0458;
+Reference = SPR15;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C045E;
+Reference = SPR16;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0464;
+Reference = SPR17;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C046A;
+Reference = SPR18;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0470;
+Reference = SPR19;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0476;
+Reference = SPR20;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C04C2;
+Reference = SPR21;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C04C8;
+Reference = SPR22;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C04CE;
+Reference = SPR23;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C04D4;
+Reference = SPR24;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C04DA;
+Reference = SPR25;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C04E0;
+Reference = SPR26;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C04E6;
+Reference = SPR27;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C04EC;
+Reference = SPR28;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C054C;
+Reference = SPR29;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0552;
+Reference = SPR30;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0558;
+Reference = SPR31;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C055E;
+Reference = SPR32;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0564;
+Reference = SPR33;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C056A;
+Reference = SPR34;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0570;
+Reference = SPR35;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C0576;
+Reference = SPR36;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05A4;
+Reference = SPR37;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05AA;
+Reference = SPR38;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05B0;
+Reference = SPR39;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05B6;
+Reference = SPR40;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05BC;
+Reference = SPR41;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05C2;
+Reference = SPR42;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05C8;
+Reference = SPR43;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05CE;
+Reference = SPR44;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05D4;
+Reference = SPR45;
+ValeurCmp = VLED;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05DA;
+Reference = SPR46;
+ValeurCmp = HR;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05E0;
+Reference = SPR47;
+ValeurCmp = MIN;
+IdModule  = TE_1551573-5_SPRING-FINGER;
+EndCmp
+
+BeginCmp
+TimeStamp = /527C05E6;
+Reference = SPR48;
+ValeurCmp = SEC;
+IdModule  = TE_1551573-5_SPRING-FINGER;
 EndCmp
 
 EndListe
