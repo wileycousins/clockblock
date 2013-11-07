@@ -72,7 +72,6 @@ module.exports = (app) ->
       req.session['auth'] = 'so-good'
       next()
 
-  #app.all "/login", isAdmin
 
   app.all "/login", isAdmin, (req, res) ->
       return res.redirect('/orders')
