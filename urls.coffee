@@ -72,25 +72,25 @@ module.exports = (app) ->
       req.session['auth'] = 'so-good'
       next()
 
-  app.all "*", isAdmin
+  #app.all "/login", isAdmin
 
-  app.all "/login", (req, res) ->
+  app.all "/login", isAdmin, (req, res) ->
       return res.redirect('/orders')
 
-  app.get "/orders", (req, res) ->
+  app.get "/orders", isAdmin, (req, res) ->
     Users.find().populate('purchased_products').exec (err, users) ->
       if err
         console.log err
         return res.send err
       res.render "orders.jade", users: users
 
-  app.get "/purchase", (req, res) ->
+  app.get "/purchase", isAdmin, (req, res) ->
     Products.find().exec (err, clocks) ->
       if err
         console.log err
       return res.render 'purchase', num: clocks.length
 
-  app.get "/confirmation", (req, res) ->
+  app.get "/confirmation", isAdmin, (req, res) ->
     Users.findOne().exec (err, user) ->
       if err
         console.log err
@@ -99,10 +99,10 @@ module.exports = (app) ->
           console.log err
         return res.render 'emailTemplates/confirmation', user: user, num: clocks.length, url: 'http://127.0.0.1:3000'
 
-  app.get "/confirmation/:user", (req, res) ->
+  app.get "/confirmation/:user", isAdmin, (req, res) ->
     res.redirect '/orders'
 
-  app.post "/confirmation/:user", (req, res) ->
+  app.post "/confirmation/:user", isAdmin, (req, res) ->
     Users.findById(req.params.user).exec (err, user) ->
       if err
         console.log err
