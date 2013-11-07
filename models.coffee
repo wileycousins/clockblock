@@ -30,7 +30,10 @@ User = new Schema
   city: String
   state: String
   zip: String
-  purchased_products: [Product]
+  purchased_products: [
+    type: Schema.ObjectId
+    ref: 'Product'
+  ]
 
 exports.User = mongoose.model 'User', User
 exports.Product = mongoose.model 'Product', Product

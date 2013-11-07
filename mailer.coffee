@@ -23,19 +23,7 @@ mailOptions =
   to: "le dudes <dev@wileycousins.com>"
   subject: "clockblock"
 
-# send mail with defined transport object
-exports.newPurchase = (user, num) ->
-  # send us an email
-  mailOptions.html = newPurchaseTemplate
-      user: user
-      url: config.url
-  mailOptions.subject = '[clockblock] new purchase'
-  if process.env.NODE_ENV == 'production'
-    smtpTransport.sendMail mailOptions, (error, response) ->
-      if error
-        console.log error
-      else
-        console.log "Message sent: " + response.message
+exports.confirmation = (user, num) ->
   # send them an email
   if num < 10
     num = "0#{num.toString()}"
@@ -50,6 +38,20 @@ exports.newPurchase = (user, num) ->
       console.log error
     else
       console.log "Message sent: " + response.message
+
+exports.newPurchase = (user, num) ->
+  # send us an email
+  mailOptions.html = newPurchaseTemplate
+      user: user
+      url: config.url
+  mailOptions.subject = '[clockblock] new purchase'
+  if process.env.NODE_ENV == 'production'
+    smtpTransport.sendMail mailOptions, (error, response) ->
+      if error
+        console.log error
+      else
+        console.log "Message sent: " + response.message
+  exports.confirmation user, num
 
 # if you don't want to use this transport object anymore, uncomment following line
 #smtpTransport.close(); // shut down the connection pool, no more messages

@@ -6,4 +6,8 @@ block content
       .col-sm-6.user-order
         h4=user.name
         for clock in user.purchased_products
-          li date purchased: #{clock.purchase_date}
+          li date: #{clock.purchase_date.toDateString()}
+          form(action='/confirmation/#{user._id}/', method='post')
+            input(name='clock', value='#{clock.purchase_date.toJSON()}', type='hidden')
+            input(name='valid', value='yep', type='hidden')
+            button.btn.btn-primary Resend confirmation
