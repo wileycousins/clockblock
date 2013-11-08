@@ -1,5 +1,5 @@
-update=11/8/2013 1:07:42 AM
-last_client=pcbnew
+update=11/8/2013 1:21:13 AM
+last_client=kicad
 [cvpcb]
 version=1
 NetIExt=net
@@ -26,8 +26,6 @@ LibName11=ti-ic
 LibName12=power
 LibName13=nxp-ic
 LibName14=ftdi-ic
-[general]
-version=1
 [pcbnew]
 version=1
 LastNetListRead=clockblock-pcb.net
@@ -70,3 +68,5 @@ LibName18=texas
 LibName19=to
 LibName20=xtal
 LibName21=pads
+[general]
+version=1
