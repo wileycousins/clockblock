@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/8/2013 12:37:33 AM
+Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/8/2013 12:48:48 PM
 
 BeginCmp
 TimeStamp = /527AD7C9;
@@ -288,6 +288,13 @@ IdModule  = 0603(1608m)_led;
 EndCmp
 
 BeginCmp
+TimeStamp = /527D3686;
+Reference = LED5;
+ValeurCmp = PWR;
+IdModule  = 0603(1608m)_led;
+EndCmp
+
+BeginCmp
 TimeStamp = /527C0BFD;
 Reference = LND1;
 ValeurCmp = VLED;
@@ -458,6 +465,13 @@ EndCmp
 BeginCmp
 TimeStamp = /527B275E;
 Reference = R12;
+ValeurCmp = 1kΩ;
+IdModule  = 0603(1608m);
+EndCmp
+
+BeginCmp
+TimeStamp = /527D3845;
+Reference = R13;
 ValeurCmp = 1kΩ;
 IdModule  = 0603(1608m);
 EndCmp
