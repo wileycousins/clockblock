@@ -1,10 +1,10 @@
-Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/7/2013 4:19:01 PM
+Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/7/2013 5:38:49 PM
 
 BeginCmp
 TimeStamp = /527AD7C9;
 Reference = BT1;
 ValeurCmp = 3V-COINCELL;
-IdModule  = 0603(1608m);
+IdModule  = LINX_BAT-HLD-012-SMT;
 EndCmp
 
 BeginCmp
@@ -179,7 +179,7 @@ BeginCmp
 TimeStamp = /527AF5CD;
 Reference = C25;
 ValeurCmp = 4.7uF;
-IdModule  = 0805(2012m)_tant-cap;
+IdModule  = 1206(3216m)_tant-cap;
 EndCmp
 
 BeginCmp
@@ -234,21 +234,21 @@ EndCmp
 BeginCmp
 TimeStamp = /5279D741;
 Reference = IC6;
-ValeurCmp = ATTINY87/167_SO;
+ValeurCmp = ATTINY87/167;
 IdModule  = TSSOP20;
 EndCmp
 
 BeginCmp
 TimeStamp = /527B0537;
 Reference = IC7;
-ValeurCmp = FT230X_SOP;
+ValeurCmp = FT230X;
 IdModule  = SSOP16;
 EndCmp
 
 BeginCmp
 TimeStamp = /527AF018;
 Reference = J2;
-ValeurCmp = MICROUSB;
+ValeurCmp = USB;
 IdModule  = MICROUSB_sm;
 EndCmp
 
