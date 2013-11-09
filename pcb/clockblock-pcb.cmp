@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/8/2013 12:48:48 PM
+Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/8/2013 10:12:28 PM
 
 BeginCmp
 TimeStamp = /527AD7C9;
@@ -241,7 +241,7 @@ EndCmp
 BeginCmp
 TimeStamp = /5279D741;
 Reference = IC6;
-ValeurCmp = ATTINY87/167;
+ValeurCmp = ATTINY167;
 IdModule  = TSSOP20;
 EndCmp
 
@@ -326,7 +326,7 @@ BeginCmp
 TimeStamp = /527BD62E;
 Reference = P13;
 ValeurCmp = USBtoMAIN;
-IdModule  = 2x5-array;
+IdModule  = 2x5-PIN-ARRAY_P100MIL_sm;
 EndCmp
 
 BeginCmp
@@ -340,7 +340,7 @@ BeginCmp
 TimeStamp = /527BD63D;
 Reference = P15;
 ValeurCmp = MAINtoUSB;
-IdModule  = 2x5-array;
+IdModule  = 2x5-PIN-ARRAY_P100MIL_sm;
 EndCmp
 
 BeginCmp
