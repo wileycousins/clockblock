@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/8/2013 10:12:28 PM
+Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/9/2013 4:45:22 PM
 
 BeginCmp
 TimeStamp = /527AD7C9;
@@ -298,28 +298,28 @@ BeginCmp
 TimeStamp = /527C0BFD;
 Reference = LND1;
 ValeurCmp = VLED;
-IdModule  = TE_1551573-5_SPRING-FINGER;
+IdModule  = 2x3MM_SM-PAD;
 EndCmp
 
 BeginCmp
 TimeStamp = /527C0C54;
 Reference = LND2;
 ValeurCmp = HOUR;
-IdModule  = TE_1551573-5_SPRING-FINGER;
+IdModule  = 2x3MM_SM-PAD;
 EndCmp
 
 BeginCmp
 TimeStamp = /527C0C5F;
 Reference = LND3;
 ValeurCmp = MIN;
-IdModule  = TE_1551573-5_SPRING-FINGER;
+IdModule  = 2x3MM_SM-PAD;
 EndCmp
 
 BeginCmp
 TimeStamp = /527C0C6A;
 Reference = LND4;
 ValeurCmp = SEC;
-IdModule  = TE_1551573-5_SPRING-FINGER;
+IdModule  = 2x3MM_SM-PAD;
 EndCmp
 
 BeginCmp
