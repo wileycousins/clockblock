@@ -3,7 +3,7 @@
   (general
     (links 461)
     (no_connects 120)
-    (area 16.455572 29.337 408.465866 196.85)
+    (area 16.455572 21.082 279.560866 196.85)
     (thickness 1.6)
     (drawings 122)
     (tracks 2246)
@@ -61,8 +61,8 @@
     (mod_edge_width 0.2032)
     (mod_text_size 0.762 0.762)
     (mod_text_width 0.1524)
-    (pad_size 3 2)
-    (pad_drill 0)
+    (pad_size 0.381 0.381)
+    (pad_drill 0.381)
     (pad_to_mask_clearance 0.0762)
     (aux_axis_origin 0 0)
     (visible_elements 7FFFFB7F)
@@ -9868,7 +9868,7 @@
     )
   )
 
-  (module MOUSEBITE (layer F.Cu) (tedit 527D794E) (tstamp 527D7F02)
+  (module MOUSEBITE (layer F.Cu) (tedit 527ED146) (tstamp 527D7F02)
     (at 252.095 67.818)
     (fp_text reference "" (at 5.08 0.635) (layer F.SilkS) hide
       (effects (font (size 0.762 0.762) (thickness 0.1524)))
@@ -9876,12 +9876,12 @@
     (fp_text value "" (at 10.16 0.635) (layer F.SilkS) hide
       (effects (font (size 0.762 0.762) (thickness 0.1524)))
     )
-    (pad "" np_thru_hole circle (at 0 0) (size 0.381 0.381) (drill 0.381)
+    (pad "" thru_hole circle (at 0 0) (size 0.381 0.381) (drill 0.381)
       (layers *.Cu *.Mask F.SilkS)
     )
   )
 
-  (module MOUSEBITE (layer F.Cu) (tedit 527D7947) (tstamp 527D7F14)
+  (module MOUSEBITE (layer F.Cu) (tedit 527ED140) (tstamp 527D7F14)
     (at 252.095 66.802)
     (fp_text reference "" (at 5.08 -0.635) (layer F.SilkS) hide
       (effects (font (size 0.762 0.762) (thickness 0.1524)))
@@ -9889,7 +9889,7 @@
     (fp_text value "" (at 10.16 -0.635) (layer F.SilkS) hide
       (effects (font (size 0.762 0.762) (thickness 0.1524)))
     )
-    (pad "" np_thru_hole circle (at 0 0) (size 0.381 0.381) (drill 0.381)
+    (pad "" thru_hole circle (at 0 0) (size 0.381 0.381) (drill 0.381)
       (layers *.Cu *.Mask F.SilkS)
     )
   )
