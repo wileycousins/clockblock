@@ -17,7 +17,7 @@
 # project name
 PRJ = clockblock
 # avr mcu
-MCU = atmega328p
+MCU = attiny167
 # mcu clock frequency
 CLK = 8000000
 # avr programmer (and port if necessary)
@@ -28,8 +28,8 @@ PRG = avrisp -P /dev/tty.usbmodem411 -b 19200
 # enable SPI programming
 # brownout detection at 2.7 V
 LFU = 0xE2
-HFU = 0xDF
-EFU = 0x05
+HFU = 0xDD
+EFU = 0x00
 # program source files
 SRC = $(PRJ).cpp display.cpp input.cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)

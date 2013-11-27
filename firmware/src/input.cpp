@@ -129,13 +129,15 @@ void Input::initInt(void) {
 }
 
 // init timer for debouncing
-// using an 8-bit timer on an 8MHz (16MHz for breadboard edition) clock
-// PS=1024 means an overflow will occur after about 32 (16) ms
+// using an 16-bit timer on an 8MHz clock
+// PS=1024 and OC1A=249 means an CTC will occur after about 32 ms
 void Input::initTimer(void) {
-  // ensure timer2 settings are cleared out
-  TCCR2A = 0;
-  // set prescaler to 1024
-  TCCR2B = ( (1 << CS22) | (1 << CS21) | (1 << CS20) );
+  // ensure timer1 settings are cleared out
+  TCCR1A = 0;
+  // set mode to CTC and prescaler to 1024
+  TCCR1B = ( (1 << WGM12) | (1 << CS12) | (1 << CS10) );
+  // set top of timer to 249 (for 250 counts / cycle)
+  OCR1A = 249;
 }
 
 // interrupt helpers
@@ -151,11 +153,11 @@ void Input::disableInt(void) {
 
 void Input::enableTimer(void) {
   // reload timer
-  TCNT2 = 0;
+  TCNT1 = 0;
   // enable the overflow interrupt
-  TIMSK2 = (1 << TOIE2);
+  TIMSK1 = (1 << OCIE1A);
 }
 
 void Input::disableTimer(void) {
-  TIMSK2 = 0;
+  TIMSK1 = 0;
 }

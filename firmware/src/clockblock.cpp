@@ -38,7 +38,7 @@ ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
 }
 
 // switch debouncer / timer
-ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
+ISR(TIMER1_COMPA_vect, ISR_NOBLOCK) {
   buttons.handleTimer();
 }
 
@@ -60,9 +60,9 @@ int main(void) {
   uint16_t dots[DISPLAY_NUM_DOTS];
 
   // initialize the RTC
-  rtc.init();
+  //rtc.init();
   // enable a 1024 Hz squarewave output on interrupt pin
-  rtc.enableSquareWave(1);
+  //rtc.enableSquareWave(1);
 
   // initialize the LED driver
   tlc.init();
@@ -137,11 +137,11 @@ void initUnusedPins(void) {
   DDRB &= ~UNUSED_PORTB_MASK;
   PORTB |= UNUSED_PORTB_MASK;
   // PORTC
-  DDRC &= ~UNUSED_PORTC_MASK;
-  PORTC |= UNUSED_PORTC_MASK;
+  //DDRC &= ~UNUSED_PORTC_MASK;
+  //PORTC |= UNUSED_PORTC_MASK;
   //PORTD
-  DDRD &= ~UNUSED_PORTD_MASK;
-  PORTD |= UNUSED_PORTD_MASK;
+  //DDRD &= ~UNUSED_PORTD_MASK;
+  //PORTD |= UNUSED_PORTD_MASK;
 }
 
 // button handling logic

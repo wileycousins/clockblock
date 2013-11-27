@@ -55,7 +55,7 @@ StuPId spi(&SPI_MOSI_DDR, SPI_MOSI_PIN, &SPI_SCK_DDR, SPI_SCK_PIN);
 //   chip select PORT, pin - PB2
 //   reset PORT, pin       - PB0
 //   interrupt PORT, pin   - PD2
-DS3234 rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_RST_PORT, RTC_RST_PIN, &RTC_INT_PORT, RTC_INT_PIN);
+//DS3234 rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_RST_PORT, RTC_RST_PIN, &RTC_INT_PORT, RTC_INT_PIN);
 
 // TLC5971 LED driver - TO BE IMPLEMENTED
 // parameters:
