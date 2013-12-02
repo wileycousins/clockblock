@@ -13,7 +13,7 @@
 //   chip select port, chip select pin
 //   reset port, reset pin
 //   interrupt port, interrupt pin
-PCF2129AT::PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *sqwPo, uint8_t sqwtPi) {
+PCF2129AT::PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *sqwPo, uint8_t sqwPi) {
   // save this shit
   // SPI channel
   spi = s;
@@ -207,7 +207,7 @@ void PCF2129AT::spiEnd() {
 //   buffer to read to / write from
 void PCF2129AT::readReg(uint8_t reg, uint8_t n, uint8_t *data) {
   spiStart();
-  spi->transfer(reg);
+  spi->transfer(PCF2129AT_SPI_READ | PCF2129AT_SPI_SA | reg);
   for (uint8_t i=0; i<n; i++) {
     data[i] = spi->transfer(0);
   }

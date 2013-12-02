@@ -155,6 +155,12 @@ void handleButtonPress(uint8_t state, uint8_t *tm) {
   else if (state == INPUT_MIN) {
     tm[1] = (tm[1] + 1) % 60;
   }
+  // if mode switch, increment mode
+  else if (state == INPUT_MODE) {
+    uint8_t m = leds.getMode();
+    m = (m < DISPLAY_NUM_MODES-1) ? m+1 : 0;
+    leds.setMode(m);
+  }
 }
 
 void handleButtonHold(uint8_t state, uint8_t *tm) {
@@ -168,9 +174,9 @@ void handleButtonHold(uint8_t state, uint8_t *tm) {
     tm[1] = (tm[1] + 5) % 60;
   }
   // else both buttons were held down, so increment the display mode
-  else {
-    uint8_t mode = leds.getMode();
-    mode = (mode == (DISPLAY_NUM_MODES-1)) ? 0 : (mode + 1);
-    leds.setMode(mode);
-  }
+  //else {
+  //  uint8_t mode = leds.getMode();
+  //  mode = (mode == (DISPLAY_NUM_MODES-1)) ? 0 : (mode + 1);
+  //  leds.setMode(mode);
+  //}
 }

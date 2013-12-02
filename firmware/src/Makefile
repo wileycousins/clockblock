@@ -27,14 +27,15 @@ PRG = avrisp -P /dev/tty.usbmodem411 -b 19200
 # use internal 8 MHz RC oscillator with no clock division and slowest available startup
 # enable SPI programming
 # brownout detection at 2.7 V
+# self-programming enabled 
 LFU = 0xE2
 HFU = 0xDD
-EFU = 0x00
+EFU = 0xFE
 # program source files
 SRC = $(PRJ).cpp display.cpp input.cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)
 # e.g. INC = ../../EyeToSee ../../YouSART
-INC = include/DS3234 include/StuPId include/TLC5971
+INC = include/PCF2129AT include/StuPId include/TLC5971
 # any defines to send the compiler
 DEF = 
 # directories
