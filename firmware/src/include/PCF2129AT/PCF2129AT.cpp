@@ -13,19 +13,16 @@
 //   chip select port, chip select pin
 //   reset port, reset pin
 //   interrupt port, interrupt pin
-PCF2129AT::PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *rstPo, uint8_t rstPi, volatile uint8_t *intPo, uint8_t intPi) {
+PCF2129AT::PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *sqwPo, uint8_t sqwtPi) {
   // save this shit
   // SPI channel
   spi = s;
   // chip select pin
   csPort = csPo;
   csPin = csPi;
-  // reset
-  rstPort = rstPo;
-  rstPin = rstPi;
-  // interrupt
-  intPort = intPo;
-  intPin = intPi;
+  // square wave
+  sqwPort = sqwPo;
+  sqwPin = sqwPi;
 }
 
 // initialization - sets pin modes and whatnot
@@ -35,11 +32,9 @@ void PCF2129AT::init() {
   // DDR is PORT - 1
   *(csPort-1) |= (1 << csPin);
   *csPort |= (1 << csPin);
-  // do the same for the reset pin
-  *(rstPort-1) |= (1 << rstPin);
-  *rstPort |= (1 << rstPin);
-  // ensure interrupt pin is set to an input
-  *(intPort-1) &= ~(1 << intPin);
+  // ensure squarewave pin is set to an input and its pullup resistor is activated
+  *(sqwPort-1) &= ~(1 << sqwPin);
+  *sqwPort |= (1 << sqwPin);
 
   // set up SPI
   spi->disable();

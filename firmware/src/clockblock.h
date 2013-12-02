@@ -18,7 +18,8 @@
 #include "display.h"
 #include "input.h"
 #include "StuPId.h"
-#include "DS3234.h"
+//#include "DS3234.h"
+#include "PCF2129AT.h"
 #include "TLC5971.h"
 
 
@@ -49,13 +50,13 @@ StuPId spi(&SPI_MOSI_DDR, SPI_MOSI_PIN, &SPI_SCK_DDR, SPI_SCK_PIN);
 
 // USART bus for debugging - TO BE IMPLEMENTED
 
-// DS3234 real-time-clock module
+// PCF2129AT real-time-clock module
 // parameters:
 //   address of spi bus object,
 //   chip select PORT, pin - PB2
 //   reset PORT, pin       - PB0
 //   interrupt PORT, pin   - PD2
-//DS3234 rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_RST_PORT, RTC_RST_PIN, &RTC_INT_PORT, RTC_INT_PIN);
+PCF2129AT rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_SQW_PORT, RTC_SQW_PIN);
 
 // TLC5971 LED driver - TO BE IMPLEMENTED
 // parameters:

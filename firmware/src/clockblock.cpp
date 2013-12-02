@@ -60,9 +60,9 @@ int main(void) {
   uint16_t dots[DISPLAY_NUM_DOTS];
 
   // initialize the RTC
-  //rtc.init();
+  rtc.init();
   // enable a 1024 Hz squarewave output on interrupt pin
-  //rtc.enableSquareWave(1);
+  rtc.setSquareWave(PCF2129AT_CLKOUT_1_kHz);
 
   // initialize the LED driver
   tlc.init();

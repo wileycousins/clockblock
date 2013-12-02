@@ -103,7 +103,7 @@
 class PCF2129AT {
 public:
   // constructor
-  PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *rstPo, uint8_t rstPi, volatile uint8_t *intPo, uint8_t intPi);
+  PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *sqwPo, uint8_t sqwPi);
   // initialize (sets pins up and stuff), returns false if the osc has stopped and the time is therefore suspect, true otherwise
   void init();
 
@@ -134,12 +134,8 @@ private:
   volatile uint8_t *csPort;
   uint8_t csPin;
   // reset pin
-  volatile uint8_t *rstPort;
-  uint8_t rstPin;
-  // interrupt pin
-  volatile uint8_t *intPort;
-  uint8_t intPin;
-
+  volatile uint8_t *sqwPort;
+  uint8_t sqwPin;
 };
 
 #endif
