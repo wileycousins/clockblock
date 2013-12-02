@@ -55,32 +55,23 @@ void PCF2129AT::init() {
 
 bool PCF2129AT::hasLostTime() {
   uint8_t stat;
-  readReg(PCF2129AT_CTRL_STAT, 1, &stat);
+  readReg(PCF2129AT_SEC, 1, &stat);
   return (stat & PCF2129AT_OSF);
 }
 
-// enable the square wave output on the INT/SQW pin at given mode
-//  - 0 : 1 Hz
-//  - 1 : 1.024 kHz
-//  - 2 : 4.096 kHz
-//  - 3 : 8.192 kHz
-void PCF2129AT::enableSquareWave(uint8_t mode) {
+// set the square wave output on the CLKOUT pin at given mode
+void PCF2129AT::setSquareWave(uint8_t mode) {
   uint8_t c;
-  readReg(PCF2129AT_CTRL, 1, &c);
-  // clear the rate select bits and the int enable bit (enabling squarewave)
-  c &= ~( PCF2129AT_INTCN | PCF2129AT_RS2 | PCF2129AT_RS1 );
-  // set the new rate bits (bits 3 and 4)
-  c |= ( (mode & 3) << 3 );
-  writeReg(PCF2129AT_CTRL, 1, &c);
+  readReg(PCF2129AT_CLKOUT_CTRL, 1, &c);
+  // clear the rate select bits
+  c &= ~( PCF2129AT_COF2 | PCF2129AT_COF1 | PCF2129AT_COF0 );
+  // set the new rate bits
+  if (mode <= PCF2129AT_CLKOUT_OFF) {
+    c |= ( mode );
+    writeReg(PCF2129AT_CLKOUT_CTRL, 1, &c);
+  }
 }
 
-void PCF2129AT::enableAlarm(uint8_t alarms) {
-  // set the int enable bit
-  uint8_t c;
-  readReg(PCF2129AT_CTRL, 1, &c);
-  c |= PCF2129AT_INTCN;
-  writeReg(PCF2129AT_CTRL, 1, &c);
-}
 
 // set and get time
 // array format is { sec, min, hr }
@@ -114,14 +105,19 @@ bool PCF2129AT::setTime(uint8_t *tm) {
   // seconds
   tm[0] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
 
-  // transfer the time in
+  // set 24 hour mode
+  uint8_t c;
+  readReg(PCF2129AT_CTRL_1, 1, &c);
+  c &= ~PCF2129AT_12_24;
+  writeReg(PCF2129AT_CTRL_1, 1, &c);
+  // transfer the time in and clear the osc stop flag
   writeReg(PCF2129AT_SEC, 3, tm);
 
   // clear the osc stop flag
-  uint8_t c;
-  readReg(PCF2129AT_CTRL_STAT, 1, &c);
-  c &= ~PCF2129AT_OSF;
-  writeReg(PCF2129AT_CTRL_STAT, 1, &c);
+  //uint8_t c;
+  //readReg(PCF2129AT_CTRL_STAT, 1, &c);
+  //c &= ~PCF2129AT_OSF;
+  //writeReg(PCF2129AT_CTRL_STAT, 1, &c);
 
   return true;
 }
@@ -151,20 +147,19 @@ bool PCF2129AT::setTime(uint8_t ampm, uint8_t *tm) {
 
   // encode the time properly
   // hours
-  tm[2] = ( PCF2129AT_12_HOUR | ampm | ((tm[2]/10) << 4) | (tm[2]%10) );
+  tm[2] = ( ampm | ((tm[2]/10) << 4) | (tm[2]%10) );
   // minutes
   tm[1] = ( ((tm[1]/10) << 4) | (tm[1]%10) );
   // seconds
   tm[0] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
 
-  // transfer the time in
-  writeReg(PCF2129AT_SEC, 3, tm);
-
-  // clear the osc stop flag
+  // set 12-hour mode
   uint8_t c;
-  readReg(PCF2129AT_CTRL_STAT, 1, &c);
-  c &= ~(1<<7);
-  writeReg(PCF2129AT_CTRL_STAT, 1, &c);\
+  readReg(PCF2129AT_CTRL_1, 1, &c);
+  c |= PCF2129AT_12_24;
+  writeReg(PCF2129AT_CTRL_1, 1, &c);
+  // transfer the time in and clear the osc stop flag
+  writeReg(PCF2129AT_SEC, 3, tm);
 
   return true;
 }
@@ -172,19 +167,21 @@ bool PCF2129AT::setTime(uint8_t ampm, uint8_t *tm) {
 // getter returns 0 if AM or in 24 hour mode, PCF2129AT_PM if in 12-hour mode and it's PM
 uint8_t PCF2129AT::getTime(uint8_t *tm) {
   uint8_t ret = 0;
+  // get mode
+  readReg(PCF2129AT_CTRL_1, 1, &ret);
+  ret &= PCF2129AT_12_24;
   // get the data
   readReg(PCF2129AT_SEC, 3, tm);
 
   // decode the data
   // hours
   // 12-hour mode
-  if ( tm[2] & PCF2129AT_12_HOUR ) {
+  if ( ret ) {
     ret = tm[2] & PCF2129AT_PM;
     tm[2] = (((tm[2]>>4) & 1) * 10) + (tm[2] & 0x0F);
   }
   // else, 24-hour mode
   else {
-    ret = 0;
     tm[2] = ((tm[2]>>4) * 10) + (tm[2] & 0x0F);
   }
   // minutes
@@ -213,15 +210,6 @@ void PCF2129AT::spiEnd() {
 //   register address to start at
 //   number of bytes to transfer
 //   buffer to read to / write from
-uint8_t PCF2129AT::readSingleReg(uint8_t reg) {
-  uint8_t data;
-  spiStart();
-  spi->transfer(reg);
-  data = spi->transfer(0);
-  spiEnd();
-  return data;
-}
-
 void PCF2129AT::readReg(uint8_t reg, uint8_t n, uint8_t *data) {
   spiStart();
   spi->transfer(reg);
@@ -233,7 +221,7 @@ void PCF2129AT::readReg(uint8_t reg, uint8_t n, uint8_t *data) {
 
 void PCF2129AT::writeReg(uint8_t reg, uint8_t n, uint8_t *data) {
   spiStart();
-  spi->transfer(PCF2129AT_SPI_WRITE | reg);
+  spi->transfer(PCF2129AT_SPI_WRITE | PCF2129AT_SPI_SA | reg);
   for (uint8_t i=0; i<n; i++) {
     spi->transfer(data[i]);
   }

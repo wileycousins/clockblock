@@ -75,12 +75,26 @@
 #define PCF2129AT_COF1  (1<<1)
 #define PCF2129AT_COF0  (1<<0)
 
+// clkout modes
+#define PCF2129AT_CLKOUT_32_kHz  0
+#define PCF2129AT_CLKOUT_16_kHz  (PCF2129AT_COF0)
+#define PCF2129AT_CLKOUT_8_kHz   (PCF2129AT_COF1)
+#define PCF2129AT_CLKOUT_4_kHz   (PCF2129AT_COF1 | PCF2129AT_COF0)
+#define PCF2129AT_CLKOUT_2_kHz   (PCF2129AT_COF2)
+#define PCF2129AT_CLKOUT_1_kHz   (PCF2129AT_COF2 | PCF2129AT_COF0)
+#define PCF2129AT_CLKOUT_1_Hz    (PCF2129AT_COF2 | PCF2129AT_COF1)
+#define PCF2129AT_CLKOUT_OFF     (PCF2129AT_COF2 | PCF2129AT_COF1 | PCF2129AT_COF0)
+
 // AM / PM - bit 5 in the hour registers
 #define PCF2129AT_AM  0
 #define PCF2129AT_PM  (1<<5)
 
+// oscillator stopped flag - bit 7 in the seconds register
+#define PCF2129AT_OSF  (1<<7)
+
 // write command
-#define PCF2129AT_SPI_WRITE  (1<<7)
+#define PCF2129AT_SPI_READ   (1<<7)
+#define PCF2129AT_SPI_WRITE  0
 #define PCF2129AT_SPI_SA     0x20
 
 
@@ -96,9 +110,8 @@ public:
   // check to see if the osc has stopped
   bool hasLostTime();
 
-  // interrupt / square wave control
-  void enableSquareWave(uint8_t mode);
-  void enableAlarm(uint8_t alarms);
+  // square wave control
+  void setSquareWave(uint8_t mode);
 
   // time getter and setter
   // setter returns true if given a proper time
@@ -107,13 +120,12 @@ public:
   bool setTime(uint8_t ampm, uint8_t *time);
   uint8_t getTime(uint8_t *time);
 
-//private:
+private:
   // pointer to SPI object
   StuPId *spi;
   // SPI helpers
   void spiStart();
   void spiEnd();
-  uint8_t readSingleReg(uint8_t reg);
   void readReg(uint8_t reg, uint8_t n, uint8_t *data);
   void writeReg(uint8_t reg, uint8_t n, uint8_t *data);
 
