@@ -81,6 +81,8 @@ int main(void);
 void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr, uint16_t *dots);
 // initialize unused pins to a safe state
 void initUnusedPins(void);
+// heartbeat for debugginh
+void beatHeart();
 
 // button handling logic
 void handleButtonPress(uint8_t state, uint8_t* tm);

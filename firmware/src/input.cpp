@@ -132,12 +132,19 @@ void Input::initInt(void) {
 // using an 16-bit timer on an 8MHz clock
 // PS=1024 and OC1A=249 means an CTC will occur after about 32 ms
 void Input::initTimer(void) {
+  // using timer 0 (8=bit)
+  // set to normal mode and disconnect OC pins
+  TCCR0A = 0;
+  // set prescaller to 1024
+  TCCR0B = ( (1 << CS02) | (1 << CS01) | (1 << CS00) );
+
+  // using timer 1 (16-bit)
   // ensure timer1 settings are cleared out
-  TCCR1A = 0;
+  // TCCR1A = 0;
   // set mode to CTC and prescaler to 1024
-  TCCR1B = ( (1 << WGM12) | (1 << CS12) | (1 << CS10) );
+  // TCCR1B = ( (1 << WGM12) | (1 << CS12) | (1 << CS10) );
   // set top of timer to 249 (for 250 counts / cycle)
-  OCR1A = 249;
+  // OCR1A = 249;
 }
 
 // interrupt helpers
@@ -152,12 +159,23 @@ void Input::disableInt(void) {
 }
 
 void Input::enableTimer(void) {
+  // using timer 0 (8-bit)
   // reload timer
-  TCNT1 = 0;
+  TCNT0 = 0;
+  // enable overflow interrupt
+  TIMSK0 |= (1 << TOIE0);
+
+  // using timer 1 (16-bit)
+  // reload timer
+  // TCNT1 = 0;
   // enable the overflow interrupt
-  TIMSK1 = (1 << OCIE1A);
+  // TIMSK1 = (1 << OCIE1A);
 }
 
 void Input::disableTimer(void) {
-  TIMSK1 = 0;
+  // using timer 0 (8-bit)
+  TIMSK0 = 0;
+
+  // using timer 1 (16-bit)
+  // TIMSK1 = 0;
 }

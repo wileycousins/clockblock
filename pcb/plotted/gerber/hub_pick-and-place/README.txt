@@ -1,11 +1,12 @@
-clockblock v0.2 hub
+clockblock v1.0 hub and usb boards
 Prepared by Michael Cousins
 michael@wileycousins.com
+(281) 210-6984
 
 This panel consists of the two boards in our product with surface mount components. We will handle de-panellization. 
 
 Requested specs:
-  * ENIG finish and lead-free solder
+  * ENIG finish
   * 0.062", 1 oz copper
   * White soldermask
   * Silkscreen on both sides
@@ -24,6 +25,4 @@ Gerbers:
 Excellon drill files (inches, 2:4 precision, no zero suppression):
   * clockblock-hub-NPTH.drl - drill file for non-plated though holes
   * clockblock-hub.drl      - drill file for plated through holes
-Assembly:
-  * clockblock-hub-pos.csv - pick and place position file
-  * clockblock-hub-bom.csv - bill of materials
+

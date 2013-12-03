@@ -55,9 +55,12 @@
 #define INPUT_PCICR       PCICR
 #define INPUT_PCIE        (1<<PCIE1)
 #define INPUT_PCINT_vect  PCINT1_vect
+// switch debounce timer
+//#define INPUT_TIMER_vect  TIMER1_COMPA_vect
+#define INPUT_TIMER_vect  TIMER0_OVF_vect
 
 // unused pins to be pulled up internally
-#define UNUSED_PORTB_MASK  ( (1<<5) )
+#define UNUSED_PORTB_MASK  ( (1<<5) | (1<<4) )
 //#define UNUSED_PORTC_MASK  ( (1<<1) | (1<<0) )
 //#define UNUSED_PORTD_MASK  ( (1<<5) | (1<<4) | (1<<3) )
 

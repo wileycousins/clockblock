@@ -42,8 +42,8 @@ void PCF2129AT::init() {
   spi->setDataOrder(SPI_MSB_FIRST);
   // runs at up to 4MHz. dividing clock by 4 will ensure this isn't exceeded
   spi->setDataRate(SPI_DIV_4, SPI_SPEED_NORMAL);
-  // supports SPI modes 1 and 3 (autodetects). let's use 3 (CPOL = 1, CPHA = 0)
-  spi->setDataMode(3);
+  // supports SPI modes 1 and 3 (autodetects). let's use 3 (CPOL = 0, CPHA = 0)
+  spi->setDataMode(0);
   // enable
   spi->enable();
 }

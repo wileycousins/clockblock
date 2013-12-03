@@ -23,6 +23,7 @@ CLK = 8000000
 # avr programmer (and port if necessary)
 # e.g. PRG = usbtiny -or- PRG = arduino -P /dev/tty.usbmodem411
 PRG = avrisp -P /dev/tty.usbmodem411 -b 19200
+#PRG = avrispmkII -P usb -b 115200
 # fuse bit values for v0.1 pcb
 # use internal 8 MHz RC oscillator with no clock division and slowest available startup
 # enable SPI programming

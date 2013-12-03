@@ -38,7 +38,7 @@ ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
 }
 
 // switch debouncer / timer
-ISR(TIMER1_COMPA_vect, ISR_NOBLOCK) {
+ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
   buttons.handleTimer();
 }
 
@@ -47,6 +47,9 @@ ISR(TIMER1_COMPA_vect, ISR_NOBLOCK) {
 // ***********
 // main
 int main(void) {
+  // begin setup - disable interrupts
+  cli();
+
   // give those ISR volatile vairables some values
   ms = 0;
   tick = false;
@@ -70,10 +73,12 @@ int main(void) {
   tlc.setFC(TLC5971_DSPRPT);
 
   // enable a falling edge interrupt on the square wave pin
-  cli();
   EICRA = (0x2 << (2*RTC_EXT_INT));
   EIMSK = (1 << RTC_EXT_INT);
-  sei();
+
+  // set up the heartbeat led
+  DDRB |= (1<<3);
+  PORTB |= (1<<3);
 
   // set the display mode
   leds.setMode(DISPLAY_MODE_BLEND);
@@ -81,9 +86,18 @@ int main(void) {
   // enable inputs
   buttons.init();
 
+  // take care of unused pins
+  initUnusedPins();
+
+  // end setup - enable interrupts
+  sei();
+
   // get lost
   for (;;) {
-    uint8_t buttonState;
+    // beat the heart
+    beatHeart();
+
+    uint8_t buttonState = 0;
     // take care of any switch presses
     if (buttons.getPress(&buttonState)) {
       handleButtonPress(buttonState, tm);
@@ -100,6 +114,8 @@ int main(void) {
       tick = false;
       // get the time
       if (++fr >= 32) {
+        // beat the heart every second
+        //beatHeart();
         fr = 0;
         if (++tm[0] >= 60) {
           tm[0] = 0;
@@ -179,4 +195,13 @@ void handleButtonHold(uint8_t state, uint8_t *tm) {
   //  mode = (mode == (DISPLAY_NUM_MODES-1)) ? 0 : (mode + 1);
   //  leds.setMode(mode);
   //}
+}
+
+void beatHeart() {
+  static uint16_t c = 0;
+  // toggle the LED pin
+  if (c++ > 2000) {
+    c = 0;
+    PINB |= (1<<3);
+  }
 }
