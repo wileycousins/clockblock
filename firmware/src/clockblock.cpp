@@ -47,6 +47,9 @@ ISR(RTC_EXT_INT_vect) {
 // ***********
 // main
 int main(void) {
+  // delay for a few ms to get everything ready
+  _delay_ms(100);
+
   // begin setup - disable interrupts
   cli();
 
@@ -60,17 +63,23 @@ int main(void) {
   // animation frame
   uint8_t fr = 0;
   // arms leds
-  uint16_t dots[DISPLAY_NUM_DOTS];
+//  uint16_t dots[DISPLAY_NUM_DOTS];
+
+  // set slave select to output and set it high
+  DDRA |= (1<<6);
+  PORTA |= (1<<6);
 
   // initialize the RTC
   rtc.init();
+  // slight delay
+  _delay_ms(10);
   // enable a 1024 Hz squarewave output on interrupt pin
   rtc.setSquareWave(PCF2129AT_CLKOUT_1_kHz);
 
   // initialize the LED driver
-  tlc.init();
+  //tlc.init();
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
-  tlc.setFC(TLC5971_DSPRPT);
+  //tlc.setFC(TLC5971_DSPRPT);
 
   // enable a falling edge interrupt on the square wave pin
   EICRA = (0x2 << (2*RTC_EXT_INT));
@@ -81,7 +90,7 @@ int main(void) {
   PORTB |= (1<<3);
 
   // set the display mode
-  leds.setMode(DISPLAY_MODE_BLEND);
+  //leds.setMode(DISPLAY_MODE_BLEND);
 
   // enable inputs
   //buttons.init();
@@ -97,7 +106,7 @@ int main(void) {
     // beat the heart
     //beatHeart();
 
-    uint8_t buttonState = 0;
+    //uint8_t buttonState = 0;
     // take care of any switch presses
     //if (buttons.getPress(&buttonState)) {
     //  handleButtonPress(buttonState, tm);
@@ -129,7 +138,7 @@ int main(void) {
       }
 
       // update the clock arms
-      updateArms(tm[2], tm[1], tm[0], fr, dots);
+      //updateArms(tm[2], tm[1], tm[0], fr, dots);
     }
   }
 
@@ -140,12 +149,12 @@ int main(void) {
 
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
+//void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
   // get the display
-  leds.getDisplay(hour, min, sec, frame, dots);
+//  leds.getDisplay(hour, min, sec, frame, dots);
   // send to the LED driver
-  tlc.setGS(dots);
-}
+//  tlc.setGS(dots);
+//}
 
 // initialize unused pins as inputs with pullups enabled
 void initUnusedPins(void) {
@@ -160,6 +169,7 @@ void initUnusedPins(void) {
   //PORTD |= UNUSED_PORTD_MASK;
 }
 
+/*
 // button handling logic
 void handleButtonPress(uint8_t state, uint8_t *tm) {
   // if hour switch, increment the hours by 1
@@ -196,6 +206,7 @@ void handleButtonHold(uint8_t state, uint8_t *tm) {
   //  leds.setMode(mode);
   //}
 }
+*/
 
 void beatHeart() {
   PINB |= (1<<3);

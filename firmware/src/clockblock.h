@@ -15,12 +15,12 @@
 // application includes
 // ********************
 #include "pindefs.h"
-#include "display.h"
-#include "input.h"
+//#include "display.h"
+//#include "input.h"
 #include "StuPId.h"
 //#include "DS3234.h"
 #include "PCF2129AT.h"
-#include "TLC5971.h"
+//#include "TLC5971.h"
 
 
 // *******************
@@ -56,13 +56,13 @@ PCF2129AT rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_SQW_PORT, RTC_SQW_PIN);
 //   3 drivers
 //   serial clock PORT, pin - PC5
 //   serial data PORT, pin  - PC4
-TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
+//TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
 
 // Display class - contains all the different display modes of the clockblock
-Display leds;
+//Display leds;
 
 // Input class - handles the pushbuttons
-Input buttons;
+//Input buttons;
 
 
 // *************
@@ -80,12 +80,12 @@ volatile bool tick;
 // main application
 int main(void);
 // update clock arms
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr, uint16_t *dots);
+//void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr, uint16_t *dots);
 // initialize unused pins to a safe state
 void initUnusedPins(void);
 // heartbeat for debugginh
 void beatHeart();
 
 // button handling logic
-void handleButtonPress(uint8_t state, uint8_t* tm);
-void handleButtonHold(uint8_t state, uint8_t* tm);
+//void handleButtonPress(uint8_t state, uint8_t* tm);
+//void handleButtonHold(uint8_t state, uint8_t* tm);

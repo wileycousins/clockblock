@@ -33,10 +33,10 @@ LFU = 0xE2
 HFU = 0xDD
 EFU = 0xFE
 # program source files
-SRC = $(PRJ).cpp display.cpp input.cpp
+SRC = $(PRJ).cpp #display.cpp input.cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)
 # e.g. INC = ../../EyeToSee ../../YouSART
-INC = include/PCF2129AT include/StuPId include/TLC5971
+INC = include/PCF2129AT include/StuPId #include/TLC5971
 # any defines to send the compiler
 DEF = 
 # directories
