@@ -47,8 +47,8 @@ ISR(RTC_EXT_INT_vect) {
 // ***********
 // main
 int main(void) {
-  // delay for a few ms to get everything ready
-  _delay_ms(100);
+  // delay for a few ms to allow the RTC to take its initial temp measurement
+  _delay_ms(1000);
 
   // begin setup - disable interrupts
   cli();
@@ -63,7 +63,7 @@ int main(void) {
   // animation frame
   uint8_t fr = 0;
   // arms leds
-//  uint16_t dots[DISPLAY_NUM_DOTS];
+  // uint16_t dots[DISPLAY_NUM_DOTS];
 
   // set slave select to output and set it high
   DDRA |= (1<<6);
@@ -71,15 +71,13 @@ int main(void) {
 
   // initialize the RTC
   rtc.init();
-  // slight delay
-  _delay_ms(10);
   // enable a 1024 Hz squarewave output on interrupt pin
   rtc.setSquareWave(PCF2129AT_CLKOUT_1_kHz);
 
   // initialize the LED driver
-  //tlc.init();
+  tlc.init();
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
-  //tlc.setFC(TLC5971_DSPRPT);
+  tlc.setFC(TLC5971_DSPRPT);
 
   // enable a falling edge interrupt on the square wave pin
   EICRA = (0x2 << (2*RTC_EXT_INT));
@@ -103,9 +101,6 @@ int main(void) {
 
   // get lost
   for (;;) {
-    // beat the heart
-    //beatHeart();
-
     //uint8_t buttonState = 0;
     // take care of any switch presses
     //if (buttons.getPress(&buttonState)) {
@@ -161,12 +156,9 @@ void initUnusedPins(void) {
   // PORTB
   DDRB &= ~UNUSED_PORTB_MASK;
   PORTB |= UNUSED_PORTB_MASK;
-  // PORTC
-  //DDRC &= ~UNUSED_PORTC_MASK;
-  //PORTC |= UNUSED_PORTC_MASK;
-  //PORTD
-  //DDRD &= ~UNUSED_PORTD_MASK;
-  //PORTD |= UNUSED_PORTD_MASK;
+  // PORTA
+  DDRA &= ~UNUSED_PORTA_MASK;
+  PORTA |= UNUSED_PORTA_MASK;
 }
 
 /*

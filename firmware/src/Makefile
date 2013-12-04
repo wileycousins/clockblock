@@ -36,7 +36,7 @@ EFU = 0xFE
 SRC = $(PRJ).cpp #display.cpp input.cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)
 # e.g. INC = ../../EyeToSee ../../YouSART
-INC = include/PCF2129AT include/StuPId #include/TLC5971
+INC = include/PCF2129AT include/StuPId include/TLC5971
 # any defines to send the compiler
 DEF = 
 # directories
