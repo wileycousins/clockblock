@@ -33,14 +33,14 @@ ISR(RTC_EXT_INT_vect) {
 }
 
 // ISR for switch inputs
-//ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
-//  buttons.handleChange();
-//}
+ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
+  buttons.handleChange();
+}
 
 // switch debouncer / timer
-//ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
-//  buttons.handleTimer();
-//}
+ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
+  buttons.handleTimer();
+}
 
 // ***********
 // application
@@ -65,19 +65,16 @@ int main(void) {
   // arms leds
   uint16_t dots[DISPLAY_NUM_DOTS];
 
-  // set slave select to output and set it high
-  DDRA |= (1<<6);
-  PORTA |= (1<<6);
+  // initialize the LED driver
+  // DO THIS BEFORE RTC (to ensure proper SPI functionality for the RTC)
+  tlc.init();
+  // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
+  tlc.setFC(TLC5971_DSPRPT);
 
   // initialize the RTC
   rtc.init();
   // enable a 1024 Hz squarewave output on interrupt pin
   rtc.setSquareWave(PCF2129AT_CLKOUT_1_kHz);
-
-  // initialize the LED driver
-  tlc.init();
-  // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
-  tlc.setFC(TLC5971_DSPRPT);
 
   // enable a falling edge interrupt on the square wave pin
   EICRA = (0x2 << (2*RTC_EXT_INT));
@@ -91,7 +88,7 @@ int main(void) {
   leds.setMode(DISPLAY_MODE_BLEND);
 
   // enable inputs
-  //buttons.init();
+  buttons.init();
 
   // take care of unused pins
   initUnusedPins();
@@ -101,16 +98,16 @@ int main(void) {
 
   // get lost
   for (;;) {
-    //uint8_t buttonState = 0;
+    uint8_t buttonState = 0;
     // take care of any switch presses
-    //if (buttons.getPress(&buttonState)) {
-    //  handleButtonPress(buttonState, tm);
-    //}
+    if (buttons.getPress(&buttonState)) {
+      handleButtonPress(buttonState, tm);
+    }
 
     // take care of any switch holds
-    //if (buttons.getHold(&buttonState)) {
-    //  handleButtonHold(buttonState, tm);
-    //}
+    if (buttons.getHold(&buttonState)) {
+      handleButtonHold(buttonState, tm);
+    }
 
     // update the arms on a tick
     if (tick) {
@@ -160,7 +157,6 @@ void initUnusedPins(void) {
   PORTA |= UNUSED_PORTA_MASK;
 }
 
-/*
 // button handling logic
 void handleButtonPress(uint8_t state, uint8_t *tm) {
   // if hour switch, increment the hours by 1
@@ -190,14 +186,8 @@ void handleButtonHold(uint8_t state, uint8_t *tm) {
   else if (state == INPUT_MIN) {
     tm[1] = (tm[1] + 5) % 60;
   }
-  // else both buttons were held down, so increment the display mode
-  //else {
-  //  uint8_t mode = leds.getMode();
-  //  mode = (mode == (DISPLAY_NUM_MODES-1)) ? 0 : (mode + 1);
-  //  leds.setMode(mode);
-  //}
 }
-*/
+
 
 void beatHeart() {
   PINB |= (1<<3);

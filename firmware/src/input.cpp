@@ -15,7 +15,7 @@ Input::Input(void) {
   pressState = INPUT_MASK;
   holdState = INPUT_MASK;
   // switch timer counter
-  //timerCount = 0;
+  timerCount = 0;
   // switch event flags
   release = false;
   press = false;
@@ -54,7 +54,7 @@ void Input::handleChange(void) {
   // disable the timer and switch interrupts and reset the switch timer counter
   disableTimer();
   disableInt();
-  //timerCount = 0;
+  timerCount = 0;
   // save the state that triggered the interrupt
   state = getState();
   // start the switch timer to debounce and time if necessary
@@ -66,7 +66,7 @@ void Input::handleTimer(void) {
   // disable the timer
   disableTimer();
   // increment the counter
-  //timerCount++;
+  timerCount++;
   // clear the release flag
   release = false;
 
@@ -76,17 +76,17 @@ void Input::handleTimer(void) {
     if ( state != INPUT_MASK) {
       // check for a press
       // if hold flag hasn't been set, this was just a press
-      if (!hold) {
+      if (timerCount == 1) {
         press = true;
         pressState = state;
       }
       // check for a hold
       // if press flag has previously been set, it's a hold now
-      else if (press) {
+      else if (timerCount >= 15) {
         press = false;
         hold = true;
         holdState = state;
-        //timerCount = 1;
+        timerCount = 1;
       }
       // re-enable the timer
       enableTimer();
@@ -136,17 +136,17 @@ void Input::initInt(void) {
 void Input::initTimer(void) {
   // using timer 0 (8=bit)
   // set to normal mode and disconnect OC pins
-  TCCR0A = 0;
+  //TCCR0A = 0;
   // set prescaller to 1024
-  TCCR0B = ( (1 << CS02) | (1 << CS01) | (1 << CS00) );
+  //TCCR0B = ( (1 << CS02) | (1 << CS01) | (1 << CS00) );
 
   // using timer 1 (16-bit)
   // ensure timer1 settings are cleared out
-  // TCCR1A = 0;
+  TCCR1A = 0;
   // set mode to CTC and prescaler to 1024
-  // TCCR1B = ( (1 << WGM12) | (1 << CS12) | (1 << CS10) );
+  TCCR1B = ( (1 << WGM12) | (1 << CS12) | (1 << CS10) );
   // set top of timer to 249 (for 250 counts / cycle)
-  // OCR1A = 249;
+  OCR1A = 249;
 }
 
 // interrupt helpers
@@ -163,21 +163,21 @@ void Input::disableInt(void) {
 void Input::enableTimer(void) {
   // using timer 0 (8-bit)
   // reload timer
-  TCNT0 = 0;
+  // TCNT0 = 0;
   // enable overflow interrupt
-  TIMSK0 |= (1 << TOIE0);
+  // TIMSK0 |= (1 << TOIE0);
 
   // using timer 1 (16-bit)
   // reload timer
-  // TCNT1 = 0;
+  TCNT1 = 0;
   // enable the overflow interrupt
-  // TIMSK1 = (1 << OCIE1A);
+  TIMSK1 = (1 << OCIE1A);
 }
 
 void Input::disableTimer(void) {
   // using timer 0 (8-bit)
-  TIMSK0 = 0;
+  // TIMSK0 = 0;
 
   // using timer 1 (16-bit)
-  // TIMSK1 = 0;
+  TIMSK1 = 0;
 }

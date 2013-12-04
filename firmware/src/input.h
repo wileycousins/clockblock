@@ -11,7 +11,6 @@
 // typedefs
 #include <stdint.h>
 
-
 class Input {
 public:
   // contructor - gives private variables default values
@@ -53,7 +52,7 @@ private:
   volatile uint8_t pressState;
   volatile uint8_t holdState;
   // switch timer counter
-  //volatile uint8_t timerCount;
+  volatile uint8_t timerCount;
   // switch event flags
   volatile bool release;
   volatile bool press;

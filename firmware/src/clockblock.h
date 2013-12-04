@@ -16,7 +16,7 @@
 // ********************
 #include "pindefs.h"
 #include "display.h"
-//#include "input.h"
+#include "input.h"
 #include "StuPId.h"
 #include "PCF2129AT.h"
 #include "TLC5971.h"
@@ -61,7 +61,7 @@ TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
 Display leds;
 
 // Input class - handles the pushbuttons
-//Input buttons;
+Input buttons;
 
 
 // *************
@@ -86,5 +86,5 @@ void initUnusedPins(void);
 void beatHeart();
 
 // button handling logic
-//void handleButtonPress(uint8_t state, uint8_t* tm);
-//void handleButtonHold(uint8_t state, uint8_t* tm);
+void handleButtonPress(uint8_t state, uint8_t* tm);
+void handleButtonHold(uint8_t state, uint8_t* tm);
