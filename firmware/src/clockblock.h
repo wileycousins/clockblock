@@ -27,17 +27,10 @@
 // application defines
 // *******************
 // operating modes
-#define MODE_CLOCK        0
-#define MODE_TIME_SET     1
-#define MODE_DISPLAY_SET  2
+//#define MODE_CLOCK        0
+//#define MODE_TIME_SET     1
+//#define MODE_DISPLAY_SET  2
 
-// *************
-// ISR variables
-// *************
-// millisecond counter incremented by the ~1 kHz squarewave from the RTC
-volatile uint16_t ms;
-// flag set by the ISR when it's time to update the clock arms
-volatile bool tick;
 
 // ***********
 // peripherals
@@ -70,6 +63,15 @@ Display leds;
 
 // Input class - handles the pushbuttons
 Input buttons;
+
+
+// *************
+// ISR variables
+// *************
+// millisecond counter incremented by the ~1 kHz squarewave from the RTC
+volatile uint16_t ms;
+// flag set by the ISR when it's time to update the clock arms
+volatile bool tick;
 
 
 // *******************

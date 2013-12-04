@@ -11,12 +11,6 @@
 // typedefs
 #include <stdint.h>
 
-// timer counts
-#define INPUT_HOLD_COUNT  35
-
-// press or hold defines
-#define INPUT_PRESS  0
-#define INPUT_HOLD   1
 
 class Input {
 public:
@@ -32,7 +26,7 @@ public:
   void handleTimer(void);
 
   // disable the debounce timer and wait for a pin change (e.g. to exit a pin hold loop)
-  void reset(void);
+  // void reset(void);
   // initialization
   void init(void);
 
@@ -59,7 +53,7 @@ private:
   volatile uint8_t pressState;
   volatile uint8_t holdState;
   // switch timer counter
-  volatile uint16_t timerCount;
+  //volatile uint8_t timerCount;
   // switch event flags
   volatile bool release;
   volatile bool press;

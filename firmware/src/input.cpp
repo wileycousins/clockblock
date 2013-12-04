@@ -15,7 +15,7 @@ Input::Input(void) {
   pressState = INPUT_MASK;
   holdState = INPUT_MASK;
   // switch timer counter
-  timerCount = 0;
+  //timerCount = 0;
   // switch event flags
   release = false;
   press = false;
@@ -54,7 +54,7 @@ void Input::handleChange(void) {
   // disable the timer and switch interrupts and reset the switch timer counter
   disableTimer();
   disableInt();
-  timerCount = 0;
+  //timerCount = 0;
   // save the state that triggered the interrupt
   state = getState();
   // start the switch timer to debounce and time if necessary
@@ -66,7 +66,7 @@ void Input::handleTimer(void) {
   // disable the timer
   disableTimer();
   // increment the counter
-  timerCount++;
+  //timerCount++;
   // clear the release flag
   release = false;
 
@@ -75,16 +75,18 @@ void Input::handleTimer(void) {
     // if one or both switches are down (if both switches are up, both will read high)
     if ( state != INPUT_MASK) {
       // check for a press
-      if (timerCount == 1) {
+      // if hold flag hasn't been set, this was just a press
+      if (!hold) {
         press = true;
         pressState = state;
       }
       // check for a hold
-      else if (timerCount >= INPUT_HOLD_COUNT) {
+      // if press flag has previously been set, it's a hold now
+      else if (press) {
         press = false;
         hold = true;
         holdState = state;
-        timerCount = 1;
+        //timerCount = 1;
       }
       // re-enable the timer
       enableTimer();
@@ -100,11 +102,11 @@ void Input::handleTimer(void) {
 }
 
 // disable the debounce timer and wait for a pin change (e.g. to exit a pin hold loop)
-void Input::reset(void) {
-  // disable the timer and enable the pin change interrupt
-  disableTimer();
-  enableInt();
-}
+//void Input::reset(void) {
+// disable the timer and enable the pin change interrupt
+//  disableTimer();
+//  enableInt();
+//}
 
 // initialization
 void Input::init(void) {

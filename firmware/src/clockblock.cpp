@@ -8,7 +8,7 @@
 // ************************************
 // AVR includes necessary for this file
 // ************************************
-#include <util/atomic.h>
+//#include <util/atomic.h>
 #include <util/delay.h>
 
 // ********************
@@ -33,14 +33,14 @@ ISR(RTC_EXT_INT_vect) {
 }
 
 // ISR for switch inputs
-ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
-  buttons.handleChange();
-}
+//ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
+//  buttons.handleChange();
+//}
 
 // switch debouncer / timer
-ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
-  buttons.handleTimer();
-}
+//ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
+//  buttons.handleTimer();
+//}
 
 // ***********
 // application
@@ -84,7 +84,7 @@ int main(void) {
   leds.setMode(DISPLAY_MODE_BLEND);
 
   // enable inputs
-  buttons.init();
+  //buttons.init();
 
   // take care of unused pins
   initUnusedPins();
@@ -95,18 +95,18 @@ int main(void) {
   // get lost
   for (;;) {
     // beat the heart
-    beatHeart();
+    //beatHeart();
 
     uint8_t buttonState = 0;
     // take care of any switch presses
-    if (buttons.getPress(&buttonState)) {
-      handleButtonPress(buttonState, tm);
-    }
+    //if (buttons.getPress(&buttonState)) {
+    //  handleButtonPress(buttonState, tm);
+    //}
 
     // take care of any switch holds
-    if (buttons.getHold(&buttonState)) {
-      handleButtonHold(buttonState, tm);
-    }
+    //if (buttons.getHold(&buttonState)) {
+    //  handleButtonHold(buttonState, tm);
+    //}
 
     // update the arms on a tick
     if (tick) {
@@ -115,7 +115,7 @@ int main(void) {
       // get the time
       if (++fr >= 32) {
         // beat the heart every second
-        //beatHeart();
+        beatHeart();
         fr = 0;
         if (++tm[0] >= 60) {
           tm[0] = 0;
@@ -198,10 +198,5 @@ void handleButtonHold(uint8_t state, uint8_t *tm) {
 }
 
 void beatHeart() {
-  static uint16_t c = 0;
-  // toggle the LED pin
-  if (c++ > 2000) {
-    c = 0;
-    PINB |= (1<<3);
-  }
+  PINB |= (1<<3);
 }
