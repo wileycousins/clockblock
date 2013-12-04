@@ -63,7 +63,7 @@ int main(void) {
   // animation frame
   uint8_t fr = 0;
   // arms leds
-  // uint16_t dots[DISPLAY_NUM_DOTS];
+  uint16_t dots[DISPLAY_NUM_DOTS];
 
   // set slave select to output and set it high
   DDRA |= (1<<6);
@@ -88,7 +88,7 @@ int main(void) {
   PORTB |= (1<<3);
 
   // set the display mode
-  //leds.setMode(DISPLAY_MODE_BLEND);
+  leds.setMode(DISPLAY_MODE_BLEND);
 
   // enable inputs
   //buttons.init();
@@ -131,9 +131,8 @@ int main(void) {
           }
         }
       }
-
       // update the clock arms
-      //updateArms(tm[2], tm[1], tm[0], fr, dots);
+      updateArms(tm[2], tm[1], tm[0], fr, dots);
     }
   }
 
@@ -144,12 +143,12 @@ int main(void) {
 
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
-//void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
+void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
   // get the display
-//  leds.getDisplay(hour, min, sec, frame, dots);
+  leds.getDisplay(hour, min, sec, frame, dots);
   // send to the LED driver
-//  tlc.setGS(dots);
-//}
+  tlc.setGS(dots);
+}
 
 // initialize unused pins as inputs with pullups enabled
 void initUnusedPins(void) {
