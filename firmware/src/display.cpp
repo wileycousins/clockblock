@@ -158,9 +158,12 @@ void Display::displayBlend(DisplayParams p) {
   //float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
   //float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
-  uint32_t hourFrac = (((p.frame + (p.sec<<5) + ((p.min*60)<<5))  << DISPLAY_LEFT_SHIFT) * DISPLAY_HOUR_SCALE) >> DISPLAY_RIGHT_SHIFT;
-  uint32_t minFrac =  (((p.frame + (p.sec<<5) + ((minMod*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_MIN_SCALE)  >> DISPLAY_RIGHT_SHIFT;
-  uint32_t secFrac =  (((p.frame + (secMod<<5))                   << DISPLAY_LEFT_SHIFT) * DISPLAY_SEC_SCALE)  >> DISPLAY_RIGHT_SHIFT;
+  uint32_t hourFrac = (((p.frame + (p.sec<<5) + ((p.min*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_HOUR_SCALE);
+  uint32_t minFrac =  (((p.frame + (p.sec<<5) + ((minMod*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_MIN_SCALE);
+  uint32_t secFrac =  (((p.frame + (secMod<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_SEC_SCALE);
+  hourFrac >>= DISPLAY_RIGHT_SHIFT;
+  minFrac >>= DISPLAY_RIGHT_SHIFT;
+  secFrac >>= DISPLAY_RIGHT_SHIFT;
 
   // fill the hour dots
   // all hours previous are off
