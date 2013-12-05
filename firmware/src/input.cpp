@@ -72,16 +72,14 @@ void Input::handleTimer(void) {
 
   // check the values still match (i.e. if true, it wasn't a bounce)
   if (getState() == state) {
-    // if one or both switches are down (if both switches are up, both will read high)
+    // if one or more switches are down (if all switches are up, all will read high)
     if ( state != INPUT_MASK) {
       // check for a press
-      // if hold flag hasn't been set, this was just a press
-      if (timerCount == 1) {
+      if (timerCount == 2) {
         press = true;
         pressState = state;
       }
       // check for a hold
-      // if press flag has previously been set, it's a hold now
       else if (timerCount >= 15) {
         press = false;
         hold = true;
@@ -101,12 +99,6 @@ void Input::handleTimer(void) {
   enableInt();
 }
 
-// disable the debounce timer and wait for a pin change (e.g. to exit a pin hold loop)
-//void Input::reset(void) {
-// disable the timer and enable the pin change interrupt
-//  disableTimer();
-//  enableInt();
-//}
 
 // initialization
 void Input::init(void) {
@@ -121,7 +113,7 @@ void Input::initPins(void) {
   // clear pins in DDR to inputs
   DDR(INPUT_PORT) &= ~INPUT_MASK;
   // enable pull up resistors
-  INPUT_PORT |= INPUT_MASK;
+  //INPUT_PORT |= INPUT_MASK;
 }
 
 // init pin change interrupts
@@ -169,8 +161,8 @@ void Input::enableTimer(void) {
 
   // using timer 1 (16-bit)
   // reload timer
-  TCNT1 = 0;
-  // enable the overflow interrupt
+  //TCNT1 = 0;
+  // enable the interrupt
   TIMSK1 = (1 << OCIE1A);
 }
 

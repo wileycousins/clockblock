@@ -10,6 +10,7 @@
 
 // avr includes
 #include <stdint.h>
+#include <util/atomic.h>
 
 // display parameters
 // LED brightness levels

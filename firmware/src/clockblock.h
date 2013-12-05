@@ -68,7 +68,7 @@ Input buttons;
 // ISR variables
 // *************
 // millisecond counter incremented by the ~1 kHz squarewave from the RTC
-volatile uint16_t ms;
+volatile uint8_t ms;
 // flag set by the ISR when it's time to update the clock arms
 volatile bool tick;
 

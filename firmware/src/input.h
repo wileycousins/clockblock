@@ -11,6 +11,9 @@
 // typedefs
 #include <stdint.h>
 
+#define INPUT_DEBOUNCE_COUNT  1
+#define INPUT_HOLD_COUNT      15
+
 class Input {
 public:
   // contructor - gives private variables default values
@@ -49,6 +52,7 @@ private:
   // ISR volatiles
   // switch states
   volatile uint8_t state;
+  volatile uint8_t trigState;
   volatile uint8_t pressState;
   volatile uint8_t holdState;
   // switch timer counter

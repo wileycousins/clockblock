@@ -22,13 +22,10 @@
 // **************************
 // this ISR driven by a 1024 Hz squarewave from the RTC
 ISR(RTC_EXT_INT_vect) {
-  ms++;
   // tick the display 32 times a second
-  if ( !(ms%32) ) {
+  if ( ++ms >= 32) {
     tick = true;
-    if (ms >= 1024) {
-      ms = 0;
-    }
+    ms = 0;
   }
 }
 
@@ -101,11 +98,13 @@ int main(void) {
     uint8_t buttonState = 0;
     // take care of any switch presses
     if (buttons.getPress(&buttonState)) {
+      beatHeart();
       handleButtonPress(buttonState, tm);
     }
 
     // take care of any switch holds
     if (buttons.getHold(&buttonState)) {
+      beatHeart();
       handleButtonHold(buttonState, tm);
     }
 
@@ -116,7 +115,7 @@ int main(void) {
       // get the time
       if (++fr >= 32) {
         // beat the heart every second
-        beatHeart();
+        //beatHeart();
         fr = 0;
         if (++tm[0] >= 60) {
           tm[0] = 0;
