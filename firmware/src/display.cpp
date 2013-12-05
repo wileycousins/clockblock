@@ -140,7 +140,7 @@ void Display::displayBlend(DisplayParams p) {
   uint8_t nextHour     = (p.hour == 11) ? 0 : p.hour+1;
 
   // percentage of the second hand passed
-  float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
+  float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT)) * 0.2;
   // percentage of minute hand passed
   float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
