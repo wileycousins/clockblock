@@ -21,6 +21,13 @@
 #define DISPLAY_FRAMERATE        32
 #define DISPLAY_FRAMERATE_FLOAT  32.0
 
+// fixed point scaling factors
+#define DISPLAY_HOUR_SCALE  146
+#define DISPLAY_MIN_SCALE   1747
+#define DISPLAY_SEC_SCALE   104857
+#define DISPLAY_LEFT_SHIFT   8
+#define DISPLAY_RIGHT_SHIFT  16
+
 // effect modes
 #define DISPLAY_NUM_MODES  4
 #define DISPLAY_MODE_FILL  0

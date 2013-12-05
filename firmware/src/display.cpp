@@ -133,19 +133,34 @@ void Display::displayBlend(DisplayParams p) {
   p.hour %= 12;
 
   // hands (take care of the wrap around)
-  uint8_t minHand = p.min/5;
-  uint8_t secHand = p.sec/5;
+  //uint8_t minHand = p.min/5;
+  //uint8_t secHand = p.sec/5;
+  uint8_t minHand = 0;
+  uint8_t minMod = p.min;
+  while (minMod > 4) {
+    minHand++;
+    minMod -= 4;
+  }
+  uint8_t secHand = 0;
+  uint8_t secMod = p.sec;
+  while (minMod > 4) {
+    secHand++;
+    secMod -= 4;
+  }
+
   uint8_t nextMinHand = (minHand == 11) ? 0 : minHand+1;
   uint8_t nextSecHand = (secHand == 11) ? 0 : secHand+1;
   uint8_t nextHour     = (p.hour == 11) ? 0 : p.hour+1;
 
   // percentage of the second hand passed
-  float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT)) * 0.2;
+  //float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT)) * 0.2;
   // percentage of minute hand passed
-  float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
+  //float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
-  float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
-
+  //float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
+  uint32_t hourFrac = (((p.frame + (p.sec<<5) + ((p.min*60)<<5))  << DISPLAY_LEFT_SHIFT) * DISPLAY_HOUR_SCALE) >> DISPLAY_RIGHT_SHIFT;
+  uint32_t minFrac =  (((p.frame + (p.sec<<5) + ((minMod*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_MIN_SCALE)  >> DISPLAY_RIGHT_SHIFT;
+  uint32_t secFrac =  (((p.frame + (secMod<<5))                   << DISPLAY_LEFT_SHIFT) * DISPLAY_SEC_SCALE)  >> DISPLAY_RIGHT_SHIFT;
 
   // fill the hour dots
   // all hours previous are off
@@ -153,8 +168,8 @@ void Display::displayBlend(DisplayParams p) {
     p.dots[i*3] = 0;
   }
   // current hour and next hours to percentages of the hour
-  p.dots[p.hour*3]   = (uint16_t)(DISPLAY_LVL_MAX * (1.0-hourFrac));
-  p.dots[nextHour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  p.dots[p.hour*3]   = (uint16_t)(DISPLAY_LVL_MAX - hourFrac);
+  p.dots[nextHour*3] = (uint16_t)(hourFrac);
   // all other hours off
   for (uint8_t i=p.hour+2; i<12; i++) {
     p.dots[i*3] = 0;
@@ -166,8 +181,8 @@ void Display::displayBlend(DisplayParams p) {
     p.dots[(i*3)+1] = 0;
   }
   // current and next minute dot to fractions
-  p.dots[(minHand*3)+1]     = (uint16_t)(DISPLAY_LVL_MAX * (1.0-minFrac));
-  p.dots[(nextMinHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * minFrac);
+  p.dots[(minHand*3)+1]     = (uint16_t)(DISPLAY_LVL_MAX - minFrac);
+  p.dots[(nextMinHand*3)+1] = (uint16_t)(minFrac);
   // all other minute dots off
   for (uint8_t i=minHand+2; i<12; i++) {
     p.dots[(i*3)+1] = 0;
@@ -179,8 +194,8 @@ void Display::displayBlend(DisplayParams p) {
     p.dots[(i*3)+2] = 0;
   }
   // current and next second dot to fraction (don't have milliseconds yet, so use modulus)
-  p.dots[(secHand*3)+2]     = (uint16_t)(DISPLAY_LVL_MAX * (1.0-secFrac));
-  p.dots[(nextSecHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
+  p.dots[(secHand*3)+2]     = (uint16_t)(DISPLAY_LVL_MAX - secFrac);
+  p.dots[(nextSecHand*3)+2] = (uint16_t)(secFrac);
   // all other second dots off
   for (uint8_t i=secHand+2; i<12; i++) {
     p.dots[(i*3)+2] = 0;
