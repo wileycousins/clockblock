@@ -139,13 +139,13 @@ void Display::displayBlend(DisplayParams p) {
   uint8_t minMod = p.min;
   while (minMod > 4) {
     minHand++;
-    minMod -= 4;
+    minMod -= 5;
   }
   uint8_t secHand = 0;
   uint8_t secMod = p.sec;
   while (minMod > 4) {
     secHand++;
-    secMod -= 4;
+    secMod -= 5;
   }
 
   uint8_t nextMinHand = (minHand == 11) ? 0 : minHand+1;
@@ -153,17 +153,26 @@ void Display::displayBlend(DisplayParams p) {
   uint8_t nextHour     = (p.hour == 11) ? 0 : p.hour+1;
 
   // percentage of the second hand passed
+  // floating point + division
   //float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT)) * 0.2;
   // percentage of minute hand passed
   //float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
   //float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
-  uint32_t hourFrac = (((p.frame + (p.sec<<5) + ((p.min*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_HOUR_SCALE);
-  uint32_t minFrac =  (((p.frame + (p.sec<<5) + ((minMod*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_MIN_SCALE);
-  uint32_t secFrac =  (((p.frame + (secMod<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_SEC_SCALE);
-  hourFrac >>= DISPLAY_RIGHT_SHIFT;
-  minFrac >>= DISPLAY_RIGHT_SHIFT;
-  secFrac >>= DISPLAY_RIGHT_SHIFT;
+
+  // floating point + multiplication only - factors precalculated
+  uint16_t hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (p.min*60*DISPLAY_FRAMERATE)) * 0.56889;
+  uint16_t minFrac  = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (minMod*60*DISPLAY_FRAMERATE)) * 6.8267;
+  uint16_t secFrac  = (p.frame + (secMod*DISPLAY_FRAMERATE)) * 34.133;
+
+  // attempt at fixed point and multiplication
+  //uint32_t hourFrac = (((p.frame + (p.sec<<5) + ((p.min*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_HOUR_SCALE);
+  //uint32_t minFrac =  (((p.frame + (p.sec<<5) + ((minMod*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_MIN_SCALE);
+  //uint32_t secFrac =  (((p.frame + (secMod<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_SEC_SCALE);
+  //hourFrac >>= DISPLAY_RIGHT_SHIFT;
+  //minFrac >>= DISPLAY_RIGHT_SHIFT;
+  //secFrac >>= DISPLAY_RIGHT_SHIFT;
+
 
   // fill the hour dots
   // all hours previous are off
