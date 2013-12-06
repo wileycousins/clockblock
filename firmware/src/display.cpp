@@ -12,16 +12,17 @@ Display::Display(void) {
   mode = DISPLAY_MODE_FILL;
 }
 
-void Display::getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
+void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
   // hour correction
+  uint8_t hour = tm[2];
   if (hour == 12) {
     hour = 0;
   }
 
   DisplayParams p = {
     hour,
-    min,
-    sec,
+    tm[1],
+    tm[0],
     frame,
     dots
   };

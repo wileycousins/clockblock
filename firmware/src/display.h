@@ -44,9 +44,10 @@ public:
 
   // get the dot display
   // parameters:
-  //   hour, min, sec - time
+  //   tm - {sec, min, hr}
+  //   frame - animation frame
   //   dots - dot array output
-  void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots);
+  void getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots);
 
   // set / get the display mode
   // parameters:

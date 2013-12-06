@@ -20,16 +20,7 @@
 // **************************
 // INTERRUPT SERVICE ROUTINES
 // **************************
-// this ISR driven by a 1024 Hz squarewave from the RTC
-// ISR(RTC_EXT_INT_vect) {
-//   // tick the display 32 times a second
-//   if ( ++ms >= 32) {
-//     tick = true;
-//     ms = 0;
-//   }
-// }
-
-// frame counter ISR
+// frame counter ISR (timer 0 is clocked by the RTC)
 ISR(TIMER0_OVF_vect) {
   tick = true;
 }
@@ -55,9 +46,10 @@ int main(void) {
   // begin setup - disable interrupts
   cli();
 
+  // take care of unused pins
+  initUnusedPins();
+
   // give those ISR volatile vairables some values
-  //fr = 0;
-  ms = 0;
   tick = false;
 
   // application variables
@@ -88,9 +80,6 @@ int main(void) {
     rtc.getTime(tm);
   }
 
-  // enable a falling edge interrupt on the square wave pin
-  //EICRA = (0x2 << (2*RTC_EXT_INT));
-  //EIMSK = (1 << RTC_EXT_INT);
 
   // set timer 0 to run normally with no prescaler
   TCCR0A = 0;
@@ -114,9 +103,6 @@ int main(void) {
   // enable inputs
   buttons.init();
 
-  // take care of unused pins
-  initUnusedPins();
-
   // end setup - enable interrupts
   sei();
 
@@ -135,7 +121,7 @@ int main(void) {
         rtc.getTime(tm);
       }
       // update the clock arms
-      updateArms(tm[2], tm[1], tm[0], fr, dots);
+      updateArms(tm, fr, dots);
     }
 
     uint8_t buttonState = 0;
@@ -177,9 +163,9 @@ int main(void) {
 
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
+void updateArms(uint8_t *tm, uint8_t frame, uint16_t *dots) {
   // get the display
-  leds.getDisplay(hour, min, sec, frame, dots);
+  leds.getDisplay(tm, frame, dots);
   // send to the LED driver
   tlc.setGS(dots);
 }

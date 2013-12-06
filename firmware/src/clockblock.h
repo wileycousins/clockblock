@@ -22,15 +22,6 @@
 #include "TLC5971.h"
 
 
-// *******************
-// application defines
-// *******************
-// operating modes
-//#define MODE_CLOCK        0
-//#define MODE_TIME_SET     1
-//#define MODE_DISPLAY_SET  2
-
-
 // ***********
 // peripherals
 // ***********
@@ -67,10 +58,6 @@ Input buttons;
 // *************
 // ISR variables
 // *************
-// frame counter
-//volatile uint8_t fr;
-// millisecond counter incremented by the ~1 kHz squarewave from the RTC
-volatile uint8_t ms;
 // flag set by the ISR when it's time to update the clock arms
 volatile bool tick;
 
@@ -81,7 +68,7 @@ volatile bool tick;
 // main application
 int main(void);
 // update clock arms
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t fr, uint16_t *dots);
+void updateArms(uint8_t *tm, uint8_t fr, uint16_t *dots);
 // initialize unused pins to a safe state
 void initUnusedPins(void);
 // heartbeat for debugginh
