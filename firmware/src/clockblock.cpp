@@ -160,12 +160,17 @@ void initUnusedPins(void) {
 void handleButtonPress(uint8_t state, uint8_t *tm) {
   // if hour switch, increment the hours by 1
   if (state == INPUT_HOUR) {
-    tm[2] = (tm[2] + 1) % 12;
-    tm[2] = (tm[2] == 0) ? 12 : tm[2];
+    //tm[2] = (tm[2] + 1);
+    if (++tm[2] > 12) {
+      tm[2] -= 12;
+    } 
   }
   // if minute switch, increment minutes
   else if (state == INPUT_MIN) {
-    tm[1] = (tm[1] + 1) % 60;
+    //tm[1] = (tm[1] + 1);
+    if (++tm[1] > 59) {
+      tm[1] -= 60;
+    }
   }
   // if mode switch, increment mode
   else if (state == INPUT_MODE) {
@@ -178,12 +183,17 @@ void handleButtonPress(uint8_t state, uint8_t *tm) {
 void handleButtonHold(uint8_t state, uint8_t *tm) {
   // if the hour switch is held, increment the hours by 3
   if (state == INPUT_HOUR) {
-    tm[2] = (tm[2] + 3) % 12;
-    tm[2] = (tm[2] == 0) ? 12 : tm[2];
+    tm[2] = (tm[2] + 3);
+    if (tm[2] > 12) {
+      tm[2] -= 12;
+    } 
   }
   // else if the minute switch is held, increment the minutes by 5
   else if (state == INPUT_MIN) {
-    tm[1] = (tm[1] + 5) % 60;
+    tm[1] = (tm[1] + 5);
+    if (tm[1] > 59) {
+      tm[1] -= 60;
+    }
   }
 }
 
