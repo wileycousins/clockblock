@@ -86,5 +86,5 @@ void initUnusedPins(void);
 void beatHeart();
 
 // button handling logic
-void handleButtonPress(uint8_t state, uint8_t* tm);
-void handleButtonHold(uint8_t state, uint8_t* tm);
+//void handleButtonPress(uint8_t state, uint8_t* tm);
+//void handleButtonHold(uint8_t state, uint8_t* tm);

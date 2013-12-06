@@ -74,31 +74,20 @@ void PCF2129AT::setSquareWave(uint8_t mode) {
 // setter will either change array to properly coded data or set bad inputs to 255 and return false
 // 24-hour mode
 bool PCF2129AT::setTime(uint8_t *tm) {
+  uint8_t set[3];
+
   // check our inputs
-  bool badInput = false;
-  if (tm[2] > 23) {
-    badInput = true;
-    tm[2] = 255;
-  }
-  if (tm[1] > 59) {
-    badInput = true;
-    tm[1] = 255;
-  }
-  if (tm[0] > 59) {
-    badInput = true;
-    tm[0] = 255;
-  }
-  if (badInput) {
+  if (tm[2] > 23 || tm[1] > 59 || tm[0] > 59) {
     return false;
   }
 
   // encode the time properly
   // hours
-  tm[2] = ( ((tm[2]/10) << 4) | (tm[2]%10) );
+  set[2] = tm[2] = ( ((tm[2]/10) << 4) | (tm[2]%10) );
   // minutes
-  tm[1] = ( ((tm[1]/10) << 4) | (tm[1]%10) );
+  set[1] = tm[1] = ( ((tm[1]/10) << 4) | (tm[1]%10) );
   // seconds
-  tm[0] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
+  set[0] = tm[0] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
 
   // set 24 hour mode
   uint8_t c;
@@ -106,47 +95,28 @@ bool PCF2129AT::setTime(uint8_t *tm) {
   c &= ~PCF2129AT_12_24;
   writeReg(PCF2129AT_CTRL_1, 1, &c);
   // transfer the time in and clear the osc stop flag
-  writeReg(PCF2129AT_SEC, 3, tm);
-
-  // clear the osc stop flag
-  //uint8_t c;
-  //readReg(PCF2129AT_CTRL_STAT, 1, &c);
-  //c &= ~PCF2129AT_OSF;
-  //writeReg(PCF2129AT_CTRL_STAT, 1, &c);
+  writeReg(PCF2129AT_SEC, 3, set);
 
   return true;
 }
 
 // 12-hour mode
-bool PCF2129AT::setTime(uint8_t ampm, uint8_t *tm) {
+bool PCF2129AT::setTime(uint8_t *tm, uint8_t ampm) {
+  uint8_t set[3];
+
+
   // check our inputs
-  bool badInput = false;
-  if (tm[2] < 1 || tm[2] > 12) {
-    badInput = true;
-    tm[2] = 255;
-  }
-  if (tm[1] > 59) {
-    badInput = true;
-    tm[1] = 255;
-  }
-  if (tm[0] > 59) {
-    badInput = true;
-    tm[0] = 255;
-  }
-  if (ampm != PCF2129AT_AM && ampm != PCF2129AT_PM) {
-    badInput = true;
-  }
-  if (badInput) {
+  if (tm[2] < 1 || tm[2] > 12 || tm[1] > 59 || tm[0] > 59 || (ampm != PCF2129AT_AM && ampm != PCF2129AT_PM)) {
     return false;
   }
 
   // encode the time properly
   // hours
-  tm[2] = ( ampm | ((tm[2]/10) << 4) | (tm[2]%10) );
+  set[2] = ( ampm | ((tm[2]/10) << 4) | (tm[2]%10) );
   // minutes
-  tm[1] = ( ((tm[1]/10) << 4) | (tm[1]%10) );
+  set[1] = ( ((tm[1]/10) << 4) | (tm[1]%10) );
   // seconds
-  tm[0] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
+  set[0] = ( ((tm[0]/10) << 4) | (tm[0]%10) );
 
   // set 12-hour mode
   uint8_t c;
@@ -154,7 +124,7 @@ bool PCF2129AT::setTime(uint8_t ampm, uint8_t *tm) {
   c |= PCF2129AT_12_24;
   writeReg(PCF2129AT_CTRL_1, 1, &c);
   // transfer the time in and clear the osc stop flag
-  writeReg(PCF2129AT_SEC, 3, tm);
+  writeReg(PCF2129AT_SEC, 3, set);
 
   return true;
 }

@@ -117,7 +117,10 @@ public:
   // setter returns true if given a proper time
   // overloaded for AM/PM mode or 24 hour mode
   bool setTime(uint8_t *time);
-  bool setTime(uint8_t ampm, uint8_t *time);
+  bool setTime(uint8_t *time, uint8_t ampm);
+  //void setMin(uint8_t min);
+  //void setHour(uint8_t hour);
+  //void setHour(uint8_t hour, ampm)
   uint8_t getTime(uint8_t *time);
 
 private:
