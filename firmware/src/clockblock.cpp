@@ -21,12 +21,17 @@
 // INTERRUPT SERVICE ROUTINES
 // **************************
 // this ISR driven by a 1024 Hz squarewave from the RTC
-ISR(RTC_EXT_INT_vect) {
-  // tick the display 32 times a second
-  if ( ++ms >= 32) {
-    tick = true;
-    ms = 0;
-  }
+// ISR(RTC_EXT_INT_vect) {
+//   // tick the display 32 times a second
+//   if ( ++ms >= 32) {
+//     tick = true;
+//     ms = 0;
+//   }
+// }
+
+// frame counter ISR
+ISR(TIMER0_OVF_vect) {
+  tick = true;
 }
 
 // ISR for switch inputs
@@ -51,6 +56,7 @@ int main(void) {
   cli();
 
   // give those ISR volatile vairables some values
+  //fr = 0;
   ms = 0;
   tick = false;
 
@@ -70,8 +76,8 @@ int main(void) {
 
   // initialize the RTC
   rtc.init();
-  // enable a 1024 Hz squarewave output on interrupt pin
-  rtc.setSquareWave(PCF2129AT_CLKOUT_1_kHz);
+  // enable a 8192 Hz squarewave output on interrupt pin
+  rtc.setSquareWave(PCF2129AT_CLKOUT_8_kHz);
 
   // check the oscillator stop flag on the RTC and give it a new time if necessary
   if (rtc.hasLostTime()) {
@@ -83,8 +89,20 @@ int main(void) {
   }
 
   // enable a falling edge interrupt on the square wave pin
-  EICRA = (0x2 << (2*RTC_EXT_INT));
-  EIMSK = (1 << RTC_EXT_INT);
+  //EICRA = (0x2 << (2*RTC_EXT_INT));
+  //EIMSK = (1 << RTC_EXT_INT);
+
+  // set timer 0 to run normally with no prescaler
+  TCCR0A = 0;
+  TCCR0B = (1<<CS00);
+  // set timer 0 to clock from the RTC squarewave
+  ASSR = (1<<EXCLK);
+  // set timer 0 to clock asynchronously and reload the counter
+  ASSR |= (1<<AS0);
+  TCNT0 = 0;
+  // enable timer 0 overflow interrupt
+  TIMSK0 = (1<<TOIE0);
+
 
   // set up the heartbeat led
   DDRB |= (1<<3);

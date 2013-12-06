@@ -60,7 +60,7 @@
 //#define INPUT_TIMER_vect  TIMER0_OVF_vect
 
 // unused pins to be pulled up internally
-#define UNUSED_PORTB_MASK  ( (1<<5) | (1<<4) | (1<<2) | (1<<1) | (1<<0) )
+#define UNUSED_PORTB_MASK  ( (1<<6) | (1<<5) | (1<<4) | (1<<2) | (1<<1) | (1<<0) )
 #define UNUSED_PORTA_MASK  ( (1<<1) | (1<<0) )
 
 #endif
