@@ -54,7 +54,7 @@ int main(void) {
 
   // application variables
   // time vector - { seconds, minutes, hours}
-  uint8_t tm[3] = {0, 0, 12};
+  uint8_t tm[3] = {0, 37, 6};
   // animation frame
   uint8_t fr = 0;
   // arms leds
@@ -69,7 +69,7 @@ int main(void) {
   // initialize the RTC
   rtc.init();
   // enable a 8192 Hz squarewave output on interrupt pin
-  rtc.setSquareWave(PCF2129AT_CLKOUT_8_kHz);
+  rtc.setSquareWave(PCF2129AT_CLKOUT_4_kHz);
 
   // check the oscillator stop flag on the RTC and give it a new time if necessary
   if (rtc.hasLostTime()) {

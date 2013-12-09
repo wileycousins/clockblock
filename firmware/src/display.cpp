@@ -62,8 +62,6 @@ uint8_t Display::getMode(void) {
 
 // different effects
 void Display::displayFill(DisplayParams p) {
-  // hour correction
-  //p.hour %= 12;
   // hands
   uint8_t minHand = p.min/5;
   uint8_t secHand = p.sec/5;
@@ -135,15 +133,8 @@ void Display::displayFill(DisplayParams p) {
 }
 
 void Display::displayBlend(DisplayParams p) {
-  // hour correction
-  //if (p.hour == 12) {
-  //  p.hour = 0;
-  //}
-  //p.hour %= 12;
 
   // hands (take care of the wrap around)
-  //uint8_t minHand = p.min/5;
-  //uint8_t secHand = p.sec/5;
   uint8_t minHand = 0;
   uint8_t minMod = p.min;
   while (minMod > 4) {
@@ -227,8 +218,6 @@ void Display::displayBlend(DisplayParams p) {
 }
 
 void Display::displayPie(DisplayParams p) {
-  // hour correction
-  //p.hour %= 12;
   // percentage of hour passed
   float hourFrac = (p.sec + (60*p.min))/3600.0;
 
