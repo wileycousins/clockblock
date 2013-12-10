@@ -22,11 +22,30 @@
 #define DISPLAY_FRAMERATE_FLOAT  32.0
 
 // fixed point scaling factors
-#define DISPLAY_HOUR_SCALE  146
-#define DISPLAY_MIN_SCALE   1747
-#define DISPLAY_SEC_SCALE   104857
-#define DISPLAY_LEFT_SHIFT   8
-#define DISPLAY_RIGHT_SHIFT  16
+// hours
+//   - fixed point factor: 2^8
+//   - scale = (((# of seconds in an hour)*(framerate))/(led levels)) * fixed point factor
+//   -       = ((60*60*32)/65536) * 256
+//#define DISPLAY_HOUR_FACTOR   256
+#define DISPLAY_HOUR_SCALE    146
+#define DISPLAY_HOUR_L_SHIFT  8
+#define DISPLAY_HOUR_R_SHIFT  16
+// minutes
+//   - fixed point factor: 2^4
+//   - scale = ((# of seconds in 5 minutes)*(framerate))/(led levels)) * fixed point factor
+//   -       = ((60*5*32)/65536) * 16
+//#define DISPLAY_MIN_FACTOR   16
+#define DISPLAY_MIN_SCALE    109
+#define DISPLAY_MIN_L_SHIFT  4
+#define DISPLAY_MIN_R_SHIFT  8
+// seconds
+//   - fixed point factor: 2^0
+//   - scale = ((5 seconds)*(framerate))/(led levels)) * fixed point factor
+//   -       = ((5*32)/65536) * 1
+//#define DISPLAY_SEC_FACTOR   1
+#define DISPLAY_SEC_SCALE    409
+#define DISPLAY_SEC_L_SHIFT  0
+#define DISPLAY_SEC_R_SHIFT  0
 
 // effect modes
 #define DISPLAY_NUM_MODES  2

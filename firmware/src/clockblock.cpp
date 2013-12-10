@@ -54,14 +54,14 @@ int main(void) {
 
   // application variables
   // time vector - { seconds, minutes, hours}
-  uint8_t tm[3] = {0, 37, 6};
+  uint8_t tm[3] = {0, 0, 0};
   // animation frame
   uint8_t fr = 0;
   // arms leds
   uint16_t dots[DISPLAY_NUM_DOTS];
 
   // initialize the LED driver
-  // DO THIS BEFORE RTC (to ensure proper SPI functionality for the RTC)
+  // DO THIS BEFORE INITIALIZING RTC (to ensure proper SPI functionality for the RTC)
   tlc.init();
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
   tlc.setFC(TLC5971_DSPRPT);

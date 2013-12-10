@@ -163,18 +163,15 @@ void Display::displayBlend(DisplayParams p) {
   // floating point + multiplication only - factors precalculated
   //uint16_t hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (p.min*60*DISPLAY_FRAMERATE)) * 0.56889;
   //uint16_t minFrac  = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (minMod*60*DISPLAY_FRAMERATE)) * 6.8267;
-  //uint16_t secFrac  = (p.frame + (secMod*DISPLAY_FRAMERATE)) * 34.133;
-  //float secFrac = ((p.sec%5) + (p.frame/DISPLAY_FRAMERATE_FLOAT)) * 0.2;
-  //float minFrac = ((p.min%5) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
-  //float hourFrac = (p.frame + (DISPLAY_FRAMERATE * p.sec) + (DISPLAY_FRAMERATE*60*p.min)) * 0.00000868056;
+  //uint16_t secFrac  = (p.frame + (secMod*DISPLAY_FRAMERATE)) * 409.59;
 
   // attempt at fixed point and multiplication
-  //uint32_t hourFrac = (((p.frame + (p.sec<<5) + ((p.min*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_HOUR_SCALE);
-  //uint32_t minFrac =  (((p.frame + (p.sec<<5) + ((minMod*60)<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_MIN_SCALE);
-  //uint32_t secFrac =  (((p.frame + (secMod<<5)) << DISPLAY_LEFT_SHIFT) * DISPLAY_SEC_SCALE);
-  //hourFrac >>= DISPLAY_RIGHT_SHIFT;
-  //minFrac >>= DISPLAY_RIGHT_SHIFT;
-  //secFrac >>= DISPLAY_RIGHT_SHIFT;
+  //uint32_t hourFrac = (((p.frame + (p.sec<<5) + ((p.min*60)<<5)) << DISPLAY_HOUR_L_SHIFT) * DISPLAY_HOUR_SCALE);
+  //uint32_t minFrac =  (((p.frame + (p.sec<<5) + ((minMod*60)<<5)) << DISPLAY_MIN_L_SHIFT) * DISPLAY_MIN_SCALE);
+  //uint32_t secFrac =  (((p.frame + (secMod<<5)) << DISPLAY_SEC_L_SHIFT) * DISPLAY_SEC_SCALE);
+  //hourFrac >>= DISPLAY_HOUR_R_SHIFT;
+  //minFrac >>= DISPLAY_MIN_R_SHIFT;
+  //secFrac >>= DISPLAY_SEC_R_SHIFT;
 
 
   // fill the hour dots
