@@ -32,7 +32,12 @@ ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
 
 // switch debouncer / timer
 ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
+  // disable interrupt
+  buttons.disableTimer();
+  // handle the polling
   buttons.handleTimer();
+  // re-enable the interrupt
+  buttons.enableTimer();
 }
 
 // ***********
