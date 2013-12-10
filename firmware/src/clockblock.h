@@ -29,7 +29,7 @@
 // parameters:
 //   mosi DDR, pin - PB3
 //   sck DDR, pin  - PB5
-StuPId spi(&SPI_MOSI_DDR, SPI_MOSI_PIN, &SPI_SCK_DDR, SPI_SCK_PIN);
+StuPId spi;
 
 // USART bus for debugging - TO BE IMPLEMENTED
 
@@ -39,14 +39,14 @@ StuPId spi(&SPI_MOSI_DDR, SPI_MOSI_PIN, &SPI_SCK_DDR, SPI_SCK_PIN);
 //   chip select PORT, pin - PB2
 //   reset PORT, pin       - PB0
 //   interrupt PORT, pin   - PD2
-PCF2129AT rtc(&spi, &RTC_CS_PORT, RTC_CS_PIN, &RTC_SQW_PORT, RTC_SQW_PIN);
+PCF2129AT rtc(&spi);
 
 // TLC5971 LED driver - TO BE IMPLEMENTED
 // parameters:
 //   3 drivers
 //   serial clock PORT, pin - PC5
 //   serial data PORT, pin  - PC4
-TLC5971 tlc(TLC_N, &TLC_SCK_PORT, TLC_SCK_PIN, &TLC_MOSI_PORT, TLC_MOSI_PIN);
+TLC5971 tlc;
 
 // Display class - contains all the different display modes of the clockblock
 Display leds;
@@ -75,5 +75,5 @@ void initUnusedPins(void);
 void beatHeart();
 
 // button handling logic
-//void handleButtonPress(uint8_t state, uint8_t* tm);
-//void handleButtonHold(uint8_t state, uint8_t* tm);
+void handleButtonPress(uint8_t state, uint8_t* tm);
+void handleButtonHold(uint8_t state, uint8_t* tm);

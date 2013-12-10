@@ -75,7 +75,7 @@ void Input::handleTimer(void) {
     // if one or more switches are down (if all switches are up, all will read high)
     if ( state != INPUT_MASK) {
       // check for a press
-      if (timerCount == 2) {
+      if (timerCount == 1) {
         press = true;
         pressState = state;
       }

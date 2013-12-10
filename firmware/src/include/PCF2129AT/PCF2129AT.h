@@ -10,6 +10,7 @@
 
 // woo! typedefs!
 #include <stdint.h>
+
 // woo! SPI!
 #include "StuPId.h"
 
@@ -103,7 +104,7 @@
 class PCF2129AT {
 public:
   // constructor
-  PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *sqwPo, uint8_t sqwPi);
+  PCF2129AT(StuPId *s);
   // initialize (sets pins up and stuff), returns false if the osc has stopped and the time is therefore suspect, true otherwise
   void init();
 
@@ -132,6 +133,7 @@ private:
   void readReg(uint8_t reg, uint8_t n, uint8_t *data);
   void writeReg(uint8_t reg, uint8_t n, uint8_t *data);
 
+  /*
   // pin assignments
   // chip select
   volatile uint8_t *csPort;
@@ -139,6 +141,7 @@ private:
   // reset pin
   volatile uint8_t *sqwPort;
   uint8_t sqwPin;
+  */
 };
 
 #endif

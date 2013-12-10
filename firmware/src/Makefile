@@ -49,6 +49,7 @@ EXEDIR = ../bin/exe
 
 # include path
 INCLUDES := $(addprefix -I,$(INC))
+INCLUDES += -I.
 # defines
 DEFINES  := $(addprefix -D,$(DEF))
 # c flags

@@ -69,7 +69,7 @@ int main(void) {
   // initialize the RTC
   rtc.init();
   // enable a 8192 Hz squarewave output on interrupt pin
-  rtc.setSquareWave(PCF2129AT_CLKOUT_4_kHz);
+  rtc.setSquareWave(PCF2129AT_CLKOUT_8_kHz);
 
   // check the oscillator stop flag on the RTC and give it a new time if necessary
   if (rtc.hasLostTime()) {
@@ -108,7 +108,19 @@ int main(void) {
 
   // get lost
   for (;;) {
-    
+    // take care of any switch presses
+    uint8_t buttonState = 0;
+    if (buttons.getPress(&buttonState)) {
+      beatHeart();
+      handleButtonPress(buttonState, tm);
+    }
+
+    // take care of any switch holds
+    if (buttons.getHold(&buttonState)) {
+      beatHeart();
+      //handleButtonHold(buttonState, tm);
+    }
+
     // update the arms on a tick
     if (tick) {
       // clear the flag
@@ -122,37 +134,6 @@ int main(void) {
       }
       // update the clock arms
       updateArms(tm, fr, dots);
-    }
-
-    uint8_t buttonState = 0;
-    // take care of any switch presses
-    if (buttons.getPress(&buttonState)) {
-      beatHeart();
-      if (buttonState & INPUT_MIN) {
-        tm[1]++;
-        if (tm[1] > 59) {
-          tm[1] -= 60;
-        }
-        rtc.setTime(tm, PCF2129AT_AM);
-      }
-      if (buttonState & INPUT_HOUR) {
-        tm[2]++;
-        if (tm[2] > 12) {
-          tm[2] -= 12;
-        }
-        rtc.setTime(tm, PCF2129AT_AM);
-      }
-      if (buttonState & INPUT_MODE) {
-        uint8_t m = leds.getMode();
-        m = (m < DISPLAY_NUM_MODES-1) ? m+1 : 0;
-        leds.setMode(m);
-      }
-    }
-
-    // take care of any switch holds
-    if (buttons.getHold(&buttonState)) {
-      beatHeart();
-      //handleButtonHold(buttonState, tm);
     }
   }
 
@@ -180,7 +161,7 @@ void initUnusedPins(void) {
   PORTA |= UNUSED_PORTA_MASK;
 }
 
-/*
+
 // button handling logic
 void handleButtonPress(uint8_t state, uint8_t *tm) {
   // if hour switch, increment the hours by 1
@@ -225,7 +206,7 @@ void handleButtonHold(uint8_t state, uint8_t *tm) {
   }
   
 }
-*/
+
 
 void beatHeart() {
   PINB |= (1<<3);

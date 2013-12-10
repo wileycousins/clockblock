@@ -154,9 +154,9 @@ void Display::displayBlend(DisplayParams p) {
 
   // percentage of the second hand passed
   // floating point + division
-  float secFrac = ((secMod) + (p.frame/DISPLAY_FRAMERATE_FLOAT)) * 0.2;
+  float secFrac = ((secMod) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
   // percentage of minute hand passed
-  float minFrac = ((minMod) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60)) * 0.2;
+  float minFrac = ((minMod) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
   float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
 

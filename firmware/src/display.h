@@ -29,7 +29,7 @@
 #define DISPLAY_RIGHT_SHIFT  16
 
 // effect modes
-#define DISPLAY_NUM_MODES  4
+#define DISPLAY_NUM_MODES  2
 #define DISPLAY_MODE_FILL  0
 #define DISPLAY_MODE_BLEND 1
 #define DISPLAY_MODE_PIE   2
@@ -68,19 +68,12 @@ private:
 
   // display mode
   uint8_t mode;
-  // display mode during setting animation
-  uint8_t newMode;
 
   // different effects
   void displayFill(DisplayParams p);
   void displayBlend(DisplayParams p);
   void displayPie(DisplayParams p);
   void displayArms(DisplayParams p);
-
-  // set time animation
-  void displaySet(DisplayParams p);
-  // change display mode animation
-  void displayChange(DisplayParams p);
 };
 
 #endif

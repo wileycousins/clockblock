@@ -5,6 +5,27 @@
 // file: PCF2129AT.cpp
 // description: class for NXP PCF2129AT real-time clock
 
+// woo! pindefs!
+#include "pindefs.h"
+// check we've got everything
+#ifndef RTC_CS_PORT
+#error "RTC_CS_PORT not defined; please define in pindefs.h"
+#endif
+#ifndef RTC_CS_PIN
+#error "RTC_CS_PIN not defined; please define in pindefs.h"
+#endif
+#ifndef RTC_SQW_PORT
+#error "RTC_SQW_PORT not defined; please define in pindefs.h"
+#endif
+#ifndef RTC_SQW_PIN
+#error "RTC_SQW_PIN not defined; please define in pindefs.h"
+#endif
+
+// DDR from PORT macro
+#ifndef DDR
+#define DDR(port) (*(&port-1))
+#endif
+
 #include "PCF2129AT.h"
 
 // can we build it? yes we can!
@@ -13,16 +34,16 @@
 //   chip select port, chip select pin
 //   reset port, reset pin
 //   interrupt port, interrupt pin
-PCF2129AT::PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile uint8_t *sqwPo, uint8_t sqwPi) {
+PCF2129AT::PCF2129AT(StuPId *s) {
   // save this shit
   // SPI channel
   spi = s;
-  // chip select pin
-  csPort = csPo;
-  csPin = csPi;
-  // square wave
-  sqwPort = sqwPo;
-  sqwPin = sqwPi;
+  // // chip select pin
+  // csPort = csPo;
+  // csPin = csPi;
+  // // square wave
+  // sqwPort = sqwPo;
+  // sqwPin = sqwPi;
 }
 
 // initialization - sets pin modes and whatnot
@@ -30,11 +51,11 @@ PCF2129AT::PCF2129AT(StuPId *s, volatile uint8_t *csPo, uint8_t csPi, volatile u
 void PCF2129AT::init() {
   // sets chip select pin to output and pulls it high
   // DDR is PORT - 1
-  *(csPort-1) |= (1 << csPin);
-  *csPort |= (1 << csPin);
+  DDR(RTC_CS_PORT) |= (1 << RTC_CS_PIN);
+  RTC_CS_PORT |= (1 << RTC_CS_PIN);
   // ensure squarewave pin is set to an input and its pullup resistor is activated
-  *(sqwPort-1) &= ~(1 << sqwPin);
-  *sqwPort |= (1 << sqwPin);
+  DDR(RTC_SQW_PORT) &= ~(1 << RTC_SQW_PIN);
+  RTC_SQW_PORT |= (1 << RTC_SQW_PIN);
 
   // set up SPI
   spi->disable();
@@ -162,12 +183,12 @@ uint8_t PCF2129AT::getTime(uint8_t *tm) {
 // ensures SPI options are set correctly and pulls the chip select line low / high to start / end a transfer
 void PCF2129AT::spiStart() {
   // pull the chip select line low to begin the transfer
-  *csPort &= ~(1 << csPin);
+  RTC_CS_PORT &= ~(1 << RTC_CS_PIN);
 }
 
 void PCF2129AT::spiEnd() {
   // pull the chip select line high to end the transfer
-  *csPort |= (1 << csPin);
+  RTC_CS_PORT |= (1 << RTC_CS_PIN);
 }
 
 // read / write
