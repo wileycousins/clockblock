@@ -27,7 +27,7 @@ ISR(TIMER0_OVF_vect) {
 
 // ISR for switch inputs
 ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
-  buttons.handleChange();
+//  buttons.handleChange();
 }
 
 // switch debouncer / timer
