@@ -45,43 +45,47 @@ int main(void) {
   // set up the heartbeat led
   DDRB |= (1<<3);
   PORTB |= (1<<3);
+  #endif
+
   // examine the last reset
+  bool extReset = false;
   // watchdog reset - blink LED 4 times
   if (MCUSR & (1<<WDRF)) {
     for (uint8_t i=0; i<4; i++) {
-      PORTB &= ~(1<<3);
-      _delay_ms(25);
-      PORTB |= (1<<3);
-      _delay_ms(25);
+      beatHeart();
+      _delay_ms(250);
+      beatHeart();
+      _delay_ms(250);
     }
   }
   else if (MCUSR & (1<<BORF)) {
     for (uint8_t i=0; i<3; i++) {
-      PORTB &= ~(1<<3);
-      _delay_ms(25);
-      PORTB |= (1<<3);
-      _delay_ms(25);
+      beatHeart();
+      _delay_ms(250);
+      beatHeart();
+      _delay_ms(250);
     }
   }
   else if (MCUSR & (1<<EXTRF)) {
+    extReset = true;
     for (uint8_t i=0; i<2; i++) {
       PORTB &= ~(1<<3);
-      _delay_ms(25);
+      beatHeart();
       PORTB |= (1<<3);
-      _delay_ms(25);
+      beatHeart();
     }
   }
-  else if (MCUSE & (1<<PORF)) {
+  else if (MCUSR & (1<<PORF)) {
     for (uint8_t i=0; i<1; i++) {
       PORTB &= ~(1<<3);
-      _delay_ms(25);
+      beatHeart();
       PORTB |= (1<<3);
-      _delay_ms(25);
+      beatHeart();
     }
   }
   // clear the flags
   MCUSR = 0;
-  #endif
+
 
   // delay for a few ms to allow the RTC to take its initial temp measurement
   _delay_ms(1000);
@@ -115,7 +119,7 @@ int main(void) {
   rtc.setSquareWave(PCF2129AT_CLKOUT_8_kHz);
 
   // check the oscillator stop flag on the RTC and give it a new time if necessary
-  if (rtc.hasLostTime()) {
+  if (rtc.hasLostTime() || extReset) {
     rtc.setTime(tm, PCF2129AT_AM);
   }
   // else get the good time from the RTC
