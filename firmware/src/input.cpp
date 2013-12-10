@@ -63,6 +63,44 @@ void Input::handleChange(void) {
 
 // handle debouncing the pins and sensing presses vs holds
 void Input::handleTimer(void) {
+  // disable this interrupt
+  disableTimer();
+
+  // shift the old state over and read in the new one
+  state = (state << 4) | getState();
+  // compare and increment count if they match
+  if( (state >> 4) == (state & 0x0F) ) {
+    timerCount++;
+  }
+  else {
+    timerCount = 0;
+  }
+  // after 3 matches, consider switch debounced
+  if (timerCount >= 3) {
+    // if all switches are up, it's a release
+    if (state == INPUT_MASK) ) {
+      release = true;
+    }
+    else {
+      // else it's not a release
+      release = false;
+      // if a press or a hold hasn't already been recorded
+      if (!press && !hold) {
+        press = true;
+      }
+      // else a press or a hold has already happened, so check our counter
+      else if (matchCount >= INPUT_HOLD_COUNT) {
+        press = false;
+        hold = true;
+        matchCount = 0;
+      }
+    }
+  }
+
+  // re-enable this interrrupt
+  enableTimer();
+
+  /*
   // disable the timer
   disableTimer();
   // increment the counter
@@ -97,15 +135,17 @@ void Input::handleTimer(void) {
 
   // re-enable the pin change interrupt
   enableInt();
+  */
 }
 
 
 // initialization
 void Input::init(void) {
   initPins();
-  initInt();
+  //initInt();
   initTimer();
-  enableInt();
+  //enableInt();
+  enableTimer();
 }
 
 // init switch pins as inputs with pullups enabled
@@ -137,8 +177,8 @@ void Input::initTimer(void) {
   TCCR1A = 0;
   // set mode to CTC and prescaler to 1024
   TCCR1B = ( (1 << WGM12) | (1 << CS12) | (1 << CS10) );
-  // set top of timer to 249 (for 250 counts / cycle)
-  OCR1A = 249;
+  // set top of timer to 99 (for 100 counts / cycle)
+  OCR1A = 99;
 }
 
 // interrupt helpers

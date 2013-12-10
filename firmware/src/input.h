@@ -11,7 +11,7 @@
 // typedefs
 #include <stdint.h>
 
-#define INPUT_DEBOUNCE_COUNT  1
+#define INPUT_DEBOUNCE_COUNT  3
 #define INPUT_HOLD_COUNT      15
 
 class Input {
