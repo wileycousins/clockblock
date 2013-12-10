@@ -76,9 +76,9 @@ void Input::handleTimer(void) {
     timerCount = 0;
   }
   // after 3 matches, consider switch debounced
-  if (timerCount >= 3) {
+  if (timerCount >= INPUT_DEBOUNCE_COUNT) {
     // if all switches are up, it's a release
-    if (state == INPUT_MASK) ) {
+    if (state == INPUT_MASK) {
       release = true;
     }
     else {
@@ -87,12 +87,14 @@ void Input::handleTimer(void) {
       // if a press or a hold hasn't already been recorded
       if (!press && !hold) {
         press = true;
+        pressState = state & 0x0F;
       }
       // else a press or a hold has already happened, so check our counter
-      else if (matchCount >= INPUT_HOLD_COUNT) {
+      else if (timerCount >= INPUT_HOLD_COUNT) {
         press = false;
         hold = true;
-        matchCount = 0;
+        holdState = state & 0x0F;
+        timerCount = INPUT_DEBOUNCE_COUNT;
       }
     }
   }
