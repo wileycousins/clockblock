@@ -69,18 +69,18 @@ int main(void) {
   else if (MCUSR & (1<<EXTRF)) {
     extReset = true;
     for (uint8_t i=0; i<2; i++) {
-      PORTB &= ~(1<<3);
       beatHeart();
-      PORTB |= (1<<3);
+      _delay_ms(250);
       beatHeart();
+      _delay_ms(250);
     }
   }
   else if (MCUSR & (1<<PORF)) {
     for (uint8_t i=0; i<1; i++) {
-      PORTB &= ~(1<<3);
       beatHeart();
-      PORTB |= (1<<3);
+      _delay_ms(250);
       beatHeart();
+      _delay_ms(250);
     }
   }
   // clear the flags
