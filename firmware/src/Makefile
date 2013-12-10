@@ -38,7 +38,7 @@ SRC = $(PRJ).cpp display.cpp input.cpp
 # e.g. INC = ../../EyeToSee ../../YouSART
 INC = include/PCF2129AT include/StuPId include/TLC5971
 # any defines to send the compiler
-DEF = 
+DEF = DEBUG
 # directories
 OBJDIR = ../bin/obj
 EXEDIR = ../bin/exe

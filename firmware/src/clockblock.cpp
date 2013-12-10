@@ -40,6 +40,49 @@ ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
 // ***********
 // main
 int main(void) {
+  // debugging
+  #ifdef DEBUG
+  // set up the heartbeat led
+  DDRB |= (1<<3);
+  PORTB |= (1<<3);
+  // examine the last reset
+  // watchdog reset - blink LED 4 times
+  if (MCUSR & (1<<WDRF)) {
+    for (uint8_t i=0; i<4; i++) {
+      PORTB &= ~(1<<3);
+      _delay_ms(25);
+      PORTB |= (1<<3);
+      _delay_ms(25);
+    }
+  }
+  else if (MCUSR & (1<<BORF)) {
+    for (uint8_t i=0; i<3; i++) {
+      PORTB &= ~(1<<3);
+      _delay_ms(25);
+      PORTB |= (1<<3);
+      _delay_ms(25);
+    }
+  }
+  else if (MCUSR & (1<<EXTRF)) {
+    for (uint8_t i=0; i<2; i++) {
+      PORTB &= ~(1<<3);
+      _delay_ms(25);
+      PORTB |= (1<<3);
+      _delay_ms(25);
+    }
+  }
+  else if (MCUSE & (1<<PORF)) {
+    for (uint8_t i=0; i<1; i++) {
+      PORTB &= ~(1<<3);
+      _delay_ms(25);
+      PORTB |= (1<<3);
+      _delay_ms(25);
+    }
+  }
+  // clear the flags
+  MCUSR = 0;
+  #endif
+
   // delay for a few ms to allow the RTC to take its initial temp measurement
   _delay_ms(1000);
 
@@ -82,10 +125,6 @@ int main(void) {
 
   // initialize the ticker
   initTicker();
-
-  // set up the heartbeat led
-  DDRB |= (1<<3);
-  PORTB |= (1<<3);
 
   // set the display mode
   leds.setMode(DISPLAY_MODE_BLEND);
@@ -174,7 +213,9 @@ void handleButtonPress(uint8_t state, uint8_t *tm) {
 
 
 void beatHeart(void) {
+  #ifdef DEBUG
   PINB |= (1<<3);
+  #endif
 }
 
 
