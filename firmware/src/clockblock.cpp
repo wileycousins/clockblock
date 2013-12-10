@@ -101,7 +101,7 @@ int main(void) {
 
   // application variables
   // time vector - { seconds, minutes, hours}
-  uint8_t tm[3] = {0, 0, 0};
+  uint8_t tm[3] = {0, 0, 12};
   // animation frame
   uint8_t fr = 0;
   // arms leds
