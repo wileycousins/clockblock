@@ -67,13 +67,13 @@ volatile bool tick;
 // *******************
 // main application
 int main(void);
+// set up async timer for clock signal
+void initTicker(void);
 // update clock arms
 void updateArms(uint8_t *tm, uint8_t fr, uint16_t *dots);
 // initialize unused pins to a safe state
 void initUnusedPins(void);
-// heartbeat for debugginh
-void beatHeart();
-
+// heartbeat for debugging
+void beatHeart(void);
 // button handling logic
 void handleButtonPress(uint8_t state, uint8_t* tm);
-void handleButtonHold(uint8_t state, uint8_t* tm);

@@ -25,12 +25,7 @@ ISR(TIMER0_OVF_vect) {
   tick = true;
 }
 
-// ISR for switch inputs
-ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
-//  buttons.handleChange();
-}
-
-// switch debouncer / timer
+// switch poller / debouncer / timer
 ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
   // disable interrupt
   buttons.disableTimer();
@@ -73,7 +68,7 @@ int main(void) {
 
   // initialize the RTC
   rtc.init();
-  // enable a 8192 Hz squarewave output on interrupt pin
+  // enable a 8192 Hz squarewave output on clock input pin
   rtc.setSquareWave(PCF2129AT_CLKOUT_8_kHz);
 
   // check the oscillator stop flag on the RTC and give it a new time if necessary
@@ -85,18 +80,8 @@ int main(void) {
     rtc.getTime(tm);
   }
 
-
-  // set timer 0 to run normally with no prescaler
-  TCCR0A = 0;
-  TCCR0B = (1<<CS00);
-  // set timer 0 to clock from the RTC squarewave
-  ASSR = (1<<EXCLK);
-  // set timer 0 to clock asynchronously and reload the counter
-  ASSR |= (1<<AS0);
-  TCNT0 = 0;
-  // enable timer 0 overflow interrupt
-  TIMSK0 = (1<<TOIE0);
-
+  // initialize the ticker
+  initTicker();
 
   // set up the heartbeat led
   DDRB |= (1<<3);
@@ -116,14 +101,7 @@ int main(void) {
     // take care of any switch presses
     uint8_t buttonState = 0;
     if (buttons.getPress(&buttonState)) {
-      beatHeart();
       handleButtonPress(buttonState, tm);
-    }
-
-    // take care of any switch holds
-    if (buttons.getHold(&buttonState)) {
-      beatHeart();
-      //handleButtonHold(buttonState, tm);
     }
 
     // update the arms on a tick
@@ -133,7 +111,7 @@ int main(void) {
       // get the time
       if (++fr >= 32) {
         // beat the heart every second
-        //beatHeart();
+        beatHeart();
         fr = 0;
         rtc.getTime(tm);
       }
@@ -155,6 +133,7 @@ void updateArms(uint8_t *tm, uint8_t frame, uint16_t *dots) {
   // send to the LED driver
   tlc.setGS(dots);
 }
+
 
 // initialize unused pins as inputs with pullups enabled
 void initUnusedPins(void) {
@@ -193,26 +172,21 @@ void handleButtonPress(uint8_t state, uint8_t *tm) {
   }
 }
 
-void handleButtonHold(uint8_t state, uint8_t *tm) {
-  
-  // if the hour switch is held, increment the hours by 3
-  if (state == INPUT_HOUR) {
-    tm[2] = (tm[2] + 3);
-    if (tm[2] > 12) {
-      tm[2] -= 12;
-    } 
-  }
-  // else if the minute switch is held, increment the minutes by 5
-  else if (state == INPUT_MIN) {
-    tm[1] = (tm[1] + 5);
-    if (tm[1] > 59) {
-      tm[1] -= 60;
-    }
-  }
-  
+
+void beatHeart(void) {
+  PINB |= (1<<3);
 }
 
 
-void beatHeart() {
-  PINB |= (1<<3);
+void initTicker(void) {
+  // set timer 0 to run normally with no prescaler
+  TCCR0A = 0;
+  TCCR0B = (1<<CS00);
+  // set timer 0 to clock from the RTC squarewave
+  ASSR = (1<<EXCLK);
+  // set timer 0 to clock asynchronously and reload the counter
+  ASSR |= (1<<AS0);
+  TCNT0 = 0;
+  // enable timer 0 overflow interrupt
+  TIMSK0 = (1<<TOIE0);
 }

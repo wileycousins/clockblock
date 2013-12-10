@@ -13,13 +13,11 @@ Input::Input(void) {
   // switch states
   state = INPUT_MASK;
   pressState = INPUT_MASK;
-  holdState = INPUT_MASK;
   // switch timer counter
   timerCount = 0;
   // switch event flags
   release = false;
   press = false;
-  hold = false;
 }
 
 // get switch state
@@ -30,15 +28,6 @@ uint8_t Input::getState(void) {
 // get the flag states and clear as necessary
 // set uint8_t at pointer to switch state if flag is true
 // outputted switch state is bit flipped for convenience in the app
-bool Input::getHold(uint8_t *s) {
-  if (hold) {
-    hold = false;
-    *s = INPUT_MASK & ~holdState;
-    return true;
-  }
-  return false;
-}
-
 bool Input::getPress(uint8_t *s) {
   if (press && release) {
     press = false;
@@ -49,7 +38,7 @@ bool Input::getPress(uint8_t *s) {
   return false;
 }
 
-// handle debouncing the pins and sensing presses vs holds
+// handle debouncing the pins and sensing presses
 void Input::handleTimer(void) {
   // shift the old state over and read in the new one
   state = (state << 4) | getState();
@@ -77,18 +66,6 @@ void Input::handleTimer(void) {
         release = true;
         timerCount = INPUT_REPEAT_COUNT;
       }
-      // if a press or a hold hasn't already been recorded
-      // if (!press && !hold) {
-      //   press = true;
-      //   pressState = state & 0x0F;
-      // }
-      // else a press or a hold has already happened, so check our counter
-      // else if (timerCount >= INPUT_HOLD_COUNT) {
-      //   press = false;
-      //   hold = true;
-      //   holdState = state & 0x0F;
-      //   timerCount = INPUT_DEBOUNCE_COUNT;
-      // }
     }
   }
 }
