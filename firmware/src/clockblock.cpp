@@ -117,7 +117,7 @@ int main(void) {
 
     // take care of any switch holds
     if (buttons.getHold(&buttonState)) {
-      beatHeart();
+      //beatHeart();
       //handleButtonHold(buttonState, tm);
     }
 
