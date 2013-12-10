@@ -12,7 +12,7 @@
 #include <stdint.h>
 
 #define INPUT_DEBOUNCE_COUNT  3
-#define INPUT_HOLD_COUNT      15
+#define INPUT_HOLD_COUNT      30
 
 class Input {
 public:

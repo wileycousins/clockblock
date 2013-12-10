@@ -78,7 +78,7 @@ void Input::handleTimer(void) {
   // after 3 matches, consider switch debounced
   if (timerCount >= INPUT_DEBOUNCE_COUNT) {
     // if all switches are up, it's a release
-    if (state == INPUT_MASK) {
+    if ( (state & 0x0F) == INPUT_MASK ) {
       release = true;
     }
     else {
