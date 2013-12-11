@@ -84,6 +84,17 @@ void TLC5971::setGS(uint16_t *g) {
   }
 }
 
+void TLC5971::setBC(uint8_t b) {
+  for (uint8_t i=0; i<3; i++) {
+    if (b < 128) {
+      bc[i] = b;
+    }
+    else {
+      bc[i] = 127;
+    }
+  }
+}
+
 void TLC5971::setBC(uint8_t *b) {
   for (uint8_t i=0; i<3; i++) {
     if (b[i] < 128) {

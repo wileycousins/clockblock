@@ -45,10 +45,8 @@ int main(void) {
   // set up the heartbeat led
   DDRB |= (1<<3);
   PORTB |= (1<<3);
-  #endif
 
   // examine the last reset
-  bool extReset = false;
   // watchdog reset - blink LED 4 times
   if (MCUSR & (1<<WDRF)) {
     for (uint8_t i=0; i<4; i++) {
@@ -67,7 +65,6 @@ int main(void) {
     }
   }
   else if (MCUSR & (1<<EXTRF)) {
-    extReset = true;
     for (uint8_t i=0; i<2; i++) {
       beatHeart();
       _delay_ms(250);
@@ -85,6 +82,7 @@ int main(void) {
   }
   // clear the flags
   MCUSR = 0;
+  #endif
 
 
   // delay for a few ms to allow the RTC to take its initial temp measurement
@@ -112,6 +110,8 @@ int main(void) {
   tlc.init();
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
   tlc.setFC(TLC5971_DSPRPT);
+  // set brightness to half
+  tlc.setBC(63);
 
   // initialize the RTC
   rtc.init();
@@ -119,7 +119,7 @@ int main(void) {
   rtc.setSquareWave(PCF2129AT_CLKOUT_8_kHz);
 
   // check the oscillator stop flag on the RTC and give it a new time if necessary
-  if (rtc.hasLostTime() || extReset) {
+  if (rtc.hasLostTime()) {
     rtc.setTime(tm, PCF2129AT_AM);
   }
   // else get the good time from the RTC

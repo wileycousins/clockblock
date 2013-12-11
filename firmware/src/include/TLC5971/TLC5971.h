@@ -31,8 +31,9 @@ public:
   //   - *bc: array of 3 uint8_t for brightness correction 
   //   - fc: uint8_t for function control
   void setGS(uint16_t *g);
-  void setBC(uint8_t *bc);
-  void setFC(uint8_t fc);
+  void setBC(uint8_t b);
+  void setBC(uint8_t *b);
+  void setFC(uint8_t f);
 private:
   // serial helpers
   // send the write command to the device (6-bits = 0x25 = 0b100101)
