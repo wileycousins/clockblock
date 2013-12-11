@@ -82,17 +82,16 @@ private:
     uint8_t min;
     uint8_t sec;
     uint8_t frame;
-    uint16_t *dots;
   } DisplayParams;
 
   // display mode
   uint8_t mode;
 
   // different effects
-  void displayFill(DisplayParams p);
-  void displayBlend(DisplayParams p);
-  void displayPie(DisplayParams p);
-  void displayArms(DisplayParams p);
+  void displayFill(DisplayParams p, uint16_t* dots);
+  void displayBlend(DisplayParams p, uint16_t* dots);
+  void displayPie(DisplayParams p, uint16_t* dots);
+  void displayArms(DisplayParams p, uint16_t* dots);
 };
 
 #endif
