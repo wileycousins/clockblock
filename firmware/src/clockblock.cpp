@@ -88,10 +88,8 @@ int main(void) {
   DDRA |= (1<<1);
   DDRA &= ~(1<<0);
   PORTA |= (1<<0);
-
   // set the baudrate to 9600
-  // leave bit timing to default (LINBTR & 0x3F) = 0x20 = 32
-  // also disable frame resync
+  // leave bit timing to default (LINBTR & 0x3F) = 0x20 = 32, but disable frame resync (unused by UART)
   LINBTR |= (1<<LDISR);
   // LINBRR = (F_CPU/((LINBTR & 0x3F) * BAUDRATE)) - 1
   // LINBRR = (8000000/(32 * 9600)) - 1 = 25 + 0.167%
