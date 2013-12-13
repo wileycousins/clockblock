@@ -82,6 +82,36 @@ int main(void) {
   }
   // clear the flags
   MCUSR = 0;
+
+  // set UART for USB to serial
+  // set the baudrate to 9600
+  // leave bit timing to default (LINBTR & 0x3F) = 0x20 = 32 
+  // LINBRR = (F_CPU/((LINBTR & 0x3F) * BAUDRATE)) - 1
+  // LINBRR = (8000000/(32 * 9600)) - 1 = 25 + 0.167%
+  LINBRR = 25;
+  // enable lin/uart module, set to uart mode, set to 8 bit char, no parity, RX and TX enabled
+  LINCR = ( (1<<LENA) | (1<<LCMD2) | (1<<LCMD1) | (1<<LCMD0) );
+
+  uint8_t c;
+  do {}
+    // make sure the line isn't busy
+    while (LINSIR & (1<<LBUSY));
+    // wait for a char recieve
+    while (!LINSIR & (1<<LRXOK));
+    // read the character
+    c = LINDAT;
+    // clear the flag
+    LINSIR = (1<<LRXOK);
+    // make sure the line isn't busy
+    while (LINSIR & (1<<LBUSY));
+    // send an exclamation mark to confirm reciept of character
+    LINDAT = '!';
+    // wait for transmit to finish
+    while (!LINSIR & (1<<LTXOK));
+    // clear the flag
+    LINSIR = (1<<LTXOK);
+  } while (c != 'g')
+
   #endif
 
 
