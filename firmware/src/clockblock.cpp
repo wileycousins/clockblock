@@ -84,8 +84,15 @@ int main(void) {
   MCUSR = 0;
 
   // set UART for USB to serial
+  // enable TX as output and RX as input with pullup inabled
+  DDRA |= (1<<1);
+  DDRA &= ~(1<<0);
+  PORTA |= (1<<0);
+
   // set the baudrate to 9600
-  // leave bit timing to default (LINBTR & 0x3F) = 0x20 = 32 
+  // leave bit timing to default (LINBTR & 0x3F) = 0x20 = 32
+  // also disable frame resync
+  LINBTR |= (1<<LDISR);
   // LINBRR = (F_CPU/((LINBTR & 0x3F) * BAUDRATE)) - 1
   // LINBRR = (8000000/(32 * 9600)) - 1 = 25 + 0.167%
   LINBRR = 25;
@@ -93,24 +100,32 @@ int main(void) {
   LINCR = ( (1<<LENA) | (1<<LCMD2) | (1<<LCMD1) | (1<<LCMD0) );
 
   uint8_t c;
-  do {}
+  do {
     // make sure the line isn't busy
     while (LINSIR & (1<<LBUSY));
     // wait for a char recieve
-    while (!LINSIR & (1<<LRXOK));
+    while (!(LINSIR & (1<<LRXOK)));
     // read the character
     c = LINDAT;
     // clear the flag
-    LINSIR = (1<<LRXOK);
+    //LINSIR = (1<<LRXOK);
     // make sure the line isn't busy
     while (LINSIR & (1<<LBUSY));
     // send an exclamation mark to confirm reciept of character
-    LINDAT = '!';
+    //if (!LINSIR & (1<<LRXOK))
+    LINDAT = c;
     // wait for transmit to finish
-    while (!LINSIR & (1<<LTXOK));
+    while (!(LINSIR & (1<<LTXOK)));
     // clear the flag
     LINSIR = (1<<LTXOK);
-  } while (c != 'g')
+  } while (c != 'g');
+
+  // make sure the line isn't busy
+  while (LINSIR & (1<<LBUSY));
+  // send an exclamation mark to confirm reciept of  go character
+  LINDAT = '!';
+  // wait for transmit to finish
+  while (!(LINSIR & (1<<LTXOK)));
 
   #endif
 
@@ -210,12 +225,16 @@ void updateArms(uint8_t *tm, uint8_t frame, uint16_t *dots) {
 
 // initialize unused pins as inputs with pullups enabled
 void initUnusedPins(void) {
+  #ifdef UNUSED_PORTB_MASK
   // PORTB
   DDRB &= ~UNUSED_PORTB_MASK;
   PORTB |= UNUSED_PORTB_MASK;
+  #endif
+  #ifdef UNUSED_PORTA_MASK
   // PORTA
   DDRA &= ~UNUSED_PORTA_MASK;
   PORTA |= UNUSED_PORTA_MASK;
+  #endif
 }
 
 
