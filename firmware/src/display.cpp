@@ -10,6 +10,11 @@
 Display::Display(void) {
   // set default mode to fill
   mode = DISPLAY_MODE_FILL;
+
+  // calculate the LED brightness ratios
+  secLevelScale = (uint8_t)((65536/(3600*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_SEC_FACTOR);
+  minLevelScale = (uint8_t)((65536/(3600*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_MIN_FACTOR);
+  hourLevelScale = (uint8_t)((65536/(3600*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_HOUR_FACTOR);
 }
 
 void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
@@ -24,25 +29,24 @@ void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
     tm[1],
     tm[0],
     frame,
-    dots
   };
 
   // display mode switch case
   switch (mode) {
     case DISPLAY_MODE_FILL:
-      displayFill(p);
+      displayFill(p, dots);
       break;
 
     case DISPLAY_MODE_BLEND:
-      displayBlend(p);
+      displayBlend(p, dots);
       break;
 
     case DISPLAY_MODE_PIE:
-      displayPie(p);
+      displayPie(p, dots);
       break;
 
     case DISPLAY_MODE_ARMS:
-      displayArms(p);
+      displayArms(p, dots);
       break;
     
     default:
@@ -76,56 +80,56 @@ void Display::displayFill(DisplayParams p, uint16_t* dots) {
   // fill the hour dots
   // all hours previous are full
   for (uint8_t i=0; i<p.hour; i++) {
-    p.dots[i*3] = DISPLAY_LVL_MAX;
+    dots[i*3] = DISPLAY_LVL_MAX;
   }
   // current hour to fraction
-  p.dots[p.hour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  dots[p.hour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
   // all other hours off
   for (uint8_t i=p.hour+1; i<12; i++) {
-    p.dots[i*3] = 0;
+    dots[i*3] = 0;
   }
 
   // do the same with the minute dots
   // all minute dots previous get set to full
   for (uint8_t i=0; i<minHand; i++) {
-    p.dots[(i*3)+1] = DISPLAY_LVL_MAX;
+    dots[(i*3)+1] = DISPLAY_LVL_MAX;
   }
   // current minute dot to fraction
   p.dots[(minHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * minFrac);
   // all other minute dots off
   for (uint8_t i=minHand+1; i<12; i++) {
-    p.dots[(i*3)+1] = 0;
+    dots[(i*3)+1] = 0;
   }
 
   // finally, seconds
   // all second dots previous get set to full
   for (uint8_t i=0; i<secHand; i++) {
-    p.dots[(i*3)+2] = DISPLAY_LVL_MAX;
+    dots[(i*3)+2] = DISPLAY_LVL_MAX;
   }
   // current second dot to fraction
-  p.dots[(secHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
+  dots[(secHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
   // all other second dots off
   for (uint8_t i=secHand+1; i<12; i++) {
-    p.dots[(i*3)+2] = 0;
+    dots[(i*3)+2] = 0;
   }
 
   // wrap-arounds!
   if (p.sec == 59 && p.frame >= 21) {
     // turn off 1 led every frame in the last 11 frames of the second
     for (uint8_t i=1; i<=p.frame-20; i++) {
-      p.dots[(i*3)+2] = 0;
+      dots[(i*3)+2] = 0;
     }
     // do the same if minutes are wrapping around
     if (p.min == 59) {
       // turn off 1 led every frame in the last 11 frames of the second
       for (uint8_t i=1; i<=p.frame-20; i++) {
-        p.dots[(i*3)+1] = 0;
+        dots[(i*3)+1] = 0;
       }
       // do the same if hours are wrapping around
       if (p.hour == 11) {
         // turn off 1 led every frame in the last 11 frames of the second
         for (uint8_t i=1; i<=p.frame-20; i++) {
-          p.dots[i*3] = 0;
+          dots[i*3] = 0;
         }
       }
     }
@@ -167,54 +171,56 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
 
   // attempt at fixed point and multiplication
   // get the frame counts
-  uint32_t secFrac  = p.frame + secMod*DISPLAY_FRAMERATE;
-  uint32_t minFrac  = secFrac + secHand*5*DISPLAY_FRAMERATE + minMod*60*DISPLAY_FRAMERATE;
-  uint32_t hourFrac = minFrac + minHand*60*5*32
-  //uint32_t hourFrac = (((p.frame + (p.sec<<5) + ((p.min*60)<<5)) << DISPLAY_HOUR_L_SHIFT) * DISPLAY_HOUR_SCALE);
-  //uint32_t minFrac =  (((p.frame + (p.sec<<5) + ((minMod*60)<<5)) << DISPLAY_MIN_L_SHIFT) * DISPLAY_MIN_SCALE);
-  //uint32_t secFrac =  (((p.frame + (secMod<<5)) << DISPLAY_SEC_L_SHIFT) * DISPLAY_SEC_SCALE);
-  //hourFrac >>= DISPLAY_HOUR_R_SHIFT;
-  //minFrac >>= DISPLAY_MIN_R_SHIFT;
-  //secFrac >>= DISPLAY_SEC_R_SHIFT;
+  uint8_t secFrac   = p.frame + (DISPLAY_FRAMERATE * secMod);
+  uint32_t minFrac  = p.frame + (DISPLAY_FRAMERATE * (p.sec + minMod*60));
+  uint32_t hourFrac = p.frame + (DISPLAY_FRAMERATE * (p.sec + p.min*60));
+  // scale and multiply
+  secFrac  = (secFrac  << DISPLAY_SEC_L_SHIFT)  * secLevelScale;
+  minFrac  = (minFrac  << DISPLAY_MIN_L_SHIFT)  * minLevelScale;
+  hourFrac = (hourFrac << DISPLAY_HOUR_L_SHIFT) * hourLevelScale;
+  // shift back to scale down to correct level
+  secFrac  >>= DISPLAY_SEC_R_SHIFT;
+  minFrac  >>= DISPLAY_MIN_R_SHIFT;
+  hourFrac >>= DISPLAY_HOUR_R_SHIFT;
 
 
   // fill the hour dots
   // all hours previous are off
   for (uint8_t i=0; i<p.hour; i++) {
-    p.dots[i*3] = 0;
+    dots[i*3] = 0;
   }
   // current hour and next hours to percentages of the hour
-  p.dots[p.hour*3]   = (uint16_t)(DISPLAY_LVL_MAX * (1.0 - hourFrac));
-  p.dots[nextHour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  dots[p.hour*3]   = (uint16_t)(DISPLAY_LVL_MAX * (1.0 - hourFrac));
+  dots[nextHour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
   // all other hours off
   for (uint8_t i=p.hour+2; i<12; i++) {
-    p.dots[i*3] = 0;
+    dots[i*3] = 0;
   }
 
   // do the same with the minute dots
   // all minute dots previous get set to off
   for (uint8_t i=0; i<minHand; i++) {
-    p.dots[(i*3)+1] = 0;
+    dots[(i*3)+1] = 0;
   }
   // current and next minute dot to fractions
-  p.dots[(minHand*3)+1]     = (uint16_t)(DISPLAY_LVL_MAX * (1.0 - minFrac));
-  p.dots[(nextMinHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * minFrac);
+  dots[(minHand*3)+1]     = (uint16_t)(DISPLAY_LVL_MAX * (1.0 - minFrac));
+  dots[(nextMinHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * minFrac);
   // all other minute dots off
   for (uint8_t i=minHand+2; i<12; i++) {
-    p.dots[(i*3)+1] = 0;
+    dots[(i*3)+1] = 0;
   }
 
   // finally, seconds
   // all second dots previous get set to off
   for (uint8_t i=0; i<secHand; i++) {
-    p.dots[(i*3)+2] = 0;
+    dots[(i*3)+2] = 0;
   }
   // current and next second dot to fraction (don't have milliseconds yet, so use modulus)
-  p.dots[(secHand*3)+2]     = (uint16_t)(DISPLAY_LVL_MAX * (1.0 - secFrac));
-  p.dots[(nextSecHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
+  dots[(secHand*3)+2]     = (uint16_t)(DISPLAY_LVL_MAX * (1.0 - secFrac));
+  dots[(nextSecHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
   // all other second dots off
   for (uint8_t i=secHand+2; i<12; i++) {
-    p.dots[(i*3)+2] = 0;
+    dots[(i*3)+2] = 0;
   }
 }
 
@@ -224,21 +230,21 @@ void Display::displayPie(DisplayParams p, uint16_t* dots) {
 
   // set all dots up to hour to full around the clock
   for (uint8_t i=0; i<3*p.hour; i+=3) {
-    p.dots[i]   = DISPLAY_LVL_MAX;
-    p.dots[i+1] = DISPLAY_LVL_MAX;
-    p.dots[i+2] = DISPLAY_LVL_MAX;
+    dots[i]   = DISPLAY_LVL_MAX;
+    dots[i+1] = DISPLAY_LVL_MAX;
+    dots[i+2] = DISPLAY_LVL_MAX;
   }
 
   // dots on fractional arm get set according to percentage
-  p.dots[3*p.hour]   = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
-  p.dots[3*p.hour+1] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
-  p.dots[3*p.hour+2] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  dots[3*p.hour]   = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  dots[3*p.hour+1] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  dots[3*p.hour+2] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
 
   // all others off
   for (uint8_t i=3*(p.hour+1); i<DISPLAY_NUM_DOTS; i+=3) {
-    p.dots[i]   = 0;
-    p.dots[i+1] = 0;
-    p.dots[i+2] = 0;
+    dots[i]   = 0;
+    dots[i+1] = 0;
+    dots[i+2] = 0;
   }
 }
 
@@ -250,12 +256,11 @@ void Display::displayArms(DisplayParams p, uint16_t* dots) {
 
   // empty out the array
   for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
-    p.dots[i] = 0;
+    dots[i] = 0;
   }
 
   // set the hands
-  p.dots[3*hourHand]    = DISPLAY_LVL_MAX;
-  p.dots[(3*minHand)+1] = DISPLAY_LVL_MAX;
-  p.dots[(3*secHand)+2] = DISPLAY_LVL_MAX;
-
+  dots[3*hourHand]    = DISPLAY_LVL_MAX;
+  dots[(3*minHand)+1] = DISPLAY_LVL_MAX;
+  dots[(3*secHand)+2] = DISPLAY_LVL_MAX;
 }
