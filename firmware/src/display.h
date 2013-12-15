@@ -22,7 +22,6 @@
 #define DISPLAY_NUM_DOTS    36
 // framerate
 #define DISPLAY_FRAMERATE        32
-#define DISPLAY_FRAMERATE_FLOAT  32.0
 
 // fixed point scaling factors
 // hours
@@ -42,15 +41,14 @@
 #define DISPLAY_SEC_R_SHIFT  0
 
 // effect modes
-#define DISPLAY_NUM_MODES        6
+#define DISPLAY_NUM_MODES        7
 #define DISPLAY_MODE_BLEND       0
 #define DISPLAY_MODE_BLEND_BG    1
 #define DISPLAY_MODE_FILL        2
 #define DISPLAY_MODE_DOTS        3
 #define DISPLAY_MODE_DOTS_BG     4
 #define DISPLAY_MODE_ARMS        5
-#define DISPLAY_MODE_ARMS_PULSE  6
-#define DISPLAY_MODE_PIE         7
+#define DISPLAY_MODE_PIE         6
 
 
 class Display {
@@ -93,7 +91,7 @@ private:
   void displayFill(DisplayParams p, uint16_t* dots);
   void displayBlend(DisplayParams p, uint16_t bgLvl, uint16_t* dots);
   void displayDots(DisplayParams p, uint16_t bgLvl, uint16_t* dots);
-  void displayArms(DisplayParams p, bool pulse, uint16_t* dots);
+  void displayArms(DisplayParams p, uint16_t* dots);
   void displayPie(DisplayParams p, uint16_t* dots);
 };
 

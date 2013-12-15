@@ -54,11 +54,7 @@ void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
       break;
 
     case DISPLAY_MODE_ARMS:
-      displayArms(p, false, dots);
-      break;
-
-    case DISPLAY_MODE_ARMS_PULSE:
-      displayArms(p, true, dots);
+      displayArms(p, dots);
       break;
 
     case DISPLAY_MODE_PIE:
@@ -352,31 +348,8 @@ void Display::displayDots(DisplayParams p, uint16_t bgLvl, uint16_t *dots) {
   dots[(3*secHand)+2] = secFrac;
 }
 
-void Display::displayPie(DisplayParams p, uint16_t* dots) {
-  // percentage of hour passed
-  float hourFrac = (p.sec + (60*p.min))/3600.0;
 
-  // set all dots up to hour to full around the clock
-  for (uint8_t i=0; i<3*p.hour; i+=3) {
-    dots[i]   = DISPLAY_LVL_MAX;
-    dots[i+1] = DISPLAY_LVL_MAX;
-    dots[i+2] = DISPLAY_LVL_MAX;
-  }
-
-  // dots on fractional arm get set according to percentage
-  dots[3*p.hour]   = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
-  dots[3*p.hour+1] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
-  dots[3*p.hour+2] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
-
-  // all others off
-  for (uint8_t i=3*(p.hour+1); i<DISPLAY_NUM_DOTS; i+=3) {
-    dots[i]   = 0;
-    dots[i+1] = 0;
-    dots[i+2] = 0;
-  }
-}
-
-void Display::displayArms(DisplayParams p, bool pulse, uint16_t* dots) {
+void Display::displayArms(DisplayParams p, uint16_t* dots) {
   // minute hand location
   uint8_t minHand = 0;
   while (p.min > 4) {
@@ -394,7 +367,34 @@ void Display::displayArms(DisplayParams p, bool pulse, uint16_t* dots) {
   dots[3*p.hour+1] += DISPLAY_LVL_HAND;
 
   // set the minute hand (all three dots)
+  // overlap on inner two dots, overwrite on outer dot
   dots[3*minHand]   += DISPLAY_LVL_HAND;
   dots[3*minHand+1] += DISPLAY_LVL_HAND;
-  dots[3*minHand+2] += DISPLAY_LVL_HAND;
+  dots[3*minHand+2] = DISPLAY_LVL_HAND;
+}
+
+void Display::displayPie(DisplayParams p, uint16_t* dots) {
+  // percentage of hour passed
+  uint32_t hourFrac = p.frame + ((uint32_t)(DISPLAY_FRAMERATE) * (p.sec + p.min*60));
+  hourFrac = (hourFrac << DISPLAY_HOUR_L_SHIFT) * hourLevelScale;
+  hourFrac >>= DISPLAY_HOUR_R_SHIFT;
+
+  // set all dots up to hour to full around the clock
+  for (uint8_t i=0; i<3*p.hour; i+=3) {
+    dots[i]   = DISPLAY_LVL_MAX;
+    dots[i+1] = DISPLAY_LVL_MAX;
+    dots[i+2] = DISPLAY_LVL_MAX;
+  }
+
+  // dots on fractional arm get set according to percentage
+  dots[3*p.hour]   = (uint16_t)(hourFrac);
+  dots[3*p.hour+1] = (uint16_t)(hourFrac);
+  dots[3*p.hour+2] = (uint16_t)(hourFrac);
+
+  // all others off
+  for (uint8_t i=3*(p.hour+1); i<DISPLAY_NUM_DOTS; i+=3) {
+    dots[i]   = 0;
+    dots[i+1] = 0;
+    dots[i+2] = 0;
+  }
 }
