@@ -18,10 +18,11 @@
 #define DISPLAY_LVL_HAND  30000
 #define DISPLAY_LVL_BG    700
 #define DISPLAY_LVL_OFF   0
-// clock stuff
+// clock stuffs
 #define DISPLAY_NUM_DOTS    36
 // framerate
 #define DISPLAY_FRAMERATE        32
+#define DISPLAY_FRAMERATE_FLOAT  32.0
 
 // fixed point scaling factors
 // hours
