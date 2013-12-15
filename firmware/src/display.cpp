@@ -100,12 +100,6 @@ void Display::displayFill(DisplayParams p, uint16_t* dots) {
   hourFrac = (hourFrac << DISPLAY_HOUR_L_SHIFT) * hourLevelScale;
   hourFrac >>= DISPLAY_HOUR_R_SHIFT;
 
-  // percentage of the second hand passed (offset by one frame to fill properly)
-  //float secFrac = ((p.sec%5) + ((p.frame+1)/DISPLAY_FRAMERATE_FLOAT))/5;
-  // percentage of minute hand passed
-  //float minFrac = ((p.min%5) + ((p.sec+((p.frame+1)/DISPLAY_FRAMERATE_FLOAT))/60))/5;
-  // percentage of hour passed
-  //float hourFrac = (((p.frame+1)/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
   
   // fill the hour dots
   // all hours previous are full
@@ -147,6 +141,7 @@ void Display::displayFill(DisplayParams p, uint16_t* dots) {
   }
 
   // wrap-arounds!
+  // should probably make this more responsive to framerate changes
   if (p.sec == 59 && p.frame >= 21) {
     // turn off 1 led every frame in the last 11 frames of the second
     for (uint8_t i=1; i<=p.frame-20; i++) {
@@ -170,8 +165,7 @@ void Display::displayFill(DisplayParams p, uint16_t* dots) {
 }
 
 void Display::displayBlend(DisplayParams p, uint16_t* dots) {
-
-  // hands (take care of the wrap around)
+  // hands, moduli, and wrap around)
   uint8_t minHand = 0;
   uint8_t minMod = p.min;
   while (minMod > 4) {
@@ -184,7 +178,6 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
     secHand++;
     secMod -= 5;
   }
-
   uint8_t nextMinHand = (minHand < 11) ? minHand+1 : 0;
   uint8_t nextSecHand = (secHand < 11) ? secHand+1 : 0;
   uint8_t nextHour     = (p.hour < 11) ? p.hour+1 : 0;
