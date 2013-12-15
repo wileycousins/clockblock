@@ -17,6 +17,7 @@
 #include "pindefs.h"
 #include "display.h"
 #include "input.h"
+#include "Cereal.h"
 #include "StuPId.h"
 #include "PCF2129AT.h"
 #include "TLC5971.h"
@@ -26,32 +27,23 @@
 // peripherals
 // ***********
 // SPI bus (in case you couldn't tell, SPI and I have our differences)
-// parameters:
-//   mosi DDR, pin - PB3
-//   sck DDR, pin  - PB5
 StuPId spi;
 
-// USART bus for debugging - TO BE IMPLEMENTED
+// UART bus for debugging - TO BE IMPLEMENTED
+Cereal uart;
 
 // PCF2129AT real-time-clock module
 // parameters:
 //   address of spi bus object,
-//   chip select PORT, pin - PB2
-//   reset PORT, pin       - PB0
-//   interrupt PORT, pin   - PD2
 PCF2129AT rtc(&spi);
 
-// TLC5971 LED driver - TO BE IMPLEMENTED
-// parameters:
-//   3 drivers
-//   serial clock PORT, pin - PC5
-//   serial data PORT, pin  - PC4
+// TLC5971 LED driver
 TLC5971 tlc;
 
 // Display class - contains all the different display modes of the clockblock
 Display leds;
 
-// Input class - handles the pushbuttons
+// Input class - handles the push-buttons
 Input buttons;
 
 

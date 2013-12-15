@@ -15,7 +15,13 @@
 #define DDR(port) (*(&port-1))
 #define PIN(port) (*(&port-2))
 
-// PIN DEFINES FOR V0.1
+// PIN DEFINES FOR V1.0
+// UART
+#define UART_TX_PORT  PORTA
+#define UART_TX_PIN   1
+#define UART_RX_PORT  PORTA
+#define UART_RX_PIN   0
+
 // SPI
 #define SPI_MOSI_DDR  DDRA
 #define SPI_MOSI_PIN  4
@@ -59,7 +65,7 @@
 #define INPUT_TIMER_vect  TIMER1_COMPA_vect
 
 // unused pins to be pulled up internally
-#define UNUSED_PORTB_MASK  ( (1<<6) | (1<<5) | (1<<4) | (1<<2) | (1<<1) | (1<<0) )
+#define UNUSED_PORTB_MASK  ( (1<<6) | (1<<5) | (1<<4) )
 //#define UNUSED_PORTA_MASK  ()
 
 #endif

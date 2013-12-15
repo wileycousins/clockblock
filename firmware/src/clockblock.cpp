@@ -35,6 +35,12 @@ ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
   buttons.enableTimer();
 }
 
+// serial communication complete ISR
+ISR(LIN_TC_vect) {
+  // handle the transfers
+  uart.handleTransfer();
+}
+
 // ***********
 // application
 // ***********
@@ -84,46 +90,14 @@ int main(void) {
   MCUSR = 0;
 
   // set UART for USB to serial
-  // enable TX as output and RX as input with pullup inabled
-  DDRA |= (1<<1);
-  DDRA &= ~(1<<0);
-  PORTA |= (1<<0);
-  // set the baudrate to 9600
-  // leave bit timing to default (LINBTR & 0x3F) = 0x20 = 32, but disable frame resync (unused by UART)
-  LINBTR |= (1<<LDISR);
-  // LINBRR = (F_CPU/((LINBTR & 0x3F) * BAUDRATE)) - 1
-  // LINBRR = (8000000/(32 * 9600)) - 1 = 25 + 0.167%
-  LINBRR = 25;
-  // enable lin/uart module, set to uart mode, set to 8 bit char, no parity, RX and TX enabled
-  LINCR = ( (1<<LENA) | (1<<LCMD2) | (1<<LCMD1) | (1<<LCMD0) );
+  uart.init();
 
-  uint8_t c;
-  do {
-    // make sure the line isn't busy
-    while (LINSIR & (1<<LBUSY));
-    // wait for a char recieve
-    while (!(LINSIR & (1<<LRXOK)));
-    // read the character
-    c = LINDAT;
-    // clear the flag
-    //LINSIR = (1<<LRXOK);
-    // make sure the line isn't busy
-    while (LINSIR & (1<<LBUSY));
-    // send an exclamation mark to confirm reciept of character
-    //if (!LINSIR & (1<<LRXOK))
-    LINDAT = c;
-    // wait for transmit to finish
-    while (!(LINSIR & (1<<LTXOK)));
-    // clear the flag
-    LINSIR = (1<<LTXOK);
-  } while (c != 'g');
+  // enable interrupts for uart to work
+  sei();
 
-  // make sure the line isn't busy
-  while (LINSIR & (1<<LBUSY));
-  // send an exclamation mark to confirm reciept of  go character
-  LINDAT = '!';
-  // wait for transmit to finish
-  while (!(LINSIR & (1<<LTXOK)));
+  //uint8_t b[16] = "clockblock v1.0";
+  //uart.send(b, 16);
+
 
   #endif
 
