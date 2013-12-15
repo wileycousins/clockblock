@@ -48,8 +48,6 @@
 class Display {
 public:
   // constructor initializes the mode
-  // parameters:
-  //   ms - pointer to the application's millisecond timer for good smoothing
   Display(void);
 
   // get the dot display
@@ -82,11 +80,6 @@ private:
   uint32_t secLevelScale;
   uint32_t minLevelScale;
   uint32_t hourLevelScale;
-
-  // ratio of brightness to frame count for calculation of LED settings
-  // float secLevelScale;
-  // float minLevelScale;
-  // float hourLevelScale;
 
   // different effects
   void displayFill(DisplayParams p, uint16_t* dots);

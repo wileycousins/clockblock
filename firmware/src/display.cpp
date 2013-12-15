@@ -15,11 +15,6 @@ Display::Display(void) {
   secLevelScale = (uint32_t)((65536/(5*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_SEC_FACTOR);
   minLevelScale = (uint32_t)((65536/(300*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_MIN_FACTOR);
   hourLevelScale = (uint32_t)((65536/(3600*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_HOUR_FACTOR);
-
-  // calculate the LED brightness ratios
-  // secLevelScale = (65536/(5*DISPLAY_FRAMERATE_FLOAT));
-  // minLevelScale = (65536/(300*DISPLAY_FRAMERATE_FLOAT));
-  // hourLevelScale = (65536/(3600*DISPLAY_FRAMERATE_FLOAT));
 }
 
 void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
@@ -71,16 +66,46 @@ uint8_t Display::getMode(void) {
 
 // different effects
 void Display::displayFill(DisplayParams p, uint16_t* dots) {
-  // hands
-  uint8_t minHand = p.min/5;
-  uint8_t secHand = p.sec/5;
+  // hands and moduli
+  uint8_t minHand = 0;
+  uint8_t minMod = p.min;
+  while (minMod > 4) {
+    minHand++;
+    minMod -= 5;
+  }
+  uint8_t secHand = 0;
+  uint8_t secMod = p.sec;
+  while (secMod > 4) {
+    secHand++;
+    secMod -= 5;
+  }
+
+  // offset by 1 frame to get fill to align properly
+  p.frame++;
+
+  // fixed point multiplication to find the (within 0.5% of "correct") LED setting
+  // get the frame counts
+  uint32_t secFrac  = p.frame + (DISPLAY_FRAMERATE * secMod);
+  uint32_t minFrac  = p.frame + (DISPLAY_FRAMERATE * (p.sec + minMod*60));
+  // cast DISPLAY_FRAMERATE as a 32bit int to make sure the multiply doesn't overflow (because it will otherwise)
+  uint32_t hourFrac = p.frame + ((uint32_t)(DISPLAY_FRAMERATE) * (p.sec + p.min*60));
+  // scale, multiply, and shift back
+  // seconds
+  secFrac  = (secFrac << DISPLAY_SEC_L_SHIFT) * secLevelScale;
+  secFrac  >>= DISPLAY_SEC_R_SHIFT;
+  // minutes
+  minFrac  = (minFrac << DISPLAY_MIN_L_SHIFT) * minLevelScale;  
+  minFrac  >>= DISPLAY_MIN_R_SHIFT;
+  // hours
+  hourFrac = (hourFrac << DISPLAY_HOUR_L_SHIFT) * hourLevelScale;
+  hourFrac >>= DISPLAY_HOUR_R_SHIFT;
 
   // percentage of the second hand passed (offset by one frame to fill properly)
-  float secFrac = ((p.sec%5) + ((p.frame+1)/DISPLAY_FRAMERATE_FLOAT))/5;
+  //float secFrac = ((p.sec%5) + ((p.frame+1)/DISPLAY_FRAMERATE_FLOAT))/5;
   // percentage of minute hand passed
-  float minFrac = ((p.min%5) + ((p.sec+((p.frame+1)/DISPLAY_FRAMERATE_FLOAT))/60))/5;
+  //float minFrac = ((p.min%5) + ((p.sec+((p.frame+1)/DISPLAY_FRAMERATE_FLOAT))/60))/5;
   // percentage of hour passed
-  float hourFrac = (((p.frame+1)/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
+  //float hourFrac = (((p.frame+1)/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
   
   // fill the hour dots
   // all hours previous are full
@@ -88,7 +113,8 @@ void Display::displayFill(DisplayParams p, uint16_t* dots) {
     dots[i*3] = DISPLAY_LVL_MAX;
   }
   // current hour to fraction
-  dots[p.hour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  //dots[p.hour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  dots[p.hour*3] = (uint16_t)(hourFrac);
   // all other hours off
   for (uint8_t i=p.hour+1; i<12; i++) {
     dots[i*3] = 0;
@@ -100,7 +126,8 @@ void Display::displayFill(DisplayParams p, uint16_t* dots) {
     dots[(i*3)+1] = DISPLAY_LVL_MAX;
   }
   // current minute dot to fraction
-  dots[(minHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * minFrac);
+  //dots[(minHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * minFrac);
+  dots[(minHand*3)+1] = (uint16_t)(minFrac);
   // all other minute dots off
   for (uint8_t i=minHand+1; i<12; i++) {
     dots[(i*3)+1] = 0;
@@ -112,7 +139,8 @@ void Display::displayFill(DisplayParams p, uint16_t* dots) {
     dots[(i*3)+2] = DISPLAY_LVL_MAX;
   }
   // current second dot to fraction
-  dots[(secHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
+  //dots[(secHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
+  dots[(secHand*3)+2] = (uint16_t)(secFrac);
   // all other second dots off
   for (uint8_t i=secHand+1; i<12; i++) {
     dots[(i*3)+2] = 0;
@@ -161,23 +189,8 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
   uint8_t nextSecHand = (secHand < 11) ? secHand+1 : 0;
   uint8_t nextHour     = (p.hour < 11) ? p.hour+1 : 0;
 
-  // percentage of the second hand passed
-  // floating point + division
-  //float secFrac = ((secMod) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
-  //float secFrac = (p.frame + (secMod*DISPLAY_FRAMERATE)) / (5 * DISPLAY_FRAMERATE_FLOAT);
-  // percentage of minute hand passed
-  //float minFrac = ((minMod) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
-  //float minFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (minMod*60*DISPLAY_FRAMERATE)) / (300*DISPLAY_FRAMERATE_FLOAT);
-  // percentage of hour passed
-  //float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
-  //float hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + ((uint32_t)(p.min)*60*DISPLAY_FRAMERATE)) / (3600*DISPLAY_FRAMERATE_FLOAT);
-  // floating point + multiplication only - factors precalculated
-  //uint16_t hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (p.min*60*DISPLAY_FRAMERATE)) * hourLevelScale;
-  //uint16_t minFrac  = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (minMod*60*DISPLAY_FRAMERATE)) * minLevelScale;
-  //uint16_t secFrac  = (p.frame + (secMod*DISPLAY_FRAMERATE)) * secLevelScale;
-
-  // attempt at fixed point and multiplication
-  // get the frame counts
+  // fixed point multiplication to find the (within 0.5% of "correct") LED setting
+  // get the frame counts (frames since last hand)
   uint32_t secFrac  = p.frame + (DISPLAY_FRAMERATE * secMod);
   uint32_t minFrac  = p.frame + (DISPLAY_FRAMERATE * (p.sec + minMod*60));
   // cast DISPLAY_FRAMERATE as a 32bit int to make sure the multiply doesn't overflow (because it will otherwise)
