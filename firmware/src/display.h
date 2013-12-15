@@ -79,14 +79,14 @@ private:
   uint8_t mode;
 
   // ratio of brightness to frame count for fixed point calculation of LED settings
-  //uint32_t secLevelScale;
-  //uint32_t minLevelScale;
-  //uint32_t hourLevelScale;
+  uint32_t secLevelScale;
+  uint32_t minLevelScale;
+  uint32_t hourLevelScale;
 
   // ratio of brightness to frame count for calculation of LED settings
-  float secLevelScale;
-  float minLevelScale;
-  float hourLevelScale;
+  // float secLevelScale;
+  // float minLevelScale;
+  // float hourLevelScale;
 
   // different effects
   void displayFill(DisplayParams p, uint16_t* dots);

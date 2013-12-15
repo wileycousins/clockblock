@@ -12,14 +12,14 @@ Display::Display(void) {
   mode = DISPLAY_MODE_FILL;
 
   // calculate the LED brightness ratios
-  //secLevelScale = (uint32_t)((65536/(5*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_SEC_FACTOR);
-  //minLevelScale = (uint32_t)((65536/(300*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_MIN_FACTOR);
-  //hourLevelScale = (uint32_t)((65536/(3600*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_HOUR_FACTOR);
+  secLevelScale = (uint32_t)((65536/(5*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_SEC_FACTOR);
+  minLevelScale = (uint32_t)((65536/(300*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_MIN_FACTOR);
+  hourLevelScale = (uint32_t)((65536/(3600*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_HOUR_FACTOR);
 
   // calculate the LED brightness ratios
-  secLevelScale = (65536/(5*DISPLAY_FRAMERATE_FLOAT));
-  minLevelScale = (65536/(300*DISPLAY_FRAMERATE_FLOAT));
-  hourLevelScale = (65536/(3600*DISPLAY_FRAMERATE_FLOAT));
+  // secLevelScale = (65536/(5*DISPLAY_FRAMERATE_FLOAT));
+  // minLevelScale = (65536/(300*DISPLAY_FRAMERATE_FLOAT));
+  // hourLevelScale = (65536/(3600*DISPLAY_FRAMERATE_FLOAT));
 }
 
 void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
@@ -164,13 +164,13 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
   // percentage of the second hand passed
   // floating point + division
   //float secFrac = ((secMod) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
-  float secFrac = (p.frame + (secMod*DISPLAY_FRAMERATE)) / (5 * DISPLAY_FRAMERATE_FLOAT);
+  //float secFrac = (p.frame + (secMod*DISPLAY_FRAMERATE)) / (5 * DISPLAY_FRAMERATE_FLOAT);
   // percentage of minute hand passed
   //float minFrac = ((minMod) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
-  float minFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + minMod*60*DISPLAY_FRAMERATE) / (300*DISPLAY_FRAMERATE_FLOAT);
+  //float minFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (minMod*60*DISPLAY_FRAMERATE)) / (300*DISPLAY_FRAMERATE_FLOAT);
   // percentage of hour passed
   //float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
-  float hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (p.min*60*DISPLAY_FRAMERATE)) / (3600*DISPLAY_FRAMERATE_FLOAT);
+  //float hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + ((uint32_t)(p.min)*60*DISPLAY_FRAMERATE)) / (3600*DISPLAY_FRAMERATE_FLOAT);
   // floating point + multiplication only - factors precalculated
   //uint16_t hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (p.min*60*DISPLAY_FRAMERATE)) * hourLevelScale;
   //uint16_t minFrac  = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (minMod*60*DISPLAY_FRAMERATE)) * minLevelScale;
@@ -178,22 +178,20 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
 
   // attempt at fixed point and multiplication
   // get the frame counts
-  // uint32_t secFrac  = p.frame + (DISPLAY_FRAMERATE * secMod);
-  // uint32_t minFrac  = p.frame + (DISPLAY_FRAMERATE * (p.sec + minMod*60));
-  // uint32_t hourFrac = p.frame + (DISPLAY_FRAMERATE * (p.sec + p.min*60));
+  uint32_t secFrac  = p.frame + (DISPLAY_FRAMERATE * secMod);
+  uint32_t minFrac  = p.frame + (DISPLAY_FRAMERATE * (p.sec + minMod*60));
+  // cast DISPLAY_FRAMERATE as a 32bit int to make sure the multiply doesn't overflow (because it will otherwise)
+  uint32_t hourFrac = p.frame + ((uint32_t)(DISPLAY_FRAMERATE) * (p.sec + p.min*60));
   // scale, multiply, and shift back
   // seconds
-  // secFrac  <<= DISPLAY_SEC_L_SHIFT;
-  // secFrac  *=  secLevelScale;
-  // secFrac  >>= DISPLAY_SEC_R_SHIFT;
+  secFrac  = (secFrac << DISPLAY_SEC_L_SHIFT) * secLevelScale;
+  secFrac  >>= DISPLAY_SEC_R_SHIFT;
   // minutes
-  // minFrac  <<= DISPLAY_MIN_L_SHIFT;  
-  // minFrac  *=  minLevelScale;
-  // minFrac  >>= DISPLAY_MIN_R_SHIFT;
+  minFrac  = (minFrac << DISPLAY_MIN_L_SHIFT) * minLevelScale;  
+  minFrac  >>= DISPLAY_MIN_R_SHIFT;
   // hours
-  // hourFrac <<= DISPLAY_HOUR_L_SHIFT;
-  // hourFrac *=  hourLevelScale;
-  // hourFrac >>= DISPLAY_HOUR_R_SHIFT;
+  hourFrac = (hourFrac << DISPLAY_HOUR_L_SHIFT) * hourLevelScale;
+  hourFrac >>= DISPLAY_HOUR_R_SHIFT;
 
 
   // fill the hour dots
@@ -202,8 +200,8 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
     dots[i*3] = 0;
   }
   // current hour and next hours to percentages of the hour
-  dots[p.hour*3]   = (uint16_t)(DISPLAY_LVL_MAX * (1 - hourFrac));
-  dots[nextHour*3] = (uint16_t)(DISPLAY_LVL_MAX * hourFrac);
+  dots[p.hour*3]   = (uint16_t)(DISPLAY_LVL_MAX - hourFrac);
+  dots[nextHour*3] = (uint16_t)(hourFrac);
   // all other hours off
   for (uint8_t i=p.hour+2; i<12; i++) {
     dots[i*3] = 0;
@@ -215,8 +213,8 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
     dots[(i*3)+1] = 0;
   }
   // current and next minute dot to fractions
-  dots[(minHand*3)+1]     = (uint16_t)(DISPLAY_LVL_MAX * (1 - minFrac));
-  dots[(nextMinHand*3)+1] = (uint16_t)(DISPLAY_LVL_MAX * minFrac);
+  dots[(minHand*3)+1]     = (uint16_t)(DISPLAY_LVL_MAX - minFrac);
+  dots[(nextMinHand*3)+1] = (uint16_t)(minFrac);
   // all other minute dots off
   for (uint8_t i=minHand+2; i<12; i++) {
     dots[(i*3)+1] = 0;
@@ -228,8 +226,8 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
     dots[(i*3)+2] = 0;
   }
   // current and next second dot to fraction (don't have milliseconds yet, so use modulus)
-  dots[(secHand*3)+2]     = (uint16_t)(DISPLAY_LVL_MAX * (1 - secFrac));
-  dots[(nextSecHand*3)+2] = (uint16_t)(DISPLAY_LVL_MAX * secFrac);
+  dots[(secHand*3)+2]     = (uint16_t)(DISPLAY_LVL_MAX - secFrac);
+  dots[(nextSecHand*3)+2] = (uint16_t)(secFrac);
   // all other second dots off
   for (uint8_t i=secHand+2; i<12; i++) {
     dots[(i*3)+2] = 0;
