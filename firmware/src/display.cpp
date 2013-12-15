@@ -53,6 +53,14 @@ void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
       displayDots(p, DISPLAY_LVL_BG, dots);
       break;
 
+    case DISPLAY_MODE_ARMS:
+      displayArms(p, false, dots);
+      break;
+
+    case DISPLAY_MODE_ARMS_PULSE:
+      displayArms(p, true, dots);
+      break;
+
     case DISPLAY_MODE_PIE:
       displayPie(p, dots);
       break;
@@ -295,7 +303,7 @@ void Display::displayBlend(DisplayParams p, uint16_t bgLvl, uint16_t* dots) {
 }
 
 void Display::displayDots(DisplayParams p, uint16_t bgLvl, uint16_t *dots) {
-  // hands, moduli, and wrap around)
+  // hands and moduli
   uint8_t minHand = 0;
   uint8_t minMod = p.min;
   while (minMod > 4) {
@@ -368,19 +376,25 @@ void Display::displayPie(DisplayParams p, uint16_t* dots) {
   }
 }
 
-void Display::displayArms(DisplayParams p, uint16_t* dots) {
-  // hands
-  uint8_t hourHand = p.hour;
-  uint8_t minHand  = p.min / 5;
-  uint8_t secHand  = p.sec / 5;
+void Display::displayArms(DisplayParams p, bool pulse, uint16_t* dots) {
+  // minute hand location
+  uint8_t minHand = 0;
+  while (p.min > 4) {
+    minHand++;
+    p.min -= 5;
+  }
 
   // empty out the array
   for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
     dots[i] = 0;
   }
 
-  // set the hands
-  dots[3*hourHand]    = DISPLAY_LVL_MAX;
-  dots[(3*minHand)+1] = DISPLAY_LVL_MAX;
-  dots[(3*secHand)+2] = DISPLAY_LVL_MAX;
+  // set the hour hand (first two dots)
+  dots[3*p.hour]    += DISPLAY_LVL_HAND;
+  dots[3*p.hour+1] += DISPLAY_LVL_HAND;
+
+  // set the minute hand (all three dots)
+  dots[3*minHand]   += DISPLAY_LVL_HAND;
+  dots[3*minHand+1] += DISPLAY_LVL_HAND;
+  dots[3*minHand+2] += DISPLAY_LVL_HAND;
 }
