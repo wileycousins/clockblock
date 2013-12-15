@@ -45,13 +45,18 @@ void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
       displayFill(p, dots);
       break;
 
+    case DISPLAY_MODE_DOTS:
+      displayDots(p, DISPLAY_LVL_OFF, dots);
+      break;
+
+    case DISPLAY_MODE_DOTS_BG:
+      displayDots(p, DISPLAY_LVL_BG, dots);
+      break;
+
     case DISPLAY_MODE_PIE:
       displayPie(p, dots);
       break;
 
-    case DISPLAY_MODE_ARMS:
-      displayArms(p, dots);
-      break;
     
     default:
       break;
@@ -287,6 +292,56 @@ void Display::displayBlend(DisplayParams p, uint16_t bgLvl, uint16_t* dots) {
   for (uint8_t i=secHand+2; i<12; i++) {
     dots[(i*3)+2] = bgLvl;
   }
+}
+
+void Display::displayDots(DisplayParams p, uint16_t bgLvl, uint16_t *dots) {
+  // hands, moduli, and wrap around)
+  uint8_t minHand = 0;
+  uint8_t minMod = p.min;
+  while (minMod > 4) {
+    minHand++;
+    minMod -= 5;
+  }
+  uint8_t secHand = 0;
+  uint8_t secMod = p.sec;
+  while (secMod > 4) {
+    secHand++;
+    secMod -= 5;
+  }
+
+  // fixed point multiplication to find the (within 0.5% of "correct") LED setting
+  // get the frame counts (frames since last hand)
+  uint32_t secFrac  = p.frame + (DISPLAY_FRAMERATE * secMod);
+  uint32_t minFrac  = p.frame + (DISPLAY_FRAMERATE * (p.sec + minMod*60));
+  // cast DISPLAY_FRAMERATE as a 32bit int to make sure the multiply doesn't overflow (because it will otherwise)
+  uint32_t hourFrac = p.frame + ((uint32_t)(DISPLAY_FRAMERATE) * (p.sec + p.min*60));
+  // scale, multiply, and shift back
+  // seconds
+  secFrac  = (secFrac << DISPLAY_SEC_L_SHIFT) * secLevelScale;
+  secFrac  >>= DISPLAY_SEC_R_SHIFT;
+  // minutes
+  minFrac  = (minFrac << DISPLAY_MIN_L_SHIFT) * minLevelScale;  
+  minFrac  >>= DISPLAY_MIN_R_SHIFT;
+  // hours
+  hourFrac = (hourFrac << DISPLAY_HOUR_L_SHIFT) * hourLevelScale;
+  hourFrac >>= DISPLAY_HOUR_R_SHIFT;
+
+  // empty out the array
+  for (uint8_t i=0; i<DISPLAY_NUM_DOTS; i++) {
+    dots[i] = bgLvl;
+  }
+
+  // add background level
+  if (bgLvl) {
+    hourFrac = (DISPLAY_LVL_MAX - bgLvl) > hourFrac ? hourFrac + bgLvl : DISPLAY_LVL_MAX;
+    minFrac = (DISPLAY_LVL_MAX - bgLvl) > minFrac ? minFrac + bgLvl : DISPLAY_LVL_MAX;
+    secFrac = (DISPLAY_LVL_MAX - bgLvl) > secFrac ? secFrac + bgLvl : DISPLAY_LVL_MAX;
+  }
+
+  // set the hands
+  dots[3*p.hour]      = hourFrac;
+  dots[(3*minHand)+1] = minFrac;
+  dots[(3*secHand)+2] = secFrac;
 }
 
 void Display::displayPie(DisplayParams p, uint16_t* dots) {
