@@ -22,7 +22,6 @@
 #define DISPLAY_NUM_DOTS    36
 // framerate
 #define DISPLAY_FRAMERATE        32
-#define DISPLAY_FRAMERATE_FLOAT  32.0
 
 // fixed point scaling factors
 // hours
@@ -42,14 +41,14 @@
 #define DISPLAY_SEC_R_SHIFT  0
 
 // effect modes
-#define DISPLAY_NUM_MODES        7
+#define DISPLAY_NUM_MODES        5
 #define DISPLAY_MODE_BLEND       0
-#define DISPLAY_MODE_BLEND_BG    1
-#define DISPLAY_MODE_FILL        2
-#define DISPLAY_MODE_DOTS        3
-#define DISPLAY_MODE_DOTS_BG     4
-#define DISPLAY_MODE_ARMS        5
-#define DISPLAY_MODE_PIE         6
+//#define DISPLAY_MODE_BLEND_BG    1
+#define DISPLAY_MODE_FILL        1
+#define DISPLAY_MODE_DOTS        2
+//#define DISPLAY_MODE_DOTS_BG     4
+#define DISPLAY_MODE_ARMS        3
+#define DISPLAY_MODE_PIE         4
 
 
 class Display {

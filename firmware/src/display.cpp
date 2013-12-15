@@ -12,9 +12,9 @@ Display::Display(void) {
   mode = DISPLAY_MODE_BLEND;
 
   // calculate the LED brightness ratios
-  secLevelScale  = (uint32_t)(((DISPLAY_LVL_MAX+1) / (5    * DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_SEC_FACTOR);
-  minLevelScale  = (uint32_t)(((DISPLAY_LVL_MAX+1) / (300  * DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_MIN_FACTOR);
-  hourLevelScale = (uint32_t)(((DISPLAY_LVL_MAX+1) / (3600 * DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_HOUR_FACTOR);
+  secLevelScale  = (uint32_t)(((DISPLAY_LVL_MAX+1) / (5.0    * DISPLAY_FRAMERATE)) * DISPLAY_SEC_FACTOR);
+  minLevelScale  = (uint32_t)(((DISPLAY_LVL_MAX+1) / (300.0  * DISPLAY_FRAMERATE)) * DISPLAY_MIN_FACTOR);
+  hourLevelScale = (uint32_t)(((DISPLAY_LVL_MAX+1) / (3600.0 * DISPLAY_FRAMERATE)) * DISPLAY_HOUR_FACTOR);
 }
 
 void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
@@ -37,9 +37,9 @@ void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
       displayBlend(p, DISPLAY_LVL_OFF, dots);
       break;
 
-    case DISPLAY_MODE_BLEND_BG:
-      displayBlend(p, DISPLAY_LVL_BG, dots);
-      break;     
+    // case DISPLAY_MODE_BLEND_BG:
+    //   displayBlend(p, DISPLAY_LVL_BG, dots);
+    //   break;     
 
     case DISPLAY_MODE_FILL:
       displayFill(p, dots);
@@ -49,9 +49,9 @@ void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
       displayDots(p, DISPLAY_LVL_OFF, dots);
       break;
 
-    case DISPLAY_MODE_DOTS_BG:
-      displayDots(p, DISPLAY_LVL_BG, dots);
-      break;
+    // case DISPLAY_MODE_DOTS_BG:
+    //   displayDots(p, DISPLAY_LVL_BG, dots);
+    //   break;
 
     case DISPLAY_MODE_ARMS:
       displayArms(p, dots);
@@ -60,8 +60,7 @@ void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
     case DISPLAY_MODE_PIE:
       displayPie(p, dots);
       break;
-
-    
+ 
     default:
       break;
   }
