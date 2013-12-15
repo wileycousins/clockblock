@@ -191,24 +191,31 @@ void initUnusedPins(void) {
 
 // button handling logic
 void handleButtonPress(uint8_t state, uint8_t *tm) {
-  // if hour switch, increment the hours by 1
-  if (state == INPUT_HOUR) {
-    rtc.getTime(tm);
-    if (++tm[2] > 12) {
-      tm[2] -= 12;
+  // if a time set switch was pressed
+  if ( state & (INPUT_HOUR | INPUT_MIN)) {
+    // temporary time register to avoid messing up the seconds LEDs
+    uint8_t set[3];
+    // get the real time
+    rtc.getTime(set);
+    // if hour switch, increment the hours by 1
+    if (state & INPUT_HOUR) {
+      if (++set[2] > 12) {
+        set[2] -= 12;
+      }
     }
-    rtc.setTime(tm, PCF2129AT_AM);
-  }
-  // if minute switch, increment minutes
-  else if (state == INPUT_MIN) {
-    rtc.getTime(tm);
-    if (++tm[1] > 59) {
-      tm[1] -= 60;
+    // if minute switch, increment minutes
+    if (state & INPUT_MIN) {
+      if (++set[1] > 59) {
+        set[1] -= 60;
+      }
     }
-    rtc.setTime(tm, PCF2129AT_AM);
+    // tell the clock and then the app
+    rtc.setTime(set, PCF2129AT_AM);
+    tm[2] = set[2];
+    tm[1] = set[1];
   }
   // if mode switch, increment mode
-  else if (state == INPUT_MODE) {
+  if (state & INPUT_MODE) {
     uint8_t m = leds.getMode();
     m = (m < DISPLAY_NUM_MODES-1) ? m+1 : 0;
     leds.setMode(m);
