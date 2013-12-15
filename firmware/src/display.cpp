@@ -163,12 +163,14 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
 
   // percentage of the second hand passed
   // floating point + division
-  float secFrac = ((secMod) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
+  //float secFrac = ((secMod) + (p.frame/DISPLAY_FRAMERATE_FLOAT))/5;
+  float secFrac = (p.frame + (secMod*DISPLAY_FRAMERATE)) / (5 * DISPLAY_FRAMERATE_FLOAT);
   // percentage of minute hand passed
-  float minFrac = ((minMod) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
+  //float minFrac = ((minMod) + ((p.sec+(p.frame/DISPLAY_FRAMERATE_FLOAT))/60))/5;
+  float minFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + minMod*60*DISPLAY_FRAMERATE) / (300*DISPLAY_FRAMERATE_FLOAT);
   // percentage of hour passed
-  float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
-
+  //float hourFrac = ((p.frame/DISPLAY_FRAMERATE_FLOAT) + p.sec + (60*p.min))/3600.0;
+  float hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (p.min*60*DISPLAY_FRAMERATE)) / (3600*DISPLAY_FRAMERATE_FLOAT);
   // floating point + multiplication only - factors precalculated
   //uint16_t hourFrac = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (p.min*60*DISPLAY_FRAMERATE)) * hourLevelScale;
   //uint16_t minFrac  = (p.frame + (p.sec*DISPLAY_FRAMERATE) + (minMod*60*DISPLAY_FRAMERATE)) * minLevelScale;
