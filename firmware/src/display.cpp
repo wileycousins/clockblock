@@ -9,12 +9,12 @@
 
 Display::Display(void) {
   // set default mode to fill
-  mode = DISPLAY_MODE_FILL;
+  mode = DISPLAY_MODE_BLEND;
 
   // calculate the LED brightness ratios
-  secLevelScale = (uint32_t)((65536/(5*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_SEC_FACTOR);
-  minLevelScale = (uint32_t)((65536/(300*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_MIN_FACTOR);
-  hourLevelScale = (uint32_t)((65536/(3600*DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_HOUR_FACTOR);
+  secLevelScale  = (uint32_t)(((DISPLAY_LVL_MAX+1) / (5    * DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_SEC_FACTOR);
+  minLevelScale  = (uint32_t)(((DISPLAY_LVL_MAX+1) / (300  * DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_MIN_FACTOR);
+  hourLevelScale = (uint32_t)(((DISPLAY_LVL_MAX+1) / (3600 * DISPLAY_FRAMERATE_FLOAT)) * DISPLAY_HOUR_FACTOR);
 }
 
 void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
@@ -33,12 +33,16 @@ void Display::getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots) {
 
   // display mode switch case
   switch (mode) {
-    case DISPLAY_MODE_FILL:
-      displayFill(p, dots);
+    case DISPLAY_MODE_BLEND:
+      displayBlend(p, DISPLAY_LVL_OFF, dots);
       break;
 
-    case DISPLAY_MODE_BLEND:
-      displayBlend(p, dots);
+    case DISPLAY_MODE_BLEND_BG:
+      displayBlend(p, DISPLAY_LVL_BG, dots);
+      break;     
+
+    case DISPLAY_MODE_FILL:
+      displayFill(p, dots);
       break;
 
     case DISPLAY_MODE_PIE:
@@ -164,7 +168,7 @@ void Display::displayFill(DisplayParams p, uint16_t* dots) {
   }
 }
 
-void Display::displayBlend(DisplayParams p, uint16_t* dots) {
+void Display::displayBlend(DisplayParams p, uint16_t bgLvl, uint16_t* dots) {
   // hands, moduli, and wrap around)
   uint8_t minHand = 0;
   uint8_t minMod = p.min;
@@ -203,40 +207,85 @@ void Display::displayBlend(DisplayParams p, uint16_t* dots) {
   // fill the hour dots
   // all hours previous are off
   for (uint8_t i=0; i<p.hour; i++) {
-    dots[i*3] = 0;
+    dots[i*3] = bgLvl;
   }
   // current hour and next hours to percentages of the hour
   dots[p.hour*3]   = (uint16_t)(DISPLAY_LVL_MAX - hourFrac);
   dots[nextHour*3] = (uint16_t)(hourFrac);
+  // add the background level
+  if (bgLvl) {
+    if ( (DISPLAY_LVL_MAX - bgLvl) > dots[(p.hour*3)] ) {
+      dots[p.hour*3] += bgLvl;
+    }
+    else {
+      dots[p.hour*3] = DISPLAY_LVL_MAX;
+    }
+    if ( (DISPLAY_LVL_MAX - bgLvl) > dots[nextHour*3] ) {
+      dots[nextHour*3] += bgLvl;
+    }
+    else {
+      dots[nextHour*3] = DISPLAY_LVL_MAX;
+    }
+  }
   // all other hours off
   for (uint8_t i=p.hour+2; i<12; i++) {
-    dots[i*3] = 0;
+    dots[i*3] = bgLvl;
   }
 
   // do the same with the minute dots
   // all minute dots previous get set to off
   for (uint8_t i=0; i<minHand; i++) {
-    dots[(i*3)+1] = 0;
+    dots[(i*3)+1] = bgLvl;
   }
   // current and next minute dot to fractions
   dots[(minHand*3)+1]     = (uint16_t)(DISPLAY_LVL_MAX - minFrac);
   dots[(nextMinHand*3)+1] = (uint16_t)(minFrac);
+  // add the background level
+  if (bgLvl) {
+    if ( (DISPLAY_LVL_MAX - bgLvl) > dots[(minHand*3)+1] ) {
+      dots[(minHand*3)+1] += bgLvl;
+    }
+    else {
+      dots[(minHand*3)+1] = DISPLAY_LVL_MAX;
+    }
+    if ( (DISPLAY_LVL_MAX - bgLvl) > dots[(nextMinHand*3)+1] ) {
+      dots[(nextMinHand*3)+1] += bgLvl;
+    }
+    else {
+      dots[(nextMinHand*3)+1] = DISPLAY_LVL_MAX;
+    }
+  }
   // all other minute dots off
   for (uint8_t i=minHand+2; i<12; i++) {
-    dots[(i*3)+1] = 0;
+    dots[(i*3)+1] = bgLvl;
   }
 
   // finally, seconds
   // all second dots previous get set to off
   for (uint8_t i=0; i<secHand; i++) {
-    dots[(i*3)+2] = 0;
+    dots[(i*3)+2] = bgLvl;
   }
   // current and next second dot to fraction (don't have milliseconds yet, so use modulus)
   dots[(secHand*3)+2]     = (uint16_t)(DISPLAY_LVL_MAX - secFrac);
   dots[(nextSecHand*3)+2] = (uint16_t)(secFrac);
+  // add the background level
+  if (bgLvl) {
+    if ( (DISPLAY_LVL_MAX - bgLvl) > dots[(secHand*3)+2] ) {
+      dots[(secHand*3)+2] += bgLvl;
+    }
+    else {
+      dots[(secHand*3)+2] = DISPLAY_LVL_MAX;
+    }
+    if ( (DISPLAY_LVL_MAX - bgLvl) > dots[(nextSecHand*3)+2] ) {
+      dots[(nextSecHand*3)+2] += bgLvl;
+    }
+    else {
+      dots[(nextSecHand*3)+2] = DISPLAY_LVL_MAX;
+    }
+  }
   // all other second dots off
   for (uint8_t i=secHand+2; i<12; i++) {
-    dots[(i*3)+2] = 0;
+    dots[(i*3)+2] = bgLvl;
   }
 }
 

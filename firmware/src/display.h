@@ -14,7 +14,9 @@
 
 // display parameters
 // LED brightness levels
-#define DISPLAY_LVL_MAX 65535
+#define DISPLAY_LVL_MAX  65535
+#define DISPLAY_LVL_BG   700
+#define DISPLAY_LVL_OFF  0
 // clock stuff
 #define DISPLAY_NUM_DOTS    36
 // framerate
@@ -39,11 +41,12 @@
 #define DISPLAY_SEC_R_SHIFT  0
 
 // effect modes
-#define DISPLAY_NUM_MODES  2
-#define DISPLAY_MODE_FILL  0
-#define DISPLAY_MODE_BLEND 1
-#define DISPLAY_MODE_PIE   2
-#define DISPLAY_MODE_ARMS  3
+#define DISPLAY_NUM_MODES      3
+#define DISPLAY_MODE_BLEND     0
+#define DISPLAY_MODE_BLEND_BG  1
+#define DISPLAY_MODE_FILL      2
+#define DISPLAY_MODE_PIE       3
+#define DISPLAY_MODE_ARMS      4
 
 class Display {
 public:
@@ -83,7 +86,7 @@ private:
 
   // different effects
   void displayFill(DisplayParams p, uint16_t* dots);
-  void displayBlend(DisplayParams p, uint16_t* dots);
+  void displayBlend(DisplayParams p, uint16_t bgLvl, uint16_t* dots);
   void displayPie(DisplayParams p, uint16_t* dots);
   void displayArms(DisplayParams p, uint16_t* dots);
 };
