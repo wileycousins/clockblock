@@ -11,12 +11,6 @@ module.exports = (app) ->
     res.render "index.jade", stripe_js: config.stripe_js
 
   app.post "/purchase", (req, res) ->
-    stripeToken = req.body.stripeToken
-    charge =
-      amount: 150*100
-      currency: 'USD'
-      card: stripeToken
-
     name = req.body.name
     email = req.body.email
     phone = req.body.phone
@@ -24,6 +18,14 @@ module.exports = (app) ->
     city = req.body.city
     state = req.body.state
     zip = req.body.zip
+
+    stripeToken = req.body.stripeToken
+    charge =
+      name: name
+      amount: 150*100
+      currency: 'USD'
+      card: stripeToken
+
     Users.findOne(
       name: name
       email: email
@@ -77,7 +79,7 @@ module.exports = (app) ->
     return res.redirect('/orders')
 
   app.get "/orders", isAdmin, (req, res) ->
-    Users.find().populate('purchased_products').exec (err, users) ->
+    Users.find().populate('purchased_products').sort("purchased_products.purchase_date").exec (err, users) ->
       if err
         console.log err
         return res.send err
@@ -117,7 +119,7 @@ module.exports = (app) ->
 
   app.post "/update/:user", isAdmin, (req, res) ->
     console.log "updating"
-    Users.findById(req.params.user).exec (err, user) ->
+    Users.findById(req.params.user).populate("purchased_products").exec (err, user) ->
       if err || !user
         console.log err
         return res.send err
