@@ -74,14 +74,14 @@ module.exports = (app) ->
 
 
   app.all "/login", isAdmin, (req, res) ->
-      return res.redirect('/orders')
+    return res.redirect('/orders')
 
   app.get "/orders", isAdmin, (req, res) ->
     Users.find().populate('purchased_products').exec (err, users) ->
       if err
         console.log err
         return res.send err
-      res.render "orders.jade", users: users
+      return res.render "orders.jade", users: users
 
   app.get "/purchase", isAdmin, (req, res) ->
     Products.find().exec (err, clocks) ->
@@ -114,3 +114,20 @@ module.exports = (app) ->
           num = "0#{num.toString()}"
         mailer.confirmation user, num
         return res.render 'emailTemplates/confirmation', user: user, num:num, url: config.url
+
+  app.post "/update/:user", isAdmin, (req, res) ->
+    console.log "updating"
+    Users.findById(req.params.user).exec (err, user) ->
+      if err || !user
+        console.log err
+        return res.send err
+      user.name = req.body.name
+      user.phone = req.body.phone
+      user.email = req.body.email
+      user.address = req.body.address
+      user.city = req.body.city
+      user.state = req.body.state
+      console.log "updated the fields"
+      console.log user
+      user.save()
+    res.redirect '/orders'

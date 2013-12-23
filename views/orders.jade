@@ -17,7 +17,7 @@ block content
             a(href='#collapse#{user._id}', data-toggle='collapse')
               h4.red.text-center=user.name.toLowerCase()
             .col-sm-12.panel-collapse.collapse(id='collapse#{user._id}')
-              form(action='/confirmation/#{user._id}/', method='post')
+              form(action='/update/#{user._id}/', method='post')
                 .form-group
                   label name
                   input.form-control(name='name', value='#{user.name}')
