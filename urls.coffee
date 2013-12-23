@@ -22,7 +22,7 @@ module.exports = (app) ->
     stripeToken = req.body.stripeToken
     charge =
       description: "#{name} <#{email}> (#{phone}) @ #{address}, #{city}, #{state}, #{zip}"
-      amount: 150*100
+      amount: 200*100
       currency: 'USD'
       card: stripeToken
 
