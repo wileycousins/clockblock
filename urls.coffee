@@ -79,10 +79,12 @@ module.exports = (app) ->
     return res.redirect('/orders')
 
   app.get "/orders", isAdmin, (req, res) ->
-    Users.find().populate('purchased_products').sort("purchased_products.purchase_date").exec (err, users) ->
+    Users.find().populate('purchased_products').exec (err, users) ->
       if err
         console.log err
         return res.send err
+      users.sort (a,b) ->
+        a.purchased_products[0].purchase_date - b.purchased_products[0].purchase_date
       return res.render "orders.jade", users: users
 
   app.get "/purchase", isAdmin, (req, res) ->
