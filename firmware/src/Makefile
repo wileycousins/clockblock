@@ -17,26 +17,28 @@
 # project name
 PRJ = clockblock
 # avr mcu
-MCU = atmega328p
+MCU = attiny167
 # mcu clock frequency
 CLK = 8000000
 # avr programmer (and port if necessary)
 # e.g. PRG = usbtiny -or- PRG = arduino -P /dev/tty.usbmodem411
-PRG = avrispmkII -P usb
+PRG = avrisp -P /dev/tty.usbmodem411 -b 19200
+#PRG = avrispmkII -P usb -b 115200
 # fuse bit values for v0.1 pcb
 # use internal 8 MHz RC oscillator with no clock division and slowest available startup
 # enable SPI programming
-# brownout detection at 2.7 V
+# brownout detection at 2.4 V
+# self-programming enabled 
 LFU = 0xE2
-HFU = 0xDF
-EFU = 0x05
+HFU = 0xDB
+EFU = 0xFE
 # program source files
 SRC = $(PRJ).cpp display.cpp input.cpp
 # where to look for included libraries (consisting of .c/.cpp files and .h files)
 # e.g. INC = ../../EyeToSee ../../YouSART
-INC = include/DS3234 include/StuPId include/TLC5971
+INC = include/PCF2129AT include/StuPId include/TLC5971
 # any defines to send the compiler
-DEF = 
+DEF = DEBUG
 # directories
 OBJDIR = ../bin/obj
 EXEDIR = ../bin/exe
@@ -47,6 +49,7 @@ EXEDIR = ../bin/exe
 
 # include path
 INCLUDES := $(addprefix -I,$(INC))
+INCLUDES += -I.
 # defines
 DEFINES  := $(addprefix -D,$(DEF))
 # c flags

@@ -22,7 +22,7 @@
 class TLC5971 {
 public:
   // constructor takes number of drivers daisychained on one serial line and the pindefs
-  TLC5971(uint8_t n, volatile uint8_t *sckPo, uint8_t sckPi, volatile uint8_t *mosiPo, uint8_t mosiPi);
+  TLC5971();
   // initialization routine
   void init();
   // control the chip(s)
@@ -31,8 +31,9 @@ public:
   //   - *bc: array of 3 uint8_t for brightness correction 
   //   - fc: uint8_t for function control
   void setGS(uint16_t *g);
-  void setBC(uint8_t *bc);
-  void setFC(uint8_t fc);
+  void setBC(uint8_t b);
+  void setBC(uint8_t *b);
+  void setFC(uint8_t f);
 private:
   // serial helpers
   // send the write command to the device (6-bits = 0x25 = 0b100101)
@@ -57,13 +58,13 @@ private:
   uint16_t *gs;
 
   // number of drivers
-  uint8_t num;
+  // uint8_t num;
 
   // pin defs
-  volatile uint8_t *sckPort;
-  uint8_t sckPin;
-  volatile uint8_t *mosiPort;
-  uint8_t mosiPin;
+  // volatile uint8_t *sckPort;
+  // uint8_t sckPin;
+  // volatile uint8_t *mosiPort;
+  // uint8_t mosiPin;
 };
 
 #endif

@@ -10,35 +10,58 @@
 
 // avr includes
 #include <stdint.h>
+#include <util/atomic.h>
 
 // display parameters
 // LED brightness levels
-#define DISPLAY_LVL_MAX 65535
-// clock stuff
+#define DISPLAY_LVL_MAX   65535
+#define DISPLAY_LVL_HAND  30000
+#define DISPLAY_LVL_BG    700
+#define DISPLAY_LVL_OFF   0
+// clock stuffs
 #define DISPLAY_NUM_DOTS    36
 // framerate
 #define DISPLAY_FRAMERATE        32
-#define DISPLAY_FRAMERATE_FLOAT  32.0
+
+// fixed point scaling factors
+// hours
+//   - fixed point factor: 2^8
+#define DISPLAY_HOUR_FACTOR   256
+#define DISPLAY_HOUR_L_SHIFT  8
+#define DISPLAY_HOUR_R_SHIFT  16
+// minutes
+//   - fixed point factor: 2^4
+#define DISPLAY_MIN_FACTOR   16
+#define DISPLAY_MIN_L_SHIFT  4
+#define DISPLAY_MIN_R_SHIFT  8
+// seconds
+//   - fixed point factor: 2^0
+#define DISPLAY_SEC_FACTOR   1
+#define DISPLAY_SEC_L_SHIFT  0
+#define DISPLAY_SEC_R_SHIFT  0
 
 // effect modes
-#define DISPLAY_NUM_MODES  4
-#define DISPLAY_MODE_FILL  0
-#define DISPLAY_MODE_BLEND 1
-#define DISPLAY_MODE_PIE   2
-#define DISPLAY_MODE_ARMS  3
+#define DISPLAY_NUM_MODES        5
+#define DISPLAY_MODE_BLEND       0
+//#define DISPLAY_MODE_BLEND_BG    1
+#define DISPLAY_MODE_FILL        1
+#define DISPLAY_MODE_DOTS        2
+//#define DISPLAY_MODE_DOTS_BG     4
+#define DISPLAY_MODE_ARMS        3
+#define DISPLAY_MODE_PIE         4
+
 
 class Display {
 public:
   // constructor initializes the mode
-  // parameters:
-  //   ms - pointer to the application's millisecond timer for good smoothing
   Display(void);
 
   // get the dot display
   // parameters:
-  //   hour, min, sec - time
+  //   tm - {sec, min, hr}
+  //   frame - animation frame
   //   dots - dot array output
-  void getDisplay(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots);
+  void getDisplay(uint8_t *tm, uint8_t frame, uint16_t *dots);
 
   // set / get the display mode
   // parameters:
@@ -54,24 +77,22 @@ private:
     uint8_t min;
     uint8_t sec;
     uint8_t frame;
-    uint16_t *dots;
   } DisplayParams;
 
   // display mode
   uint8_t mode;
-  // display mode during setting animation
-  uint8_t newMode;
+
+  // ratio of brightness to frame count for fixed point calculation of LED settings
+  uint32_t secLevelScale;
+  uint32_t minLevelScale;
+  uint32_t hourLevelScale;
 
   // different effects
-  void displayFill(DisplayParams p);
-  void displayBlend(DisplayParams p);
-  void displayPie(DisplayParams p);
-  void displayArms(DisplayParams p);
-
-  // set time animation
-  void displaySet(DisplayParams p);
-  // change display mode animation
-  void displayChange(DisplayParams p);
+  void displayFill(DisplayParams p, uint16_t* dots);
+  void displayBlend(DisplayParams p, uint16_t bgLvl, uint16_t* dots);
+  void displayDots(DisplayParams p, uint16_t bgLvl, uint16_t* dots);
+  void displayArms(DisplayParams p, uint16_t* dots);
+  void displayPie(DisplayParams p, uint16_t* dots);
 };
 
 #endif

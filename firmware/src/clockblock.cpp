@@ -8,7 +8,7 @@
 // ************************************
 // AVR includes necessary for this file
 // ************************************
-#include <util/atomic.h>
+//#include <util/atomic.h>
 #include <util/delay.h>
 
 // ********************
@@ -20,26 +20,19 @@
 // **************************
 // INTERRUPT SERVICE ROUTINES
 // **************************
-// this ISR driven by a 1024 Hz squarewave from the RTC
-ISR(RTC_EXT_INT_vect) {
-  ms++;
-  // tick the display 32 times a second
-  if ( !(ms%32) ) {
-    tick = true;
-    if (ms >= 1024) {
-      ms = 0;
-    }
-  }
+// frame counter ISR (timer 0 is clocked by the RTC)
+ISR(TIMER0_OVF_vect) {
+  tick = true;
 }
 
-// ISR for switch inputs
-ISR(INPUT_PCINT_vect, ISR_NOBLOCK) {
-  buttons.handleChange();
-}
-
-// switch debouncer / timer
-ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
+// switch poller / debouncer / timer
+ISR(INPUT_TIMER_vect, ISR_NOBLOCK) {
+  // disable interrupt
+  buttons.disableTimer();
+  // handle the polling
   buttons.handleTimer();
+  // re-enable the interrupt
+  buttons.enableTimer();
 }
 
 // ***********
@@ -47,8 +40,61 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK) {
 // ***********
 // main
 int main(void) {
+  // debugging
+  #ifdef DEBUG
+  // set up the heartbeat led
+  DDRB |= (1<<3);
+  PORTB |= (1<<3);
+
+  // examine the last reset
+  // watchdog reset - blink LED 4 times
+  if (MCUSR & (1<<WDRF)) {
+    for (uint8_t i=0; i<4; i++) {
+      beatHeart();
+      _delay_ms(250);
+      beatHeart();
+      _delay_ms(250);
+    }
+  }
+  else if (MCUSR & (1<<BORF)) {
+    for (uint8_t i=0; i<3; i++) {
+      beatHeart();
+      _delay_ms(250);
+      beatHeart();
+      _delay_ms(250);
+    }
+  }
+  else if (MCUSR & (1<<EXTRF)) {
+    for (uint8_t i=0; i<2; i++) {
+      beatHeart();
+      _delay_ms(250);
+      beatHeart();
+      _delay_ms(250);
+    }
+  }
+  else if (MCUSR & (1<<PORF)) {
+    for (uint8_t i=0; i<1; i++) {
+      beatHeart();
+      _delay_ms(250);
+      beatHeart();
+      _delay_ms(250);
+    }
+  }
+  // clear the flags
+  MCUSR = 0;
+  #endif
+
+
+  // delay for a few ms to allow the RTC to take its initial temp measurement
+  _delay_ms(1000);
+
+  // begin setup - disable interrupts
+  cli();
+
+  // take care of unused pins
+  initUnusedPins();
+
   // give those ISR volatile vairables some values
-  ms = 0;
   tick = false;
 
   // application variables
@@ -59,21 +105,32 @@ int main(void) {
   // arms leds
   uint16_t dots[DISPLAY_NUM_DOTS];
 
-  // initialize the RTC
-  rtc.init();
-  // enable a 1024 Hz squarewave output on interrupt pin
-  rtc.enableSquareWave(1);
-
   // initialize the LED driver
+  // DO THIS BEFORE INITIALIZING RTC (to ensure proper SPI functionality for the RTC)
   tlc.init();
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
   tlc.setFC(TLC5971_DSPRPT);
+  // set brightness to half
+  //tlc.setBC(63);
+  // set brightness to 71% (to account for shitty wall warts)
+  tlc.setBC(90);
+  
+  // initialize the RTC
+  rtc.init();
+  // enable a 8192 Hz squarewave output on clock input pin
+  rtc.setSquareWave(PCF2129AT_CLKOUT_8_kHz);
 
-  // enable a falling edge interrupt on the square wave pin
-  cli();
-  EICRA = (0x2 << (2*RTC_EXT_INT));
-  EIMSK = (1 << RTC_EXT_INT);
-  sei();
+  // check the oscillator stop flag on the RTC and give it a new time if necessary
+  if (rtc.hasLostTime()) {
+    rtc.setTime(tm, PCF2129AT_AM);
+  }
+  // else get the good time from the RTC
+  else {
+    rtc.getTime(tm);
+  }
+
+  // initialize the ticker
+  initTicker();
 
   // set the display mode
   leds.setMode(DISPLAY_MODE_BLEND);
@@ -81,17 +138,15 @@ int main(void) {
   // enable inputs
   buttons.init();
 
+  // end setup - enable interrupts
+  sei();
+
   // get lost
   for (;;) {
-    uint8_t buttonState;
     // take care of any switch presses
+    uint8_t buttonState = 0;
     if (buttons.getPress(&buttonState)) {
       handleButtonPress(buttonState, tm);
-    }
-
-    // take care of any switch holds
-    if (buttons.getHold(&buttonState)) {
-      handleButtonHold(buttonState, tm);
     }
 
     // update the arms on a tick
@@ -100,20 +155,13 @@ int main(void) {
       tick = false;
       // get the time
       if (++fr >= 32) {
+        // beat the heart every second
+        beatHeart();
         fr = 0;
-        if (++tm[0] >= 60) {
-          tm[0] = 0;
-          if (++tm[1] >= 60) {
-            tm[1] = 0;
-            if (++tm[2] >= 13) {
-              tm[2] = 1;
-            }
-          }
-        }
+        rtc.getTime(tm);
       }
-
       // update the clock arms
-      updateArms(tm[2], tm[1], tm[0], fr, dots);
+      updateArms(tm, fr, dots);
     }
   }
 
@@ -124,53 +172,75 @@ int main(void) {
 
 // update the clock arms
 // dots array structure: { hr0, mn0, sc0, hr1, mn1, sc1, ... , hr11, mn11, sc11 }
-void updateArms(uint8_t hour, uint8_t min, uint8_t sec, uint8_t frame, uint16_t *dots) {
+void updateArms(uint8_t *tm, uint8_t frame, uint16_t *dots) {
   // get the display
-  leds.getDisplay(hour, min, sec, frame, dots);
+  leds.getDisplay(tm, frame, dots);
   // send to the LED driver
   tlc.setGS(dots);
 }
+
 
 // initialize unused pins as inputs with pullups enabled
 void initUnusedPins(void) {
   // PORTB
   DDRB &= ~UNUSED_PORTB_MASK;
   PORTB |= UNUSED_PORTB_MASK;
-  // PORTC
-  DDRC &= ~UNUSED_PORTC_MASK;
-  PORTC |= UNUSED_PORTC_MASK;
-  //PORTD
-  DDRD &= ~UNUSED_PORTD_MASK;
-  PORTD |= UNUSED_PORTD_MASK;
+  // PORTA
+  DDRA &= ~UNUSED_PORTA_MASK;
+  PORTA |= UNUSED_PORTA_MASK;
 }
+
 
 // button handling logic
 void handleButtonPress(uint8_t state, uint8_t *tm) {
-  // if hour switch, increment the hours by 1
-  if (state == INPUT_HOUR) {
-    tm[2] = (tm[2] + 1) % 12;
-    tm[2] = (tm[2] == 0) ? 12 : tm[2];
+  // if a time set switch was pressed
+  if ( state & (INPUT_HOUR | INPUT_MIN)) {
+    // temporary time register to avoid messing up the seconds LEDs
+    uint8_t set[3];
+    // get the real time
+    rtc.getTime(set);
+    // if hour switch, increment the hours by 1
+    if (state & INPUT_HOUR) {
+      if (++set[2] > 12) {
+        set[2] -= 12;
+      }
+    }
+    // if minute switch, increment minutes
+    if (state & INPUT_MIN) {
+      if (++set[1] > 59) {
+        set[1] -= 60;
+      }
+    }
+    // tell the clock and then the app
+    rtc.setTime(set, PCF2129AT_AM);
+    tm[2] = set[2];
+    tm[1] = set[1];
   }
-  // if minute switch, increment minutes
-  else if (state == INPUT_MIN) {
-    tm[1] = (tm[1] + 1) % 60;
+  // if mode switch, increment mode
+  if (state & INPUT_MODE) {
+    uint8_t m = leds.getMode();
+    m = (m < DISPLAY_NUM_MODES-1) ? m+1 : 0;
+    leds.setMode(m);
   }
 }
 
-void handleButtonHold(uint8_t state, uint8_t *tm) {
-  // if the hour switch is held, increment the hours by 3
-  if (state == INPUT_HOUR) {
-    tm[2] = (tm[2] + 3) % 12;
-    tm[2] = (tm[2] == 0) ? 12 : tm[2];
-  }
-  // else if the minute switch is held, increment the minutes by 5
-  else if (state == INPUT_MIN) {
-    tm[1] = (tm[1] + 5) % 60;
-  }
-  // else both buttons were held down, so increment the display mode
-  else {
-    uint8_t mode = leds.getMode();
-    mode = (mode == (DISPLAY_NUM_MODES-1)) ? 0 : (mode + 1);
-    leds.setMode(mode);
-  }
+
+void beatHeart(void) {
+  #ifdef DEBUG
+  PINB |= (1<<3);
+  #endif
+}
+
+
+void initTicker(void) {
+  // set timer 0 to run normally with no prescaler
+  TCCR0A = 0;
+  TCCR0B = (1<<CS00);
+  // set timer 0 to clock from the RTC squarewave
+  ASSR = (1<<EXCLK);
+  // set timer 0 to clock asynchronously and reload the counter
+  ASSR |= (1<<AS0);
+  TCNT0 = 0;
+  // enable timer 0 overflow interrupt
+  TIMSK0 = (1<<TOIE0);
 }

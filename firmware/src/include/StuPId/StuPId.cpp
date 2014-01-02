@@ -5,23 +5,44 @@
 // file: StuPId.cpp
 // description: stupid little SPI master class
 
+// avr include
 #include "avr/io.h"
+
+// pindefs from main app with DDR and pin defines
+#include "pindefs.h"
+// check that necessary pins and ports are defined
+#ifndef SPI_MOSI_DDR
+#error "SPI_MOSI_DDR is not defined; please define in pindefs.h"
+#endif
+#ifndef SPI_MOSI_PIN
+#error "SPI_MOSI_PIN is not defined; please define in pindefs.h"
+#endif
+#ifndef SPI_SCK_DDR
+#error "SPI_SCK_DDR is not defined; please define in pindefs.h"
+#endif
+#ifndef SPI_SCK_PIN
+#error "SPI_SCK_PIN is not defined; please define in pindefs.h"
+#endif
+
+// class definition
 #include "StuPId.h"
 
 // constructor takes in data direction registers for MOSI and SCK
-StuPId::StuPId(volatile uint8_t *mosiDdr, uint8_t mosiPin, volatile uint8_t *sckDdr, uint8_t sckPin) {
+StuPId::StuPId() {
+  /*
   // save mosi pin
   ddrMosi = mosiDdr;
   pinMosi = mosiPin;
   // save sck pin
   ddrSck = sckDdr;
   pinSck = sckPin;
+  */
 }
 
 // set pin directions and enable SPI
 void StuPId::enable() {
-  *ddrMosi |= (1 << pinMosi);
-  *ddrSck |= (1 << pinSck);
+  SPI_MOSI_DDR |= (1 << SPI_MOSI_PIN);
+  SPI_SCK_DDR |= (1 <<SPI_SCK_PIN);
 
   // set the SPI enable bit and the master mode bit
   SPCR |= ( (1 << SPE) | (1 << MSTR) );

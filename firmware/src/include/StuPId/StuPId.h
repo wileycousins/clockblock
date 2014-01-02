@@ -27,7 +27,7 @@
 class StuPId {
 public:
   // constructor takes in data direction registers for MOSI and SCK
-  StuPId(volatile uint8_t *mosiDdr, uint8_t mosiPin, volatile uint8_t *sckDdr, uint8_t sckPin);
+  StuPId();
   // set pin directions and enable SPI
   void enable();
   // diable SPI
@@ -48,10 +48,10 @@ public:
 
 private:
   bool enabled;
-  volatile uint8_t *ddrMosi;
-  uint8_t pinMosi;
-  volatile uint8_t *ddrSck;
-  uint8_t pinSck;
+  // volatile uint8_t *ddrMosi;
+  // uint8_t pinMosi;
+  // volatile uint8_t *ddrSck;
+  // uint8_t pinSck;
 };
 
 #endif

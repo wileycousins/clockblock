@@ -13,13 +13,11 @@ Input::Input(void) {
   // switch states
   state = INPUT_MASK;
   pressState = INPUT_MASK;
-  holdState = INPUT_MASK;
   // switch timer counter
   timerCount = 0;
   // switch event flags
   release = false;
   press = false;
-  hold = false;
 }
 
 // get switch state
@@ -30,15 +28,6 @@ uint8_t Input::getState(void) {
 // get the flag states and clear as necessary
 // set uint8_t at pointer to switch state if flag is true
 // outputted switch state is bit flipped for convenience in the app
-bool Input::getHold(uint8_t *s) {
-  if (hold) {
-    hold = false;
-    *s = INPUT_MASK & ~holdState;
-    return true;
-  }
-  return false;
-}
-
 bool Input::getPress(uint8_t *s) {
   if (press && release) {
     press = false;
@@ -49,69 +38,44 @@ bool Input::getPress(uint8_t *s) {
   return false;
 }
 
-// handle pin change
-void Input::handleChange(void) {
-  // disable the timer and switch interrupts and reset the switch timer counter
-  disableTimer();
-  disableInt();
-  timerCount = 0;
-  // save the state that triggered the interrupt
-  state = getState();
-  // start the switch timer to debounce and time if necessary
-  enableTimer();
-}
-
-// handle debouncing the pins and sensing presses vs holds
+// handle debouncing the pins and sensing presses
 void Input::handleTimer(void) {
-  // disable the timer
-  disableTimer();
-  // increment the counter
-  timerCount++;
-  // clear the release flag
-  release = false;
-
-  // check the values still match (i.e. if true, it wasn't a bounce)
-  if (getState() == state) {
-    // if one or both switches are down (if both switches are up, both will read high)
-    if ( state != INPUT_MASK) {
-      // check for a press
-      if (timerCount == 1) {
-        press = true;
-        pressState = state;
-      }
-      // check for a hold
-      else if (timerCount >= INPUT_HOLD_COUNT) {
-        press = false;
-        hold = true;
-        holdState = state;
-        timerCount = 1;
-      }
-      // re-enable the timer
-      enableTimer();
-    }
-    // else switches were released
-    else {
+  // shift the old state over and read in the new one
+  state = (state << 4) | getState();
+  // compare and increment count if they match
+  if( (state >> 4) == (state & 0x0F) ) {
+    timerCount++;
+  }
+  else {
+    timerCount = 0;
+  }
+  // after 3 matches, consider switch debounced
+  if (timerCount >= INPUT_DEBOUNCE_COUNT) {
+    // if all switches are up, it's a release
+    if ( (state & 0x0F) == INPUT_MASK ) {
       release = true;
+      timerCount = 0;
+    }
+    else {
+      // else it's not a release
+      release = false;
+      press = true;
+      pressState = state & 0x0F;
+      // after INPUT_HOLD_COUNT, start faking releases
+      if (timerCount > INPUT_HOLD_COUNT) {
+        release = true;
+        timerCount = INPUT_REPEAT_COUNT;
+      }
     }
   }
-
-  // re-enable the pin change interrupt
-  enableInt();
 }
 
-// disable the debounce timer and wait for a pin change (e.g. to exit a pin hold loop)
-void Input::reset(void) {
-  // disable the timer and enable the pin change interrupt
-  disableTimer();
-  enableInt();
-}
 
 // initialization
 void Input::init(void) {
   initPins();
-  initInt();
   initTimer();
-  enableInt();
+  enableTimer();
 }
 
 // init switch pins as inputs with pullups enabled
@@ -119,43 +83,29 @@ void Input::initPins(void) {
   // clear pins in DDR to inputs
   DDR(INPUT_PORT) &= ~INPUT_MASK;
   // enable pull up resistors
-  INPUT_PORT |= INPUT_MASK;
-}
-
-// init pin change interrupts
-void Input::initInt(void) {
-  // set up pin change interrupt on the pins
-  INPUT_PCMSK |= INPUT_MASK;
+  //INPUT_PORT |= INPUT_MASK;
 }
 
 // init timer for debouncing
-// using an 8-bit timer on an 8MHz (16MHz for breadboard edition) clock
-// PS=1024 means an overflow will occur after about 32 (16) ms
+// using an 16-bit timer on an 8MHz clock
+// PS=1024 and OC1A=249 means an CTC will occur after about 32 ms
 void Input::initTimer(void) {
-  // ensure timer2 settings are cleared out
-  TCCR2A = 0;
-  // set prescaler to 1024
-  TCCR2B = ( (1 << CS22) | (1 << CS21) | (1 << CS20) );
+  // using timer 1 (16-bit)
+  // ensure timer1 settings are cleared out
+  TCCR1A = 0;
+  // set mode to CTC and prescaler to 1024
+  TCCR1B = ( (1 << WGM12) | (1 << CS12) | (1 << CS10) );
+  // set top of timer to 99 (for 100 counts / cycle)
+  OCR1A = 99;
 }
 
-// interrupt helpers
-void Input::enableInt(void) {
-  // enable the pin change interrupt
-  INPUT_PCICR |= INPUT_PCIE;
-}
-
-void Input::disableInt(void) {
-  // disable the pin change interrupt
-  INPUT_PCICR &= ~INPUT_PCIE;
-}
 
 void Input::enableTimer(void) {
-  // reload timer
-  TCNT2 = 0;
-  // enable the overflow interrupt
-  TIMSK2 = (1 << TOIE2);
+  // enable the interrupt
+  TIMSK1 = (1 << OCIE1A);
 }
 
 void Input::disableTimer(void) {
-  TIMSK2 = 0;
+  // using timer 1 (16-bit)
+  TIMSK1 = 0;
 }
