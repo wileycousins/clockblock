@@ -30,7 +30,7 @@ PRG = avrisp -P /dev/tty.usbmodem411 -b 19200
 # brownout detection at 2.7 V
 # self-programming enabled 
 LFU = 0xE2
-HFU = 0xDD
+HFU = 0xDB
 EFU = 0xFE
 # program source files
 SRC = $(PRJ).cpp display.cpp input.cpp

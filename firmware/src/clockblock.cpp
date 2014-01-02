@@ -112,8 +112,8 @@ int main(void) {
   tlc.setFC(TLC5971_DSPRPT);
   // set brightness to half
   //tlc.setBC(63);
-  // set brightness to full
-  tlc.setBC(127);
+  // set brightness to 71% (to account for shitty wall warts)
+  tlc.setBC(90);
   
   // initialize the RTC
   rtc.init();
