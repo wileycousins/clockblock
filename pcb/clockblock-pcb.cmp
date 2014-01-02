@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11/9/2013 4:45:22 PM
+Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 1/2/2014 4:06:54 PM
 
 BeginCmp
 TimeStamp = /527AD7C9;
@@ -10,105 +10,105 @@ EndCmp
 BeginCmp
 TimeStamp = /52414370;
 Reference = C1;
-ValeurCmp = 1uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /52414223;
 Reference = C2;
-ValeurCmp = 1uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /524120DD;
 Reference = C3;
-ValeurCmp = 1uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE871;
 Reference = C4;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE3E5;
 Reference = C5;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE67F;
 Reference = C6;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE634;
 Reference = C7;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE99F;
 Reference = C8;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE972;
 Reference = C9;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE98F;
 Reference = C10;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE981;
 Reference = C11;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE9DB;
 Reference = C12;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE9AE;
 Reference = C13;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE9CB;
 Reference = C14;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527AE9BD;
 Reference = C15;
-ValeurCmp = 10uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
@@ -136,14 +136,14 @@ EndCmp
 BeginCmp
 TimeStamp = /5240F157;
 Reference = C19;
-ValeurCmp = 1uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /5240F21F;
 Reference = C20;
-ValeurCmp = 1uF;
+ValeurCmp = 0.1uF;
 IdModule  = 0603(1608m);
 EndCmp
 
@@ -197,10 +197,24 @@ IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
+TimeStamp = /52C5F0C4;
+Reference = C28;
+ValeurCmp = 0.1uF;
+IdModule  = 0603(1608m);
+EndCmp
+
+BeginCmp
 TimeStamp = /527AF50E;
 Reference = FB1;
 ValeurCmp = 3A;
 IdModule  = 0603(1608m);
+EndCmp
+
+BeginCmp
+TimeStamp = /52C5D23E;
+Reference = HOUR1;
+ValeurCmp = LED;
+IdModule  = LED-5mm;
 EndCmp
 
 BeginCmp
@@ -260,13 +274,6 @@ IdModule  = MICROUSB_sm;
 EndCmp
 
 BeginCmp
-TimeStamp = /527B3A15;
-Reference = LED1;
-ValeurCmp = LED;
-IdModule  = LED-5mm;
-EndCmp
-
-BeginCmp
 TimeStamp = /52411F6D;
 Reference = LED2;
 ValeurCmp = HEART;
@@ -276,14 +283,14 @@ EndCmp
 BeginCmp
 TimeStamp = /527B2498;
 Reference = LED3;
-ValeurCmp = TX;
+ValeurCmp = RX;
 IdModule  = 0603(1608m)_led;
 EndCmp
 
 BeginCmp
 TimeStamp = /527B24C0;
 Reference = LED4;
-ValeurCmp = RX;
+ValeurCmp = TX;
 IdModule  = 0603(1608m)_led;
 EndCmp
 
@@ -323,6 +330,13 @@ IdModule  = 2x3MM_SM-PAD;
 EndCmp
 
 BeginCmp
+TimeStamp = /52C5D236;
+Reference = MIN1;
+ValeurCmp = LED;
+IdModule  = LED-5mm;
+EndCmp
+
+BeginCmp
 TimeStamp = /527BD62E;
 Reference = P13;
 ValeurCmp = USBtoMAIN;
@@ -341,48 +355,6 @@ TimeStamp = /527BD63D;
 Reference = P15;
 ValeurCmp = MAINtoUSB;
 IdModule  = 2x5-PIN-ARRAY_P100MIL_sm;
-EndCmp
-
-BeginCmp
-TimeStamp = /527B91D7;
-Reference = PAD1;
-ValeurCmp = VLED;
-IdModule  = 3x5MM_SM-PAD;
-EndCmp
-
-BeginCmp
-TimeStamp = /527B9209;
-Reference = PAD2;
-ValeurCmp = HOUR;
-IdModule  = 3x5MM_SM-PAD;
-EndCmp
-
-BeginCmp
-TimeStamp = /527B9240;
-Reference = PAD3;
-ValeurCmp = MIN;
-IdModule  = 3x5MM_SM-PAD;
-EndCmp
-
-BeginCmp
-TimeStamp = /527B9268;
-Reference = PAD4;
-ValeurCmp = SEC;
-IdModule  = 3x5MM_SM-PAD;
-EndCmp
-
-BeginCmp
-TimeStamp = /527B3D83;
-Reference = PAD5;
-ValeurCmp = VLED;
-IdModule  = 3x5MM_SM-PAD;
-EndCmp
-
-BeginCmp
-TimeStamp = /527B3D92;
-Reference = PAD6;
-ValeurCmp = OUT;
-IdModule  = 3x5MM_SM-PAD;
 EndCmp
 
 BeginCmp
@@ -409,28 +381,28 @@ EndCmp
 BeginCmp
 TimeStamp = /527BCDEF;
 Reference = R4;
-ValeurCmp = opt10kΩ;
+ValeurCmp = 10kΩ;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527C1D5C;
 Reference = R5;
-ValeurCmp = opt10kΩ;
+ValeurCmp = 10kΩ;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527B5230;
 Reference = R6;
-ValeurCmp = opt10kΩ;
+ValeurCmp = 10kΩ;
 IdModule  = 0603(1608m);
 EndCmp
 
 BeginCmp
 TimeStamp = /527C1D73;
 Reference = R7;
-ValeurCmp = opt10kΩ;
+ValeurCmp = 10kΩ;
 IdModule  = 0603(1608m);
 EndCmp
 
@@ -495,6 +467,13 @@ TimeStamp = /527C1D79;
 Reference = S3;
 ValeurCmp = MODE;
 IdModule  = SPST_6MM_sm;
+EndCmp
+
+BeginCmp
+TimeStamp = /527B3A15;
+Reference = SEC1;
+ValeurCmp = LED;
+IdModule  = LED-5mm;
 EndCmp
 
 BeginCmp
