@@ -1,7 +1,7 @@
-# clockblock
-v1.0
+# <img src="https://clockblocknola.com/images/logo.png" alt="clockblock logo"  width=15% />
+**version 1.0**
 
-Available for purchase at [clockblocknola.com](http://www.clockblocknola.com).
+Available for purchase at [clockblocknola.com](http://www.clockblocknola.com)
 
 ## firmware
 Firmware is written in C++ and compiled in GCC with AVR modifications. If you're using a Mac, install [CrossPack for AVR](http://www.obdev.at/products/crosspack/index.html) for all the necessary tools. Otherwise, do some Googling.
