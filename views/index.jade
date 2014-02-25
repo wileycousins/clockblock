@@ -64,9 +64,18 @@ block content
     br
     hr.dotted
     br
-    br
-    br
-    br
+  .container
+    .row
+      .col-sm-4.col-sm-offset-1
+        img.img-thumbnail.no-border(src='/images/clockblock-1.jpg')
+      .col-sm-4.col-sm-offset-2
+        img.img-thumbnail.no-border(src='/images/clockblock-2.jpg')
+    .row
+      .col-sm-12
+        br
+        hr.dotted
+        br
+        br
   .container
     #equation.col-xs-12
       .col-xs-3.cypress
@@ -165,7 +174,7 @@ block content
                         a(href='https://stripe.com/us/help/faq#security', target='_blank')
                           img(src='/images/stripe.png', width=150, title='stripe')
                       .col-sm-8.text-right(style='margin-top: 5px;')
-                        i.gray.skinny we don't store credit card information on our servers
+                        i.white we don't store credit card information on our servers
                         br
                         br
             br
