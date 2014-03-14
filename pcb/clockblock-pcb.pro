@@ -1,4 +1,4 @@
-update=1/2/2014 4:50:57 PM
+update=3/14/2014 3:13:14 PM
 last_client=kicad
 [cvpcb]
 version=1
@@ -32,21 +32,21 @@ LastNetListRead=clockblock-pcb.net
 UseCmpFile=1
 PadDrill=0.000000000000
 PadDrillOvalY=0.000000000000
-PadSizeH=1.300000000000
-PadSizeV=2.100000000000
+PadSizeH=2.500000000000
+PadSizeV=5.100000000000
 PcbTextSizeV=1.524000000000
 PcbTextSizeH=1.524000000000
 PcbTextThickness=0.254000000000
 ModuleTextSizeV=0.762000000000
 ModuleTextSizeH=0.762000000000
 ModuleTextSizeThickness=0.152400000000
-SolderMaskClearance=0.000000000000
+SolderMaskClearance=0.076200000000
 SolderMaskMinWidth=0.000000000000
 DrawSegmentWidth=0.203200000000
 BoardOutlineThickness=0.127000000000
 ModuleOutlineThickness=0.203200000000
 [pcbnew/libraries]
-LibDir=Z:/Projects/kicad-lib/footprints
+LibDir=../../kicad-lib/footprints
 LibName1=analog-devices
 LibName2=asm
 LibName3=bluegiga
