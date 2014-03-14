@@ -1,11 +1,11 @@
-update=3/14/2014 3:13:14 PM
+update=1/2/2014 4:50:57 PM
 last_client=kicad
 [cvpcb]
 version=1
 NetIExt=net
 [eeschema]
 version=1
-LibDir=Z:/Projects/kicad-lib/components
+LibDir=../../kicad-lib/components
 NetFmtName=
 RptD_X=0
 RptD_Y=100
