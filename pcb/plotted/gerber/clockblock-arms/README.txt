@@ -6,14 +6,13 @@ michael@wileycousins.com
 
 This panel consists of eleven (11) 0.41" x 3.575" boards arranged into a 4.51" x 3.575" panel. There should be nine (9) evenly spaced vertical v-scores so we can de-panel the boards.
 
-**Any fabicration markings should be placed on the bottom silkscreen. Please do not place additional markings on the top silkscreen.**
+**Any fabicration markings should be placed on the bottom side of the board. Please do not place additional markings on the top.**
 
 Requested specs:
   * ENIG finish
   * 0.062", 1 oz copper
   * White soldermask
-  * Silkscreen on both sides
-  * Red silkscreen if possible, otherwise black silkscreen
+  * Red silkscreen, top side only
 
 File summary:
 Gerbers:
