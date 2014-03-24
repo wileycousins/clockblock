@@ -6,6 +6,8 @@ michael@wileycousins.com
 
 This panel consists of eleven (11) 0.41" x 3.575" boards arranged into a 4.51" x 3.575" panel. There should be nine (9) evenly spaced vertical v-scores so we can de-panel the boards.
 
+**Any fabicration markings should be placed on the bottom silkscreen. Please do not place additional markings on the top silkscreen.**
+
 Requested specs:
   * ENIG finish
   * 0.062", 1 oz copper
@@ -16,8 +18,9 @@ Requested specs:
 File summary:
 Gerbers:
   * clockblock-arms-B_Cu.gbl      - bottom copper
-  * clockblock-arms-B_Mask.gbs    - botton soldermask
+  * clockblock-arms-B_Mask.gbs    - bottom soldermask
   * clockblock-arms-Edge_Cuts.gbr - board outline and score lines
+  * clockblock-arms-Dims.gbr      - board dimensions (for references)
   * clockblock-arms-F_Cu.gtl      - top copper
   * clockblock-arms-F_Mask.gts    - top soldermask
   * clockblock-arms-F_SilkS.gto   - top silkscreen
