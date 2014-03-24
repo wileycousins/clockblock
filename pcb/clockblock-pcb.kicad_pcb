@@ -5,7 +5,7 @@
     (no_connects 40)
     (area 81.243715 54.102 297.851288 173.99)
     (thickness 1.6)
-    (drawings 124)
+    (drawings 125)
     (tracks 2817)
     (zones 0)
     (modules 282)
@@ -6261,6 +6261,9 @@
     (pad 1 thru_hole circle (at 0 0) (size 3.6 3.6) (drill 3.6) (layers *.Cu *.SilkS *.Mask))
   )
 
+  (gr_text "arms panel" (at 332.74 60.96) (layer Eco2.User)
+    (effects (font (size 3.048 3.048) (thickness 0.6096)))
+  )
   (gr_text score (at 379.603 171.45 90) (layer Eco2.User)
     (effects (font (thickness 0.254)))
   )
