@@ -11,6 +11,7 @@ $red = #CC2920
   color $gray
 .black
   color $black
+  border-color $black
 .white
   color $white
 
@@ -32,6 +33,18 @@ html, body
 body
   //background url('../images/bg.png')
   background $white
+
+.modal-dialog
+  width 90%
+  height 100%
+  .modal-content
+    height 100%
+  .modal-body
+    margin-top 2%
+    height 85%
+    background-position center
+    background-size contain
+    background-repeat no-repeat
 
 .auto-margin
   margin 0 auto
@@ -62,18 +75,25 @@ h2
   font-weight 500
 
 strong
-  font-weight 300
+  font-weight 500
+
+.tight
+  letter-spacing 1.5px
+
+.m0
+  margin 0px
 
 i
   font-style italic
 
 p
   font-weight 300
-  letter-spacing 4px
+  letter-spacing 2px
+  color #555
 
 @media screen and (-webkit-min-device-pixel-ratio: 2)
   p
-    font-weight 100
+    font-weight 400
 
 hr
   color $red
@@ -246,7 +266,7 @@ $heightTrans = height .5s
   #blurb
     width 430px
     p
-      line-height 46px
+      line-height 54px
   h2
     border-bottom 2px solid $black
     border-top 2px solid $black
@@ -374,13 +394,12 @@ $heightTrans = height .5s
         background $white
         color $gray
     label 
-      width 80px
       letter-spacing .05px
       margin-top 20px
+    label.w80
+      width 80px
     input
-      margin-right 20px
       height 50px
-      width 220px
       background $white
       color $black
       letter-spacing 1px
@@ -392,6 +411,13 @@ $heightTrans = height .5s
     input:focus
       border none
       box-shadow 0px 0px 2px $red
+
+  .block
+    input
+      margin 0 auto!important
+      display block
+      float none
+      width 20px
 @media screen and (max-width: 991px)
   #buy
     .form-group
@@ -424,3 +450,7 @@ $heightTrans = height .5s
   background none!important
   background-color none!important
   border none
+
+.block
+  display block
+  

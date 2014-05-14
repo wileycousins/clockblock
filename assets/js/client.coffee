@@ -174,6 +174,14 @@ stripeResHandler = (status, res) ->
     form.get(0).submit()
 
 bindPaymentForm = ->
+  $("[name='version']").change (e)->
+    el = $(e.currentTarget)
+    $(".total").text parseInt(el.val())+ 12.35
+    $(".model-imgs img").addClass 'hidden'
+    $($(".model-imgs img")[el[0].selectedIndex]).removeClass 'hidden'
+    $(".model-descriptions > div").addClass 'hidden'
+    $($(".model-descriptions > div")[el[0].selectedIndex]).removeClass 'hidden'
+
   $("#payment-form").submit (e) ->
     form = $(@)
     form.find('button').prop 'disabled', true
@@ -183,6 +191,7 @@ bindPaymentForm = ->
 $(window).resize checkSize
 $(window).ready ->
   bindPaymentForm()
+  $(".model").trigger 'change'
   checkSize()
   drawTime()
   $(".h30").click (e) ->
@@ -190,3 +199,8 @@ $(window).ready ->
     radio = $(@).find '.radio'
     displayMode = parseInt(radio.data 'val' )
     radio.addClass 'checked'
+
+  $(".img-thumbnail").click (e)->
+    el = $(e.currentTarget)
+    $(".modal-body").css 'background-image', "url(#{el.attr('src')})"
+    $("#myModal").modal 'toggle'

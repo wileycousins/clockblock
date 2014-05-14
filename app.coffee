@@ -12,16 +12,6 @@ path        = require 'path'
 mongoose    = require 'mongoose'
 exec        = require('child_process').exec
 fs          = require 'fs'
-if process.env.NODE_ENV != 'production'
-  privateKey  = fs.readFileSync './ssl/server.key', 'utf8'
-  certificate = fs.readFileSync './ssl/server.crt', 'utf8'
-else
-  privateKey  = fs.readFileSync './ssl/gandi.key', 'utf8'
-  certificate = fs.readFileSync './ssl/gandi.crt', 'utf8'
-
-credentials = 
-  key: privateKey
-  cert: certificate
 
 #passport.use "email", new LocalStrategy(
   #usernameField: "email"
@@ -42,10 +32,7 @@ mongoose.connect config.mongodb
 
 # create app, server, and web sockets
 app = express()
-if process.env.NODE_ENV != 'production'
-  server = https.createServer(credentials, app)
-else
-  server = http.createServer(app)
+server = http.createServer(app)
 
 compile = (str, path) ->
   stylus(str).set('filename', path).use(nib())
