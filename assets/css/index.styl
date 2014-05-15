@@ -1,4 +1,4 @@
-@import url("//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css")
+@import "bootstrap.css"
 
 $gray = #B9C3CC
 $white = #F9FFFF
@@ -6,7 +6,7 @@ $black = #242323
 $red = #CC2920
 
 .red
-  color $red
+  color $red!important
 .gray
   color $gray
 .black
@@ -61,6 +61,7 @@ body
 a
   color $red
   font-weight 300
+  letter-spacing 2px
 a:hover
   text-decoration none
   cursor pointer
@@ -275,6 +276,7 @@ $heightTrans = height .5s
     width 430px
     p
       line-height 54px
+      letter-spacing 1.5px
   h2
     border-bottom 2px solid $black
     border-top 2px solid $black
