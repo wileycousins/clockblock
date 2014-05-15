@@ -18,11 +18,22 @@ module.exports = (app) ->
     city = req.body.city
     state = req.body.state
     zip = req.body.zip
+    version = parseFloat req.body.version
+    total = parseFloat req.body.total
+
+    shipping = 12.35
+
+    console.log version
+
+    if version != 257.78 && version != 180.54 && version != 103.30
+      return res.send "your version number isn't right. something funny is going on here"
+    if total != version + shipping
+      return res.send "your total isn't right. something funny is going on here"
 
     stripeToken = req.body.stripeToken
     charge =
       description: "#{name} <#{email}> (#{phone}) @ #{address}, #{city}, #{state}, #{zip}"
-      amount: 250*100
+      amount: total*100
       currency: 'USD'
       card: stripeToken
 
@@ -55,6 +66,12 @@ module.exports = (app) ->
           return res.render 'error'
         else
           product = new Products buyer: user
+          if version == 257.78
+            product.name = 'clockblock'
+          else if version == 180.54
+            product.name = 'clockblock: plank'
+          else if version == 103.30
+            product.name = 'clockblock: kit'
           product.save (err, product) ->
             if err
               console.log err

@@ -176,7 +176,9 @@ stripeResHandler = (status, res) ->
 bindPaymentForm = ->
   $("[name='version']").change (e)->
     el = $(e.currentTarget)
-    $(".total").text parseInt(el.val())+ 12.35
+    total = parseFloat(el.val())+ 12.35
+    $(".total").text total
+    $("[name='total']").val total
     $(".model-imgs img").addClass 'hidden'
     $($(".model-imgs img")[el[0].selectedIndex]).removeClass 'hidden'
     $(".model-descriptions > div").addClass 'hidden'

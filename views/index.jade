@@ -101,11 +101,11 @@ block content
     .row
       br
       .col-sm-4
+        img.img-thumbnail.no-border(src='/images/on-cnc.jpg')
+      .col-sm-4
         img.img-thumbnail.no-border(src='/images/look.jpg')
       .col-sm-4
         img.img-thumbnail.no-border(src='/images/baking.jpg')
-      .col-sm-4
-        img.img-thumbnail.no-border(src='/images/glory.jpg')
     br
     hr.dotted
     br
@@ -171,6 +171,7 @@ block content
                           option(value='257.78') original $250
                           option(value='180.54') plank $175
                           option(value='103.30') kit $100
+                        input(name='total', type='hidden')
                     .row.model-descriptions
                       .col-xs-12
                         label.col-md-12 description
@@ -247,14 +248,25 @@ block content
             br
         .row
           a(href='https://maps.google.com/maps?q=1201+Mazant+St,+New+Orleans,+LA&sll=29.966471,-90.033884&hl=en&ie=UTF8&hq=&hnear=1201+Mazant+St,+New+Orleans,+Louisiana+70117&ll=29.966554,-90.034094&spn=0.001764,0.002631&t=m&z=19&vpsrc=0&iwloc=A', target='_blank')
-            .col-sm-4.col-sm-offset-2
-              h4.text-center.strong.red located @
-              h4.text-center 1201 Mazant
-              h4.text-center New Orleans, LA
-              h4.text-center 70117
-            .col-sm-3.col-sm-offset-3
+            .col-sm-4
+              h4.text-center.strong.black located @
+              p.text-center 1201 Mazant
+              p.text-center New Orleans, LA
+              p.text-center 70117
+            .col-sm-3.col-sm-offset-4
               br
               br
               a(href='mailto:dev@wileycousins.com')
                 h3.strong.red.text-center dev@wileycousins.com
+    .row
+      br
+      br
+      br
+      .col-sm-6.col-sm-offset-3
+        img.img-thumbnail.no-border(src='/images/glory.jpg')
+    .row
+      br
+      br
+      br
+      br
   !=js('client')
