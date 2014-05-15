@@ -177,6 +177,7 @@ bindPaymentForm = ->
   $("[name='version']").change (e)->
     el = $(e.currentTarget)
     total = parseFloat(el.val())+ 12.35
+    total = total.toFixed 2
     $(".total").text total
     $("[name='total']").val total
     $(".model-imgs img").addClass 'hidden'
