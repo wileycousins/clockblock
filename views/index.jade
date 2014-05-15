@@ -123,6 +123,40 @@ block content
                 .form-group.payment-errors.red
                 .row
                   .form-group.col-sm-6
+                    .row
+                      .col-xs-12
+                        label.col-md-3 model 
+                        select.model.input-lg.form-control(name='version')
+                          option(value='257.78') original $250
+                          option(value='180.54') plank $175
+                          option(value='103.30') kit $100
+                        input(name='total', type='hidden')
+                    .row.model-descriptions
+                      .col-xs-12
+                        label.col-md-12 description
+                        strong.tight the original, it puts the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>&quot;block&quot;</span> in clockblock. this model is three boards thick and approximately 11" x 11" x 2.75". it feels good and massive in your hands. it comes with five different time display modes:
+                        ul
+                          li blend
+                          li dot
+                          li fill
+                          li pie
+                          li arms
+                      .col-xs-12.hidden
+                        label.col-md-12 description
+                        strong.tight the plank, its the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>slimmer</span> cousin of the original. plank is a single board thick and approximately 11" x 11" x .75". all the beauty and functionality of the original; it just takes us significantly less time to produce, hence the lower cost.
+                      .col-xs-12.hidden
+                        label.col-md-12 description
+                        strong.tight the kit, fancy yourself a <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>DIY</span> kind of person. well we made this one just for you... we didn't finish it! you'll receive a populated pcb, some wires, some screws, and a plank. oh i guess instructions too...
+                  .col-sm-6
+                    .hidden-xs
+                      br
+                      br
+                    .col-sm-10.col-sm-offset-1.model-imgs
+                        img.img-thumbnail.no-border(src='/images/block.jpg')
+                        img.hidden.img-thumbnail.no-border(src='/images/plank.jpg')
+                        img.hidden.img-thumbnail.no-border(src='/images/kit.jpg')
+                .row
+                  .form-group.col-sm-6
                     label.col-md-3.inline full name
                     input.inline.form-control(type='text', required='true', x-autocompletetype='cc-name', name='name')
                   .form-group.col-sm-6
@@ -162,34 +196,6 @@ block content
                         input.inline.form-control(type='text', required='true',size='2', name='cc-exp-month', data-stripe='exp-month', placeholder='mm')
                       .col-xs-6
                         input.inline.form-control(type='text', required='true',size='4', name='cc-exp-year', data-stripe='exp-year', placeholder='yyyy')
-                .row
-                  .form-group.col-sm-6
-                    .row
-                      .col-xs-12
-                        label.col-md-3 model 
-                        select.model.input-lg.form-control(name='version')
-                          option(value='257.78') original $250
-                          option(value='180.54') plank $175
-                          option(value='103.30') kit $100
-                        input(name='total', type='hidden')
-                    .row.model-descriptions
-                      .col-xs-12
-                        label.col-md-12 description
-                        strong.tight the original, it puts the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>&quot;block&quot;</span> in clockblock. this model is three boards thick and approximately 11" x 11" x 2.75". it feels good and massive in your hands.
-                      .col-xs-12.hidden
-                        label.col-md-12 description
-                        strong.tight the plank, its the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>slimmer</span> cousin of the original. plank is a single board thick and approximately 11" x 11" x .75". it takes us significantly less time to produce, hence the lower cost.
-                      .col-xs-12.hidden
-                        label.col-md-12 description
-                        strong.tight the kit, fancy yourself a <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>DIY</span> kind of person. well we made this one just for you... we didn't finish it! you'll receive a populated pcb, some wires, some screws, and a plank. oh i guess instructions too...
-                  .col-sm-6
-                    .hidden-xs
-                      br
-                      br
-                    .col-sm-10.col-sm-offset-1.model-imgs
-                        img.img-thumbnail.no-border(src='/images/block.jpg')
-                        img.hidden.img-thumbnail.no-border(src='/images/plank.jpg')
-                        img.hidden.img-thumbnail.no-border(src='/images/kit.jpg')
                 .row
                   .hidden-xs
                     br
@@ -235,6 +241,10 @@ block content
               a(href='https://github.com/wileycousins/clockblock', target='_blank')
                 img(src='/images/oshw-logo.svg', title='open source hardware')
                 img.hover(src='/images/oshw-logo-hover.svg', title='open source hardware')
+        .row
+          br
+          .col-sm-4
+            p.white the clockblock is programmable over its USB port and is Arduino compatible. If there is some display mode that you wish your <i>clockblock</i> has but we didn't write, just write the code yourself. Maybe even send us a pull-request if its good.
   #contact
     .container
       br
