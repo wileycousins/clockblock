@@ -67,7 +67,7 @@ block content
         .row
         h2 clock<span class='red'>block</span>
         .col-sm-6.col-sm-offset-3.text-justify
-          p <i>clockblock</i> is a minimalistic clock for people who appreciate modern design and contemporary technology<strong>.</strong> <i>clockblock</i> is made out of fine hand finished wood and a specially designed circuit<strong>.</strong> Everything is made by hand with care in the city of New Orleans<strong>.</strong>
+          p <i>clockblock</i> is a minimalistic clock for people who appreciate modern design and contemporary technology<strong>.</strong> <i>clockblock</i> is made from fine, hand-finished wood and a custom set of electronics<strong>.</strong> Everything is made by hand or robot with care in the city of New Orleans<strong>.</strong>
   #about.container
     br
     hr.dotted
@@ -88,16 +88,16 @@ block content
         .row
           h4.red.pull-left wood &nbsp;
           hr
-        p.text-justify <strong class='red'>louisiana cypress</strong>, this is where it all starts, some fine locally sourced wood. first we plane and join all of our cypress. we then glue up those boards 3 across to the get a single plank. we then take 3 of those planks and glue them together one of on top of antoher. this three thickness plank is then chopped into 11" x 11" blocks.
-        p.text-justify <strong class='red'>great!</strong> we've got a perfectly square 11" x 11" block of wood... where's the clock? right. after we've got our block we run it through our cnc and route out the cool pattern you see above. after running the blanks through the cnc, we finish off each hole by drilling down the final thickness on a drill press, by hand. last steps are to sand everything down nice and pretty and then rub some oil on it.
-        p.text-justify <strong class='red'>voil&#224;</strong>, you have beautiful block ready to be clocked.
+        p.text-justify <strong class='red'>louisiana cypress</strong>. This is where it all starts: some fine locally sourced wood. We glue up boards of cypress into eleven inch wide planks, then laminate three of those planks together. We end up with a hefty, nearly three inch thick beam of cypress. Chop up the beam, and we get eleven inch by eleven inch blocks.
+        p.text-justify <strong class='red'>great!</strong> We've got a pretty block of wood... so how's a clock get in there? Once our block's ready, we run it through a CNC and route out the cool pattern you see above. Robots, amiright? After the CNC's done, we (carefully) drill thirty-six holes right up to (but not through) the surface of the block by hand on a drill press. Then we sand everything down nice and pretty and rub some oil on it.
+        p.text-justify <strong class='red'>voil&#224;</strong>: the final product is a beautiful block ready to be clocked.
       .col-sm-4.col-sm-offset-1
         .row
           h4.black.pull-right  &nbsp;tech
           hr.black
-        p.text-justify <strong class='black'>kicad</strong>, the first step with getting the <i>clockblock</i> to tick, is a printed circuit board (pcb). the software we use to design our pcb's is called kicad. after designing the board we get the pcb's manufactured by a good friend of ours in texas (signature electronics) and shipped back to us. in the meantime, we place orders online for all the components on the pcb.
-        p.text-justify <strong class='black'>one week</strong> later, and all of our new toys have arrived. now onto assemble, there are roughly 100 components on a single <i>clockblock</i> pcb. we hand place each component (we have a pair of magical tweezers that make anything and everything possible). after placing the components on the pcbs, we bake them in our toaster oven (with a custom control board we made).
-        p.text-justify <strong class='black'>finally</strong>, we clock that block. we solder all the wires, screw all the screws, and plug it in.
+        p.text-justify <strong class='black'>custom pcbs</strong>. A set of custom printed circuit boards (PCBs) are what make the <i>clockblock</i> tick. We design the boards in KiCad and have them fabricated by a good friend of ours in Texas (Signature Electronics). A week later, they send us the boards, and now the long arduous process starts.
+        p.text-justify <strong class='black'>assembly</strong>. Once all of our new toys have arrived, we have to assemble the bare boards. There are roughly 100 components on a single set of <i>clockblock</i> PCBs. We apply solder paste and place each component individually with pair of magical tweezers. The boards then bake in a repurposed toaster oven (with precise temperature control).
+        p.text-justify <strong class='black'>clock that block</strong>: we solder all the wires, screw all the screws, and plug it in.
     .row
       br
       .col-sm-4
@@ -121,6 +121,40 @@ block content
             .row
               form#payment-form.form-inline(action='/purchase', method='POST')
                 .form-group.payment-errors.red
+                .row
+                  .form-group.col-sm-6
+                    .row
+                      .col-xs-12
+                        label.col-md-3 model 
+                        select.model.input-lg.form-control(name='version')
+                          option(value='257.78') original $250
+                          option(value='180.54') plank $175
+                          option(value='103.30') kit $100
+                        input(name='total', type='hidden')
+                    .row.model-descriptions
+                      .col-xs-12
+                        label.col-md-12 description
+                        strong.tight the original, it puts the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>&quot;block&quot;</span> in clockblock. this model is three boards thick and approximately 11" x 11" x 2.75". it feels good and massive in your hands. it comes with five different time display modes:
+                        ul
+                          li blend
+                          li dot
+                          li fill
+                          li pie
+                          li arms
+                      .col-xs-12.hidden
+                        label.col-md-12 description
+                        strong.tight the plank, its the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>slimmer</span> cousin of the original. plank is a single board thick and approximately 11" x 11" x .75". all the beauty and functionality of the original; it just takes us significantly less time to produce, hence the lower cost.
+                      .col-xs-12.hidden
+                        label.col-md-12 description
+                        strong.tight the kit, fancy yourself a <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>DIY</span> kind of person. well we made this one just for you... we didn't finish it! you'll receive a populated pcb, some wires, some screws, and a plank. oh i guess instructions too...
+                  .col-sm-6
+                    .hidden-xs
+                      br
+                      br
+                    .col-sm-10.col-sm-offset-1.model-imgs
+                        img.img-thumbnail.no-border(src='/images/block.jpg')
+                        img.hidden.img-thumbnail.no-border(src='/images/plank.jpg')
+                        img.hidden.img-thumbnail.no-border(src='/images/kit.jpg')
                 .row
                   .form-group.col-sm-6
                     label.col-md-3.inline full name
@@ -162,34 +196,6 @@ block content
                         input.inline.form-control(type='text', required='true',size='2', name='cc-exp-month', data-stripe='exp-month', placeholder='mm')
                       .col-xs-6
                         input.inline.form-control(type='text', required='true',size='4', name='cc-exp-year', data-stripe='exp-year', placeholder='yyyy')
-                .row
-                  .form-group.col-sm-6
-                    .row
-                      .col-xs-12
-                        label.col-md-3 model 
-                        select.model.input-lg.form-control(name='version')
-                          option(value='257.78') original $250
-                          option(value='180.54') plank $175
-                          option(value='103.30') kit $100
-                        input(name='total', type='hidden')
-                    .row.model-descriptions
-                      .col-xs-12
-                        label.col-md-12 description
-                        strong.tight the original, it puts the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>&quot;block&quot;</span> in clockblock. this model is three boards thick and approximately 11" x 11" x 2.75". it feels good and massive in your hands.
-                      .col-xs-12.hidden
-                        label.col-md-12 description
-                        strong.tight the plank, its the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>slimmer</span> cousin of the original. plank is a single board thick and approximately 11" x 11" x .75". it takes us significantly less time to produce, hence the lower cost.
-                      .col-xs-12.hidden
-                        label.col-md-12 description
-                        strong.tight the kit, fancy yourself a <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>DIY</span> kind of person. well we made this one just for you... we didn't finish it! you'll receive a populated pcb, some wires, some screws, and a plank. oh i guess instructions too...
-                  .col-sm-6
-                    .hidden-xs
-                      br
-                      br
-                    .col-sm-10.col-sm-offset-1.model-imgs
-                        img.img-thumbnail.no-border(src='/images/block.jpg')
-                        img.hidden.img-thumbnail.no-border(src='/images/plank.jpg')
-                        img.hidden.img-thumbnail.no-border(src='/images/kit.jpg')
                 .row
                   .hidden-xs
                     br
@@ -235,6 +241,11 @@ block content
               a(href='https://github.com/wileycousins/clockblock', target='_blank')
                 img(src='/images/oshw-logo.svg', title='open source hardware')
                 img.hover(src='/images/oshw-logo-hover.svg', title='open source hardware')
+        .row
+          br
+          .col-sm-4
+            p.white.text-right the clockblock is programmable over its USB port and is Arduino compatible. If there is some display mode that you wish your <i>clockblock</i> had but we didn't put it on there, just write the code yourself.
+            a.text-right.strong.pull-right.red(href="https://github.com/wileycousins/clockblock/pulls", target="_blank") Send us a pull request.
   #contact
     .container
       br
