@@ -1,5 +1,5 @@
 {
-  "name"      : "studio-brain",
+  "name"      : "clockblock",
   "version"   : "0.0.1",
   "private": true,
   "engines": {
@@ -11,15 +11,16 @@
   "dependencies": {
     "async"                 : "*",
     "coffee-script"         : "*",
-    "connect-assets"        : "*",
+    "connect-assets"        : "2.5.3",
     "cookie"                : "*",
     "express"               : "*",
-    "jade"                  : "*",
+    "jade"                  : "0.35.0",
     "mongoose"              : "*",
     "nib"                   : "*",
     "nodemailer"            :" *",
     "stylus"                : "*",
     "stripe"                : "*",
+    "forever"               : "*",
     "supervisor"            : "*"
   }
 }
