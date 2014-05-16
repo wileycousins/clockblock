@@ -24,10 +24,16 @@ module.exports = (app) ->
     shipping = 12.35
 
     console.log version
+    _total = version + shipping
+    _total = _total.toFixed(2)
+    total = total.toFixed(2)
+    console.log "#{total} == #{_total}"
+    console.log "#{total == _total}"
+
 
     if version != 257.78 && version != 180.54 && version != 103.30
       return res.send "your version number isn't right. something funny is going on here"
-    if total != version + shipping
+    if total != _total
       return res.send "your total isn't right. something funny is going on here"
 
     stripeToken = req.body.stripeToken
