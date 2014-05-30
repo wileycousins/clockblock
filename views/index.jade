@@ -1,37 +1,7 @@
 extends layout
 
 block content
-  #myModal.modal.mogal-lg.fade(tabindex='-1', role='dialog')
-      .modal-dialog.modal-lg
-          .modal-content
-            .modal-header
-              button.close(type='button', data-dismiss='modal') x
-              h3.modal-title
-              br
-            .modal-body
-  .navbar.nav(role="navigation")
-    .navbar-header
-      .nav-link.home-link.navbar-brand
-        a(href='/')
-          img(src='/images/logo.png')
-      button.navbar-toggle(data-toggle="collapse", data-target=".navbar-ex1-collapse")
-        span.sr-only Toggle Navigation
-        span.icon-bar
-        span.icon-bar
-        span.icon-bar
-        span.icon-bar
-        span.icon-bar
-    .collapse.navbar-collapse.navbar-ex1-collapse
-      ul.nav.navbar-nav
-        .nav-link
-          a(href='#about') about
-        .nav-link
-          a(href='#buy') buy
-        .nav-link
-          a(href='#learn') learn
-        .nav-link
-          a(href='#contact') contact
-  #main.container
+  #main.row
     br
     .col-sm-12
       #clockblock-block.col-sm-6.text-center
@@ -68,216 +38,215 @@ block content
         h2 clock<span class='red'>block</span>
         .col-sm-6.col-sm-offset-3.text-justify
           p <i>clockblock</i> is a minimalistic clock for people who appreciate modern design and contemporary technology<strong>.</strong> <i>clockblock</i> is made from fine, hand-finished wood and a custom set of electronics<strong>.</strong> Everything is made by hand or robot with care in the city of New Orleans<strong>.</strong>
-  #about.container
+  #about.row
     br
     hr.dotted
     br
-  .container
-    .row
-      .col-sm-4
-        img.img-thumbnail.no-border(src='/images/clockblock-1.jpg')
-      .col-sm-4
-        img.img-thumbnail.no-border(src='/images/clock_back.jpg')
-      .col-sm-4
-        img.img-thumbnail.no-border(src='/images/workplace.jpg')
-    .row
-      br
-      br
-    .row
-      .col-sm-4.col-sm-offset-1
-        .row
-          h4.red.pull-left wood &nbsp;
-          hr
-        p.text-justify <strong class='red'>louisiana cypress</strong>. This is where it all starts: some fine locally sourced wood. We glue up boards of cypress into eleven inch wide planks, then laminate three of those planks together. We end up with a hefty, nearly three inch thick beam of cypress. Chop up the beam, and we get eleven inch by eleven inch blocks.
-        p.text-justify <strong class='red'>great!</strong> We've got a pretty block of wood... so how's a clock get in there? Once our block's ready, we run it through a CNC and route out the cool pattern you see above. Robots, amiright? After the CNC's done, we (carefully) drill thirty-six holes right up to (but not through) the surface of the block by hand on a drill press. The final drilling requires pieces of paper to get the right depth. Then we sand everything down nice and pretty and rub some oil on it.
-        p.text-justify <strong class='red'>voil&#224;</strong>: the final product is a beautiful block ready to be clocked.
-      .col-sm-4.col-sm-offset-1
-        .row
-          h4.black.pull-right  &nbsp;tech
-          hr.black
-        p.text-justify <strong class='black'>custom pcbs</strong>. A set of custom printed circuit boards (PCBs) are what make the <i>clockblock</i> tick. We design the boards in KiCad and have them fabricated by a good friend in Texas (Signature Electronics). A week after we send them the files, they send us the boards, and the tedious, delicate part of the build starts.
-        p.text-justify <strong class='black'>assembly</strong>. Once all of our new toys have arrived, we have to assemble the bare boards. There are roughly 100 components on a single set of <i>clockblock</i> PCBs, and the smallest ones are just 1.6 mm by 0.8 mm. We apply solder paste to the PCBs and place each component individually with our pair of magical tweezers. The boards then bake in our specially repurposed toaster oven, with a precise temperature control. Finally we flash the firmware onto the board.
-        p.text-justify <strong class='black'>clock that block</strong>: we solder all the wires, screw all the screws, and plug it in.
-    .row
-      br
-      .col-sm-4
-        img.img-thumbnail.no-border(src='/images/on-cnc.jpg')
-      .col-sm-4
-        img.img-thumbnail.no-border(src='/images/look.jpg')
-      .col-sm-4
-        img.img-thumbnail.no-border(src='/images/baking.jpg')
-    br
-    hr.dotted
-    br
-  #buy
-    br
-    .container
-      .col-sm-12
-        .row
-          h2.black you <span class='red'>want </span> one
+  .row
+    .col-sm-12
+      .row
+        .col-sm-4
+          img.img-thumbnail.no-border(src='/images/clockblock-1.jpg')
+        .col-sm-4
+          img.img-thumbnail.no-border(src='/images/clock_back.jpg')
+        .col-sm-4
+          img.img-thumbnail.no-border(src='/images/workplace.jpg')
+        .col-sm-12
           br
-          .col-sm-10.col-sm-offset-1.text-justify
-            p see, we knew you had good taste... <i>clockblock</i> is made to order, so you can purchase one now and we will ship it as soon as it's ready. We will send you updates as we assemble your <i>clockblock</i>.
-            .row
-              form#payment-form.form-inline(action='/purchase', method='POST')
-                .form-group.payment-errors.red
-                .row
-                  .form-group.col-sm-6
-                    .row
-                      .col-xs-12
-                        label.col-md-3 model
-                        select.model.input-lg.form-control(name='version')
-                          option(value='257.78') original $250
-                          option(value='180.54') plank $175
-                          option(value='103.30') kit $100
-                        input(name='total', type='hidden')
-                    .row.model-descriptions
-                      .col-xs-12
-                        label.col-md-12 description
-                        strong.tight The original: it puts the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>&quot;block&quot;</span> in clockblock. This model is three boards thick and approximately 11" x 11" x 2.75". It feels good and massive in your hands, and is perfect either hanging on the wall or sitting on a surface. It comes with five different time display modes:
-                        ul
-                          li blend
-                          li dot
-                          li fill
-                          li pie
-                          li arms
-                      .col-xs-12.hidden
-                        label.col-md-12 description
-                        strong.tight The plank: the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>slimmer</span> cousin of the original. Plank is a single board thick and approximately 11" x 11" x 1". It's got all the beauty and functionality of the original, but takes us significantly less time to produce due to its decreased size. Plank is great if your clock is going on the wall.
-                      .col-xs-12.hidden
-                        label.col-md-12 description
-                        strong.tight The kit. Fancy yourself a <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>diy</span> kind of person? Well, we made this one just for you... we didn't finish it! You'll receive a populated PCB, some wires, some screws, and a plank. If we're feeling generous, we might even throw in some instructions too...
-                  .col-sm-6
-                    .hidden-xs
-                      br
-                      br
-                    .col-sm-10.col-sm-offset-1.model-imgs
-                        img.img-thumbnail.no-border(src='/images/block.jpg')
-                        img.hidden.img-thumbnail.no-border(src='/images/plank.jpg')
-                        img.hidden.img-thumbnail.no-border(src='/images/kit.jpg')
-                .row
-                  .form-group.col-sm-6
-                    label.col-md-3.inline full name
-                    input.inline.form-control(type='text', required='true', x-autocompletetype='cc-name', name='name')
-                  .form-group.col-sm-6
-                    label.col-md-3.inline email
-                    input.inline.form-control(type='email', required='true', name='email')
-                .row
-                  .form-group.col-sm-6
-                      label.col-md-3.inline phone
-                      input.inline.form-control(type='phone', required='true', name='phone')
-                  .form-group.col-sm-6
-                      label.col-md-3.inline address
-                      input.inline.form-control(type='text', data-stripe='address_line1', required='true', name='address')
-                .row
-                  .form-group.col-sm-6
-                      label.col-md-3.inline city
-                      input.inline.form-control(type='city', data-stripe='address_city', required='true', name='city')
-                  .form-group.col-sm-3
-                      label.col-md-4.inline state
-                      input.inline.form-control(type='state', required='true', data-stripe='address_state', name='state')
-                  .form-group.col-sm-3
-                      label.col-md-3.iniine zip
-                      input.inline.form-control(type='zip', data-stripe='address_zip', required='true', name='zip')
-                .row
-                  .form-group.col-sm-6
-                      label.col-md-3.inline card #
-                      input.cc.inline.form-control(type='text', required='true',size='20', name='cc-number', x-autocompletetype='cc-number', data-stripe='number', placeholder='####-####-####-####')
-                  .form-group.col-sm-6
-                      label.col-md-3.inline cvc
-                      input.col-sm-3.inline.form-control(type='text', required='true',size='4',name='cc-cvc', x-autocompletetype='cc-csc', data-stripe='cvc', placeholder='###')
-                .row
-                  .form-group.col-sm-6
-                    .row
-                      .col-xs-12
-                        label.col-md-3 expiration
-                    .row
-                      .col-xs-6
-                        input.inline.form-control(type='text', required='true',size='2', name='cc-exp-month', data-stripe='exp-month', placeholder='mm')
-                      .col-xs-6
-                        input.inline.form-control(type='text', required='true',size='4', name='cc-exp-year', data-stripe='exp-year', placeholder='yyyy')
-                .row
+          br
+      .row
+        .col-sm-4.col-sm-offset-1
+          .row
+            h4.red.pull-left wood &nbsp;
+            hr
+          p.text-justify <strong class='red'>louisiana cypress</strong>. This is where it all starts: some fine locally sourced wood. We glue up boards of cypress into eleven inch wide planks, then laminate three of those planks together. We end up with a hefty, nearly three inch thick beam of cypress. Chop up the beam, and we get eleven inch by eleven inch blocks.
+          p.text-justify <strong class='red'>great!</strong> We've got a pretty block of wood... so how's a clock get in there? Once our block's ready, we run it through a CNC and route out the cool pattern you see above. Robots, amiright? After the CNC's done, we (carefully) drill thirty-six holes right up to (but not through) the surface of the block by hand on a drill press. The final drilling requires pieces of paper to get the right depth. Then we sand everything down nice and pretty and rub some oil on it.
+          p.text-justify <strong class='red'>voil&#224;</strong>: the final product is a beautiful block ready to be clocked.
+        .col-sm-4.col-sm-offset-1
+          .row
+            h4.black.pull-right  &nbsp;tech
+            hr.black
+          p.text-justify <strong class='black'>custom pcbs</strong>. A set of custom printed circuit boards (PCBs) are what make the <i>clockblock</i> tick. We design the boards in KiCad and have them fabricated by a good friend in Texas (Signature Electronics). A week after we send them the files, they send us the boards, and the tedious, delicate part of the build starts.
+          p.text-justify <strong class='black'>assembly</strong>. Once all of our new toys have arrived, we have to assemble the bare boards. There are roughly 100 components on a single set of <i>clockblock</i> PCBs, and the smallest ones are just 1.6 mm by 0.8 mm. We apply solder paste to the PCBs and place each component individually with our pair of magical tweezers. The boards then bake in our specially repurposed toaster oven, with a precise temperature control. Finally we flash the firmware onto the board.
+          p.text-justify <strong class='black'>clock that block</strong>: we solder all the wires, screw all the screws, and plug it in.
+      .row
+        br
+        .col-sm-4
+          img.img-thumbnail.no-border(src='/images/on-cnc.jpg')
+        .col-sm-4
+          img.img-thumbnail.no-border(src='/images/look.jpg')
+        .col-sm-4
+          img.img-thumbnail.no-border(src='/images/baking.jpg')
+      .row
+        br
+        hr.dotted
+        br
+  #buy.row
+    .col-sm-12
+      br
+      .row
+        h2.black you <span class='red'>want </span> one
+        br
+        .col-sm-10.col-sm-offset-1.text-justify
+          p see, we knew you had good taste... <i>clockblock</i> is made to order, so you can purchase one now and we will ship it as soon as it's ready. We will send you updates as we assemble your <i>clockblock</i>.
+          .row
+            form#payment-form.col-sm-12.form-inline(action='/purchase', method='POST')
+              .form-group.payment-errors.red
+              .row
+                .form-group.col-sm-6
+                  .row
+                    .col-xs-12
+                      label.col-md-3 model
+                      select.model.input-lg.form-control(name='version')
+                        option(value='257.78') original $250
+                        option(value='180.54') plank $175
+                        option(value='103.30') kit $100
+                      input(name='total', type='hidden')
+                  .row.model-descriptions
+                    .col-xs-12
+                      label.col-md-12 description
+                      strong.tight The original: it puts the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>&quot;block&quot;</span> in clockblock. This model is three boards thick and approximately 11" x 11" x 2.75". It feels good and massive in your hands, and is perfect either hanging on the wall or sitting on a surface. It comes with five different time display modes:
+                      ul
+                        li blend
+                        li dot
+                        li fill
+                        li pie
+                        li arms
+                    .col-xs-12.hidden
+                      label.col-md-12 description
+                      strong.tight The plank: the <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>slimmer</span> cousin of the original. Plank is a single board thick and approximately 11" x 11" x 1". It's got all the beauty and functionality of the original, but takes us significantly less time to produce due to its decreased size. Plank is great if your clock is going on the wall.
+                    .col-xs-12.hidden
+                      label.col-md-12 description
+                      strong.tight The kit. Fancy yourself a <span style='font-weight: bolder;font-variant:small-caps;font-size:20px;'>diy</span> kind of person? Well, we made this one just for you... we didn't finish it! You'll receive a populated PCB, some wires, some screws, and a plank. If we're feeling generous, we might even throw in some instructions too...
+                .col-sm-6
                   .hidden-xs
                     br
-                .row
-                  .col-md-4
-                    h4.m0.red total: <strong>$</strong><span class='strong total'>-</span>
-                    i.skinny.gray.tiny (includes shipping)
-                .row
-                  .col-sm-6.col-sm-offset-3
                     br
-                    button.btn.btn-lg.btn-block(type='submit') Buy one
-                .row
-                  .col-sm-12
-                    .row
-                      hr.dotted
+                  .col-sm-10.col-sm-offset-1.model-imgs
+                      img.img-thumbnail.no-border(src='/images/block.jpg')
+                      img.hidden.img-thumbnail.no-border(src='/images/plank.jpg')
+                      img.hidden.img-thumbnail.no-border(src='/images/kit.jpg')
+              .row
+                .form-group.col-sm-6
+                  label.col-md-3.inline full name
+                  input.inline.form-control(type='text', required='true', x-autocompletetype='cc-name', name='name')
+                .form-group.col-sm-6
+                  label.col-md-3.inline email
+                  input.inline.form-control(type='email', required='true', name='email')
+              .row
+                .form-group.col-sm-6
+                    label.col-md-3.inline phone
+                    input.inline.form-control(type='phone', required='true', name='phone')
+                .form-group.col-sm-6
+                    label.col-md-3.inline address
+                    input.inline.form-control(type='text', data-stripe='address_line1', required='true', name='address')
+              .row
+                .form-group.col-sm-6
+                    label.col-md-3.inline city
+                    input.inline.form-control(type='city', data-stripe='address_city', required='true', name='city')
+                .form-group.col-sm-3
+                    label.col-md-4.inline state
+                    input.inline.form-control(type='state', required='true', data-stripe='address_state', name='state')
+                .form-group.col-sm-3
+                    label.col-md-3.iniine zip
+                    input.inline.form-control(type='zip', data-stripe='address_zip', required='true', name='zip')
+              .row
+                .form-group.col-sm-6
+                    label.col-md-3.inline card #
+                    input.cc.inline.form-control(type='text', required='true',size='20', name='cc-number', x-autocompletetype='cc-number', data-stripe='number', placeholder='####-####-####-####')
+                .form-group.col-sm-6
+                    label.col-md-3.inline cvc
+                    input.col-sm-3.inline.form-control(type='text', required='true',size='4',name='cc-cvc', x-autocompletetype='cc-csc', data-stripe='cvc', placeholder='###')
+              .row
+                .form-group.col-sm-6
+                  .row
+                    .col-xs-12
+                      label.col-md-3 expiration
+                  .row
+                    .col-xs-6
+                      input.inline.form-control(type='text', required='true',size='2', name='cc-exp-month', data-stripe='exp-month', placeholder='mm')
+                    .col-xs-6
+                      input.inline.form-control(type='text', required='true',size='4', name='cc-exp-year', data-stripe='exp-year', placeholder='yyyy')
+              .row
+                .hidden-xs
+                  br
+              .row
+                .col-md-4
+                  h4.m0.red total: <strong>$</strong><span class='strong total'>-</span>
+                  i.skinny.gray.tiny (includes shipping)
+              .row
+                .col-sm-6.col-sm-offset-3
+                  br
+                  button.btn.btn-lg.btn-block(type='submit') Buy one
+              .row
+                .col-sm-12
+                  .row
+                    hr.dotted
+                    br
+                  .row
+                    .col-sm-4.text-left
+                      a(href='https://stripe.com/us/help/faq#security', target='_blank')
+                        img(src='/images/stripe.png', width=150, title='stripe')
+                    .col-sm-8.text-right(style='margin-top: 5px;')
+                      i.white we don't store credit card information on our servers
                       br
-                    .row
-                      .col-sm-4.text-left
-                        a(href='https://stripe.com/us/help/faq#security', target='_blank')
-                          img(src='/images/stripe.png', width=150, title='stripe')
-                      .col-sm-8.text-right(style='margin-top: 5px;')
-                        i.white we don't store credit card information on our servers
-                        br
-                        br
-            br
-        br
-        br
-        br
-  #learn
-    .container
+                      br
+          br
       br
       br
-      .col-sm-12
-        .row
-          h2.pull-right we're open  source
-        .row
+      br
+  #learn.row
+    .col-sm-12
+      br
+      br
+      .row
+        h2.pull-right we're open  source
+      .row
+        br
+        br
+      .row
+        p.text-center check out the firmware and pcb design files on github
+        .col-sm-12
+          .link
+            a(href='https://github.com/wileycousins/clockblock', target='_blank')
+              img(src='/images/oshw-logo.svg', title='open source hardware')
+              img.hover(src='/images/oshw-logo-hover.svg', title='open source hardware')
+      .row
+        br
+        .col-sm-4
+          p.white.text-right the clockblock is programmable over its USB port. If there is some display mode that you wish your <i>clockblock</i> had but we didn't put it on there, let us know or write the code yourself.
+          a.text-right.strong.pull-right.red(href="https://github.com/wileycousins/clockblock/pulls", target="_blank") Send us a pull request.
+  #contact.row
+    .col-sm-12
+      br
+      br
+      .row
+        h2.pull-left contact
+      .row
+        .hidden-xs
           br
           br
-        .row
-          p.text-center check out the firmware and pcb design files on github
-          .col-sm-12
-            .link
-              a(href='https://github.com/wileycousins/clockblock', target='_blank')
-                img(src='/images/oshw-logo.svg', title='open source hardware')
-                img.hover(src='/images/oshw-logo-hover.svg', title='open source hardware')
-        .row
-          br
+      .row
+        a(href='https://maps.google.com/maps?q=1201+Mazant+St,+New+Orleans,+LA&sll=29.966471,-90.033884&hl=en&ie=UTF8&hq=&hnear=1201+Mazant+St,+New+Orleans,+Louisiana+70117&ll=29.966554,-90.034094&spn=0.001764,0.002631&t=m&z=19&vpsrc=0&iwloc=A', target='_blank')
           .col-sm-4
-            p.white.text-right the clockblock is programmable over its USB port. If there is some display mode that you wish your <i>clockblock</i> had but we didn't put it on there, let us know or write the code yourself.
-            a.text-right.strong.pull-right.red(href="https://github.com/wileycousins/clockblock/pulls", target="_blank") Send us a pull request.
-  #contact
-    .container
-      br
-      br
-      .col-sm-12
-        .row
-          h2.pull-left contact
-        .row
-          .hidden-xs
+            h4.text-center.strong.black located @
+            p.text-center 1201 Mazant
+            p.text-center New Orleans, LA
+            p.text-center 70117
+          .col-sm-3.col-sm-offset-4
             br
             br
-        .row
-          a(href='https://maps.google.com/maps?q=1201+Mazant+St,+New+Orleans,+LA&sll=29.966471,-90.033884&hl=en&ie=UTF8&hq=&hnear=1201+Mazant+St,+New+Orleans,+Louisiana+70117&ll=29.966554,-90.034094&spn=0.001764,0.002631&t=m&z=19&vpsrc=0&iwloc=A', target='_blank')
-            .col-sm-4
-              h4.text-center.strong.black located @
-              p.text-center 1201 Mazant
-              p.text-center New Orleans, LA
-              p.text-center 70117
-            .col-sm-3.col-sm-offset-4
-              br
-              br
-              a(href='mailto:dev@wileycousins.com')
-                h3.strong.red.text-center dev@wileycousins.com
-    .row
-      br
-      br
-      br
-      .col-sm-6.col-sm-offset-3
-        img.img-thumbnail.no-border(src='/images/glory.jpg')
-    .row
-      br
-      br
-      br
-      br
+            a(href='mailto:dev@wileycousins.com')
+              h3.strong.red.text-center dev@wileycousins.com
+  .row
+    br
+    br
+    br
+    .col-sm-6.col-sm-offset-3
+      img.img-thumbnail.no-border(src='/images/glory.jpg')
+  .row
+    br
+    br
+    br
+    br
   !=js('client')

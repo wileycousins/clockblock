@@ -24,5 +24,36 @@ html
         ga('send', 'pageview');
       }
   body
-    #home
+    #myModal.modal.mogal-lg.fade(tabindex='-1', role='dialog')
+        .modal-dialog.modal-lg
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal') x
+                h3.modal-title
+                br
+              .modal-body
+    .container-fluid
+      .navbar.nav(role="navigation")
+        .navbar-header
+          .nav-link.home-link.navbar-brand
+            a(href='/')
+              img(src='/images/logo.png')
+          button.navbar-toggle(data-toggle="collapse", data-target=".navbar-ex1-collapse")
+            span.sr-only Toggle Navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+        .collapse.navbar-collapse.navbar-ex1-collapse
+          ul.nav.navbar-nav
+            .nav-link
+              a(href='#about') about
+            .nav-link
+              a(href='#buy') buy
+            .nav-link
+              a(href='#learn') learn
+            .nav-link
+              a(href='#contact') contact
+    #home.container
       block content
