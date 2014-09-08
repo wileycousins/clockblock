@@ -110,11 +110,9 @@ int main(void) {
   tlc.init();
   // set the TLC to autorepeat the pattern and to reset the GS counter whenever new data is latched in
   tlc.setFC(TLC5971_DSPRPT);
-  // set brightness to half
-  //tlc.setBC(63);
-  // set brightness to 71% (to account for shitty wall warts)
-  tlc.setBC(90);
-  
+  // set brightness to about 50% (to account for bad wall warts)
+  tlc.setBC(60);
+
   // initialize the RTC
   rtc.init();
   // enable a 8192 Hz squarewave output on clock input pin
