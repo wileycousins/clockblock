@@ -1,4 +1,4 @@
-update=Mon 08 Sep 2014 01:32:18 PM CDT
+update=Mon 08 Sep 2014 02:56:43 PM CDT
 last_client=kicad
 [cvpcb]
 version=1
@@ -45,8 +45,6 @@ LibName18=texas
 LibName19=to
 LibName20=xtal
 LibName21=pads
-[general]
-version=1
 [eeschema]
 version=1
 PageLayoutDescrFile=../../kicad-lib/page-layout-a.kicad_wks
@@ -73,3 +71,5 @@ LibName11=ti-ic
 LibName12=power
 LibName13=nxp-ic
 LibName14=ftdi-ic
+[general]
+version=1
