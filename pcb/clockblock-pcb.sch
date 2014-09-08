@@ -14,18 +14,18 @@ LIBS:power
 LIBS:nxp-ic
 LIBS:ftdi-ic
 LIBS:clockblock-pcb-cache
-EELAYER 27 0
+EELAYER 24 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "clockblock pcb"
-Date "2 jan 2014"
+Date "08 Sep 2014"
 Rev "1.1"
-Comp "Wiley Cousins, LLC."
-Comment1 "released under the terms of the Creative Commons Attribution Share-Alike 3.0 license"
+Comp "copyright 2014 by Wiley Cousins"
+Comment1 "released under the terms of the Creative Commons Attribution Share-Alike 4.0 license"
 Comment2 "open source hardware"
-Comment3 ""
+Comment3 "github.com/wileycousins/clockblock"
 Comment4 ""
 $EndDescr
 $Comp
@@ -1141,7 +1141,7 @@ F 3 "" H 1000 5850 60  0000 C CNN
 	1    1000 5850
 	0    1    -1   0   
 $EndComp
-Text Notes 4050 4650 0    100  ~ 0
+Text Notes 4050 4800 0    100  ~ 0
 Arm Board\nx12
 Text Notes 550  7950 0    60   ~ 0
 schematic prepared by michael cousins
@@ -1926,7 +1926,7 @@ F5 9D 93 6C D8 F0 5C 4C 19 6D 19 87 F4 15 E4 6A BF E1 C7 AF 71 29 2A 66 C3 45 93
 57 5A D7 B5 CB 72 96 3F 16 55 7D 13 D8 4F 44 8E C0 25 B9 5B 05 67 78 33 E2 9E C1 29 71 61 AA 9F 
 E1 7A 30 2F E3 9E BF BB FC D0 5C 2F 77 12 1D A4 F0 58 02 39 97 10 5D 3F 53 4D 5C E7 C1 2F 96 BB 
 0B B8 4B 44 66 C0 DD 9B E5 70 E1 99 33 E3 22 76 A6 C0 F5 70 86 E1 7A 3C 1F 00 F7 E2 62 F9 87 B5 
-4B 6B 3B F8 7F 51 4C 22 23 01 FF ED 6E 00 00 00 00 49 45 4E 44 AE 42 60 82 04 $EndBitmap
+4B 6B 3B F8 7F 51 4C 22 23 01 FF ED 6E 00 00 00 00 49 45 4E 44 AE 42 60 82 B4 
 EndData
 $EndBitmap
 $Bitmap
@@ -3324,7 +3324,7 @@ E2 00 00 00 00 00 00 80 1C 90 88 03 00 00 00 00 00 00 72 40 22 0E 00 00 00 00 00
 00 00 00 00 72 40 22 0E 00 00 00 00 00 00 C8 01 89 38 00 00 00 00 00 00 20 07 24 E2 00 00 00 00 
 00 00 80 1C 90 88 03 00 00 00 00 00 00 72 40 22 0E 00 00 00 00 00 00 C8 01 89 38 00 00 00 00 00 
 00 20 07 24 E2 00 00 00 00 00 00 80 1C FC FF 3E 6A 41 A6 FA 5D A5 94 00 00 00 00 49 45 4E 44 AE 
-42 60 82 F5 $EndBitmap
+42 60 82 0A 
 EndData
 $EndBitmap
 $Comp
