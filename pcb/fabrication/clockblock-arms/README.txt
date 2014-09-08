@@ -1,12 +1,12 @@
 clockblock v1.1 arm panel
 Prepared by Michael Cousins
-March 24, 2014
+September 8, 2014
 michael@wileycousins.com
 (281) 210-6984
 
-This panel consists of eleven (11) 0.41" x 3.575" boards arranged into a 4.51" x 3.575" panel. There should be nine (9) evenly spaced vertical v-scores so we can de-panel the boards.
+This panel consists of twelve (12) 0.41" x 3.575" boards arranged into a 4.92" x 3.575" panel. There should be eleven (11) evenly spaced vertical v-scores.
 
-**Any fabicration markings should be placed on the bottom side of the board. Please do not place additional markings on the top.**
+**Any fabrication markings should be placed on the bottom side of the board. Please do not place additional markings on the top.**
 
 Requested specs:
   * ENIG finish
@@ -24,5 +24,4 @@ Gerbers:
   * clockblock-arms-F_Mask.gts    - top soldermask
   * clockblock-arms-F_SilkS.gto   - top silkscreen
 Excellon drill files (inches, 2:4 precision, no zero suppression):
-  * clockblock-arms.drl      - drill file for plated through holes
-
+  * clockblock-arms.drl           - drill file
