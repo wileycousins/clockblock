@@ -22,7 +22,7 @@ MCU = attiny167
 CLK = 8000000
 # avr programmer (and port if necessary)
 # e.g. PRG = usbtiny -or- PRG = arduino -P /dev/tty.usbmodem411
-PRG = avrisp -P /dev/tty.usbmodem411 -b 19200
+PRG = avrisp -P $(SERIAL_PORT) -b 19200
 #PRG = avrispmkII -P usb -b 115200
 # fuse bit values for v0.1 pcb
 # use internal 8 MHz RC oscillator with no clock division and slowest available startup
@@ -58,7 +58,7 @@ CFLAGS    = -Wall -Os -DF_CPU=$(CLK) $(DEFINES) -mmcu=$(MCU) $(INCLUDES)
 CPPFLAGS  =
 
 # executables
-AVRDUDE = avrdude -c $(PRG) -p $(MCU)
+AVRDUDE = avrdude -c $(PRG) -p $(MCU) -C $(HOME)/Library/Arduino15/packages/ATTinyCore/hardware/avr/1.5.2/avrdude.conf
 OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
 SIZE    = avr-size --format=avr --mcu=$(MCU)
